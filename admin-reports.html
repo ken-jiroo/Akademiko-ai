@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AkademikoAI | Reports</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body{ background:#0e1b2b; color:white; display:flex; min-height:100vh; }
+
+/* =========================== SIDEBAR =========================== */
+.sidebar{ width:250px; height:100vh; background:#0a1624; position:fixed; left:0; top:0; padding:25px 18px; border-right:1px solid rgba(255,255,255,.05); z-index:10; }
+.logo{ display:flex; align-items:center; gap:12px; margin-bottom:40px; }
+.logo-box{ width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,#45d9d8,#36d889); display:flex; justify-content:center; align-items:center; font-weight:800; color:#102233; }
+.logo h2{ font-size:24px; font-weight:800; }
+.logo span{ color:#36d889; }
+
+/* DYNAMIC ADMIN MINI PROFILE */
+.admin-mini-profile{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#16263a;
+  padding:10px 14px;
+  border-radius:12px;
+  margin-bottom:20px;
+  border:1px solid rgba(255,255,255,.05);
+}
+.admin-mini-profile img{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #36d889;
+}
+.admin-mini-info h4{
+  font-size:13px;
+  font-weight:700;
+  color:#fff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:130px;
+}
+.admin-mini-info small{
+  font-size:11px;
+  color:#36d889;
+}
+
+.sidebar-title{ margin-top:20px; margin-bottom:12px; font-size:12px; text-transform:uppercase; color:#7d8b9c; font-weight:700; }
+.menu{ list-style:none; }
+.menu li{ margin-bottom:8px; }
+.menu a{ display:flex; align-items:center; gap:12px; padding:14px 15px; text-decoration:none; color:#b5c0ca; border-radius:10px; transition:.3s; }
+.menu a:hover{ background:#1a293c; }
+.active{ background:#36d889; color:#102233 !important; font-weight:700; }
+
+/* =========================== MAIN =========================== */
+.main{ margin-left:250px; width:calc(100% - 250px); padding:30px; }
+.header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+.header h1{ font-size:38px; font-weight:800; }
+.header p{ margin-top:8px; color:#90a0ad; }
+.live{ display:flex; align-items:center; gap:15px; }
+.live-badge{ background:#0b6d9d; padding:8px 18px; border-radius:25px; font-size:13px; color:#72d9ff; font-weight:600; }
+.updated{ font-size:14px; color:#9aa7b3; }
+
+/* =========================== SUMMARY CARDS =========================== */
+.cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:30px; }
+.card{ background:#182636; padding:22px; border-radius:18px; border:1px solid rgba(255,255,255,.05); transition:.3s; }
+.card:hover{ transform:translateY(-3px); }
+.card small{ display:block; margin-bottom:12px; color:#93a1ae; }
+.card h2{ font-size:42px; }
+.blue{ color:#4db8ff; }
+.red{ color:#ff6666; }
+.orange{ color:#ffb22d; }
+.green{ color:#36d889; }
+
+/* =========================== PANELS =========================== */
+.panel{ background:#182636; padding:25px; border-radius:18px; border:1px solid rgba(255,255,255,.05); margin-bottom:25px; }
+.panel-title{ font-size:18px; font-weight:700; margin-bottom:20px; }
+.form-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+.form-group{ display:flex; flex-direction:column; }
+.form-group label{ margin-bottom:8px; font-size:14px; color:#a8b3be; font-weight:600; }
+.form-group select{ padding:14px; background:#223244; border:1px solid rgba(255,255,255,.08); border-radius:10px; color:white; outline:none; font-size:14px; }
+.form-group select option{ background:#182636; color:white; }
+
+.buttons{ margin-top:25px; display:flex; gap:15px; flex-wrap:wrap; }
+.btn{ padding:14px 22px; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:14px; transition:.2s; display:inline-flex; align-items:center; gap:8px; }
+.generate{ background:#36d889; color:#102233; }
+.pdf{ background:#ff6666; color:white; }
+.excel{ background:#4db8ff; color:#102233; }
+.btn:hover{ opacity:.9; transform:translateY(-2px); }
+
+/* =========================== SCROLLABLE TABLE CONTAINER =========================== */
+.search-box{ width:260px; padding:12px 15px; background:#223244; border:none; border-radius:10px; color:white; outline:none; font-size:14px; }
+.search-box::placeholder{ color:#8f9da9; }
+
+.table-scroll-container{
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: 1px solid rgba(255,255,255,.04);
+}
+
+table{ width:100%; border-collapse:collapse; }
+thead{ position: sticky; top: 0; background: #182636; z-index: 2; }
+th{ text-align:left; padding:16px; font-size:14px; color:#93A0AC; border-bottom:1px solid rgba(255,255,255,.08); }
+td{ padding:18px 16px; border-bottom:1px solid rgba(255,255,255,.05); font-size:14px; }
+.status{ padding:6px 14px; border-radius:20px; font-size:13px; font-weight:700; }
+.ready{ background:rgba(54,216,137,.18); color:#36D889; }
+.download-btn{ padding:9px 16px; border:none; border-radius:8px; background:#36D889; color:#102233; font-weight:700; cursor:pointer; font-size:13px; }
+.download-btn:hover{ opacity:.9; }
+
+/* =========================== PREVIEW & SCROLLABLE HISTORY =========================== */
+.preview-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+.preview-card{ background:#223244; padding:20px; border-radius:12px; text-align:center; transition:.3s; }
+.preview-card:hover{ background:#2b3d52; }
+.preview-card h3{ font-size:14px; margin-bottom:8px; color:#cdd6df; }
+.preview-card span{ font-size:32px; font-weight:800; }
+
+.history-scroll-container{
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.history{ list-style:none; }
+.history li{ padding:14px 10px; border-bottom:1px solid rgba(255,255,255,.05); line-height:1.6; font-size:14px; cursor:pointer; border-radius:8px; transition:.2s; display:flex; justify-content:space-between; align-items:center; }
+.history li:hover{ background:#223244; padding-left:14px; }
+.history small{ color:#95A3AF; font-size:12px; }
+
+/* CUSTOM SCROLLBARS */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #101c2c; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #2a3d52; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #36d889; }
+
+/* =========================== RESPONSIVE =========================== */
+@media(max-width:1100px){
+  .cards{ grid-template-columns:repeat(2,1fr); }
+  .bottom-grid{ grid-template-columns:1fr !important; }
+  .bottom-grid .panel{ margin-bottom:20px; }
+}
+
+@media(max-width:768px){
+  .sidebar{ width:90px; }
+  .sidebar h2, .sidebar-title, .admin-mini-info{ display:none; }
+  .admin-mini-profile{ justify-content:center; padding:8px; }
+  .menu a{ justify-content:center; }
+  .main{ margin-left:90px; width:calc(100% - 90px); }
+  .cards{ grid-template-columns:1fr; }
+  .header{ flex-direction:column; align-items:flex-start; gap:20px; }
+  .form-grid{ grid-template-columns:1fr; }
+  .preview-grid{ grid-template-columns:1fr; }
+}
+
+/* =========================== PRINT STYLES =========================== */
+@media print {
+  body { background: white !important; color: black !important; display: block !important; }
+  .sidebar, .buttons, .search-box, .live-badge, .download-btn, select, .history-scroll-container, #downloadHistoryPanel { display: none !important; }
+  .main { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+  .panel, .card, .preview-card { background: white !important; color: black !important; border: 1px solid #ccc !important; box-shadow: none !important; }
+  th, td { color: black !important; border-bottom: 1px solid #ddd !important; }
+  .header h1 { font-size: 24px !important; color: black !important; }
+  .table-scroll-container { max-height: none !important; overflow: visible !important; border: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-box">Ak</div>
+    <h2>Akademiko<span>AI</span></h2>
+  </div>
+
+  <div class="admin-mini-profile">
+    <img src="https://ui-avatars.com/api/?name=Admin&background=223244&color=36d889" id="sidebarAdminPhoto" alt="Avatar">
+    <div class="admin-mini-info">
+      <h4 id="sidebarAdminName">System Admin</h4>
+      <small>Online</small>
+    </div>
+  </div>
+
+  <div class="sidebar-title">Overview</div>
+  <ul class="menu">
+    <li><a href="admin-dashboard.html">🏠 Dashboard</a></li>
+    <li><a href="admin-students.html">👨‍🎓 Students</a></li>
+    <li><a href="admin-risk-monitor.html">📊 Risk Monitor</a></li>
+    <li><a href="admin-analytics.html">📈 Analytics</a></li>
+    <li><a href="admin-alerts.html">🔔 Alerts</a></li>
+  </ul>
+  <div class="sidebar-title">System</div>
+  <ul class="menu">
+    <li><a href="admin-reports.html" class="active">📄 Reports</a></li>
+    <li><a href="admin-settings.html">⚙ Settings</a></li>
+    <li><a href="login.html">🚪 Logout</a></li>
+  </ul>
+</div>
+
+<div class="main">
+  <div class="header">
+    <div>
+      <h1>Reports Center</h1>
+      <p>Generate, export, and audit academic risk and student progress data.</p>
+    </div>
+    <div class="live">
+      <div class="live-badge">● Live Generator</div>
+      <div class="updated" id="updatedDate">Loading...</div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><small>Total Evaluated</small><h2 class="blue" id="statTotalStudents">0</h2></div>
+    <div class="card"><small>High Risk Profiles</small><h2 class="red" id="statHighRisk">0</h2></div>
+    <div class="card"><small>Moderate Risk</small><h2 class="orange" id="statModRisk">0</h2></div>
+    <div class="card"><small>Cases Resolved</small><h2 class="green" id="statResolved">0</h2></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Generate Academic Audit Report</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Report Type</label>
+        <select id="reportType">
+          <option value="Academic Risk Assessment Report">Academic Risk Assessment Report</option>
+          <option value="Institutional Performance Summary">Institutional Performance Summary</option>
+          <option value="Intervention & Advising Audit">Intervention & Advising Audit</option>
+          <option value="External Factor Correlation Report">External Factor Correlation Report</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Academic Year</label>
+        <select id="academicYear">
+          <option value="SY 2026 - 2027">SY 2026 - 2027</option>
+          <option value="SY 2025 - 2026">SY 2025 - 2026</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Semester</label>
+        <select id="semester">
+          <option value="First Semester">First Semester</option>
+          <option value="Second Semester">Second Semester</option>
+          <option value="Mid-Year Term">Mid-Year Term</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Course / Program Filter</label>
+        <select id="courseFilter">
+          <option value="all">All Programs & Sections</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn generate" id="btnGenerate">⚡ Generate Report</button>
+      <button class="btn pdf" id="btnExportPDF">📄 Export PDF / Print</button>
+      <button class="btn excel" id="btnExportCSV">📊 Export Excel (CSV)</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <div class="panel-title" style="margin:0;">Recently Generated Reports</div>
+      <input type="text" class="search-box" id="reportSearch" placeholder="Search generated report...">
+    </div>
+
+    <div class="table-scroll-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Report Name</th>
+            <th>Type</th>
+            <th>Date Generated</th>
+            <th>Generated By</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="reportsTableBody">
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="bottom-grid" style="display:grid; grid-template-columns: 1fr 340px; gap:20px;">
+    <div class="panel">
+      <div class="panel-title" id="previewTitle">Cohort Risk Distribution Preview (All Programs)</div>
+      <div class="preview-grid">
+        <div class="preview-card">
+          <h3>Total Evaluated</h3>
+          <span class="blue" id="previewTotal">0</span>
+        </div>
+        <div class="preview-card">
+          <h3>High Risk</h3>
+          <span class="red" id="previewHigh">0</span>
+        </div>
+        <div class="preview-card">
+          <h3>Moderate Risk</h3>
+          <span class="orange" id="previewModerate">0</span>
+        </div>
+        <div class="preview-card">
+          <h3>Low Risk</h3>
+          <span class="green" id="previewLow">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="downloadHistoryPanel">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <div class="panel-title" style="margin:0;">Download History</div>
+        <button id="btnClearHistory" style="background:transparent; border:none; color:#ff6666; cursor:pointer; font-size:12px; font-weight:600;">Clear</button>
+      </div>
+      <div class="history-scroll-container">
+        <ul class="history" id="historyList">
+          </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========================== SESSION SECURITY CHECK ========================== */
+if (localStorage.getItem("akademiko_logged_in") !== "true") {
+    window.location.href = "../auth/login.html";
+}
+
+/* ========================== SYNC ADMIN SIDEBAR PROFILE ========================== */
+async function syncAdminSidebar() {
+    const currentAdminEmail = localStorage.getItem("akademiko_email") || "admin@akademikoai.edu.ph";
+    try {
+        const res = await fetch(`http://localhost:8080/api/admin/profile/${currentAdminEmail}`);
+        const data = await res.json();
+        if (data.success) {
+            const nameEl = document.getElementById("sidebarAdminName");
+            const photoEl = document.getElementById("sidebarAdminPhoto");
+            if (nameEl && data.adminName) nameEl.innerText = data.adminName;
+            if (photoEl && data.profilePhoto) photoEl.src = data.profilePhoto;
+        }
+    } catch (err) {
+        console.warn("Could not sync sidebar profile:", err);
+    }
+}
+
+let databaseAlerts = [];
+
+// LocalStorage Keys for persistent versioning
+const STORAGE_KEY_REPORTS = "akademiko_generated_reports";
+const STORAGE_KEY_DOWNLOADS = "akademiko_download_history";
+
+async function loadReportsData() {
+    try {
+        const res = await fetch('http://localhost:8080/api/alerts');
+        databaseAlerts = await res.json();
+
+        populateCourseFilter(databaseAlerts);
+        updateMetrics(databaseAlerts);
+        renderPersistentReports();
+        renderPersistentDownloads();
+
+    } catch (err) {
+        console.error("Reports load error:", err);
+    }
+}
+
+function populateCourseFilter(alerts) {
+    const courseSelect = document.getElementById("courseFilter");
+    const uniqueCourses = [...new Set(alerts.map(a => a.course).filter(Boolean))];
+
+    uniqueCourses.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.innerText = c;
+        courseSelect.appendChild(opt);
+    });
+}
+
+function updateMetrics(alerts) {
+    let high = 0, mod = 0, low = 0, resolved = 0;
+
+    alerts.forEach(a => {
+        if (a.riskLevel === "High Risk") high++;
+        else if (a.riskLevel === "Moderate Risk") mod++;
+        else low++;
+
+        if (a.interventionStatus === "Resolved") resolved++;
+    });
+
+    document.getElementById("statTotalStudents").innerText = databaseAlerts.length;
+    document.getElementById("statHighRisk").innerText = high;
+    document.getElementById("statModRisk").innerText = mod;
+    document.getElementById("statResolved").innerText = resolved;
+
+    document.getElementById("previewTotal").innerText = alerts.length;
+    document.getElementById("previewHigh").innerText = high;
+    document.getElementById("previewModerate").innerText = mod;
+    document.getElementById("previewLow").innerText = low;
+}
+
+document.getElementById("courseFilter").addEventListener("change", function() {
+    const selected = this.value;
+    const filtered = selected === "all" ? databaseAlerts : databaseAlerts.filter(a => a.course === selected);
+    document.getElementById("previewTitle").innerText = `Cohort Risk Preview (${selected === "all" ? "All Programs" : selected})`;
+    updateMetrics(filtered);
+});
+
+/* ========================== PERSISTENT REPORT HISTORY ========================== */
+function getSavedReports() {
+    const saved = localStorage.getItem(STORAGE_KEY_REPORTS);
+    if (!saved) {
+        const defaultReports = [{
+            id: 1,
+            name: "Comprehensive Risk Audit - All Programs",
+            type: "Academic Risk",
+            reportType: "Academic Risk Assessment Report",
+            course: "all",
+            date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            author: "Administrator"
+        }];
+        localStorage.setItem(STORAGE_KEY_REPORTS, JSON.stringify(defaultReports));
+        return defaultReports;
+    }
+    return JSON.parse(saved);
+}
+
+function renderPersistentReports() {
+    const reports = getSavedReports();
+    const tbody = document.getElementById("reportsTableBody");
+    tbody.innerHTML = '';
+
+    if (reports.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#7d8b9c;">No generated reports in history.</td></tr>';
+        return;
+    }
+
+    reports.forEach(r => {
+        const row = `
+            <tr>
+                <td><strong>${r.name}</strong></td>
+                <td>${r.type}</td>
+                <td>${r.date}</td>
+                <td>${r.author}</td>
+                <td><span class="status ready">Ready</span></td>
+                <td><button class="download-btn" onclick="triggerSpecificExport('${r.reportType}', '${r.course}')">Download</button></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+function saveGeneratedReport(reportObj) {
+    const reports = getSavedReports();
+    reports.unshift(reportObj);
+    localStorage.setItem(STORAGE_KEY_REPORTS, JSON.stringify(reports));
+    renderPersistentReports();
+}
+
+/* ========================== PERSISTENT DOWNLOAD HISTORY ========================== */
+function getSavedDownloads() {
+    const saved = localStorage.getItem(STORAGE_KEY_DOWNLOADS);
+    if (!saved) {
+        const defaultDownloads = [{
+            id: 1,
+            filename: "📊 Master_Academic_Risk_Report.csv",
+            reportType: "Academic Risk Assessment Report",
+            course: "all",
+            date: "Initial Archive"
+        }];
+        localStorage.setItem(STORAGE_KEY_DOWNLOADS, JSON.stringify(defaultDownloads));
+        return defaultDownloads;
+    }
+    return JSON.parse(saved);
+}
+
+function renderPersistentDownloads() {
+    const downloads = getSavedDownloads();
+    const list = document.getElementById("historyList");
+    list.innerHTML = '';
+
+    if (downloads.length === 0) {
+        list.innerHTML = '<li style="color:#7d8b9c; text-align:center; font-size:13px; cursor:default;">No past downloads logged.</li>';
+        return;
+    }
+
+    downloads.forEach(d => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <div>
+                <div>${d.filename}</div>
+                <small>${d.date}</small>
+            </div>
+            <span style="font-size:12px; color:#36d889; font-weight:700;">Re-export</span>
+        `;
+        li.onclick = () => triggerSpecificExport(d.reportType, d.course);
+        list.appendChild(li);
+    });
+}
+
+function addDownloadHistoryItem(filename, reportType, course) {
+    const downloads = getSavedDownloads();
+    const nowStr = new Date().toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' }) + " • " + new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    
+    downloads.unshift({
+        id: Date.now(),
+        filename: filename,
+        reportType: reportType,
+        course: course,
+        date: nowStr
+    });
+
+    localStorage.setItem(STORAGE_KEY_DOWNLOADS, JSON.stringify(downloads.slice(0, 20)));
+    renderPersistentDownloads();
+}
+
+document.getElementById("btnClearHistory").addEventListener("click", () => {
+    if (confirm("Clear local download archive?")) {
+        localStorage.setItem(STORAGE_KEY_DOWNLOADS, JSON.stringify([]));
+        renderPersistentDownloads();
+    }
+});
+
+/* ========================== REPORT-SPECIFIC CSV EXPORTER ========================== */
+function triggerSpecificExport(reportType, selectedCourse) {
+    if (!databaseAlerts || databaseAlerts.length === 0) {
+        alert("No student data available in database.");
+        return;
+    }
+
+    const dataset = selectedCourse === "all" ? databaseAlerts : databaseAlerts.filter(a => a.course === selectedCourse);
+
+    let headers = [];
+    let rows = [];
+
+    if (reportType === "Academic Risk Assessment Report") {
+        headers = [
+            "Student ID", "Student Name", "Course & Section", "GWA (%)", 
+            "Attendance (%)", "Risk Level", "AI Confidence Score", "Status", "Date Assessed"
+        ];
+        rows = dataset.map(a => [
+            `"${a.studentNo || 'Pending'}"`,
+            `"${a.studentName || 'Anonymous'}"`,
+            `"${(a.course && a.section) ? `${a.course} ${a.section}` : (a.course || 'N/A')}"`,
+            a.gwa ?? 0,
+            a.attendance ?? 0,
+            `"${a.riskLevel || 'Low Risk'}"`,
+            `${a.confidenceScore ?? 0}%`,
+            `"${a.interventionStatus || 'Pending Action'}"`,
+            `"${new Date(a.timestamp).toLocaleDateString()}"`
+        ]);
+
+    } else if (reportType === "Institutional Performance Summary") {
+        headers = [
+            "Student ID", "Student Name", "Course", "Section", "GWA (%)", 
+            "Academic Standing", "Attendance Rate (%)", "Date Assessed"
+        ];
+        rows = dataset.map(a => [
+            `"${a.studentNo || 'Pending'}"`,
+            `"${a.studentName || 'Anonymous'}"`,
+            `"${a.course || 'N/A'}"`,
+            `"${a.section || 'N/A'}"`,
+            a.gwa ?? 0,
+            `"${(a.gwa >= 75) ? 'Passing / Good Standing' : 'Deficient / Probation'}"`,
+            `${a.attendance ?? 0}%`,
+            `"${new Date(a.timestamp).toLocaleDateString()}"`
+        ]);
+
+    } else if (reportType === "Intervention & Advising Audit") {
+        headers = [
+            "Student ID", "Student Name", "Course & Section", "Risk Level", 
+            "Intervention Status", "Adviser Action Required", "Last Updated"
+        ];
+        rows = dataset.map(a => {
+            const risk = a.riskLevel || 'Low Risk';
+            let action = "Routine Academic Monitoring";
+            if (risk === "High Risk") action = "Immediate 1-on-1 Faculty Advising & Counseling";
+            else if (risk === "Moderate Risk") action = "Peer Tutoring / Study Group Referral";
+
+            return [
+                `"${a.studentNo || 'Pending'}"`,
+                `"${a.studentName || 'Anonymous'}"`,
+                `"${(a.course && a.section) ? `${a.course} ${a.section}` : (a.course || 'N/A')}"`,
+                `"${risk}"`,
+                `"${a.interventionStatus || 'Pending Action'}"`,
+                `"${action}"`,
+                `"${new Date(a.timestamp).toLocaleDateString()}"`
+            ];
+        });
+
+    } else if (reportType === "External Factor Correlation Report") {
+        headers = [
+            "Student ID", "Student Name", "Course", "Mental Health (0-3)", 
+            "Financial Strain (0-3)", "Family Problems (0-3)", "Working Student (0-2)", 
+            "Commute Level (0-3)", "Primary Risk Category"
+        ];
+        rows = dataset.map(a => [
+            `"${a.studentNo || 'Pending'}"`,
+            `"${a.studentName || 'Anonymous'}"`,
+            `"${a.course || 'N/A'}"`,
+            a.Mental_Health_Score ?? a.mentalHealth ?? 0,
+            a.Financial_Instability ?? a.financial ?? 0,
+            a.Family_Problems ?? a.familyProblems ?? 0,
+            a.Working_Status ?? a.workingStatus ?? 0,
+            a.Commute_Level ?? a.commute ?? 0,
+            `"${a.riskLevel || 'Low Risk'}"`
+        ]);
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    const safeType = reportType.replace(/\s+/g, '_');
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `AkademikoAI_${safeType}_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    addDownloadHistoryItem(`📊 ${safeType}.csv`, reportType, selectedCourse);
+}
+
+document.getElementById("btnExportCSV").addEventListener("click", () => {
+    const reportType = document.getElementById("reportType").value;
+    const selectedCourse = document.getElementById("courseFilter").value;
+    triggerSpecificExport(reportType, selectedCourse);
+});
+
+/* ========================== EXPORT PDF / PRINT ========================== */
+document.getElementById("btnExportPDF").addEventListener("click", function() {
+    const reportType = document.getElementById("reportType").value;
+    const selectedCourse = document.getElementById("courseFilter").value;
+    window.print();
+    addDownloadHistoryItem(`📄 Printable_${reportType.split(" ")[0]}.pdf`, reportType, selectedCourse);
+});
+
+/* ========================== GENERATE CUSTOM REPORT ========================== */
+document.getElementById("btnGenerate").addEventListener("click", function() {
+    const reportType = document.getElementById("reportType").value;
+    const year = document.getElementById("academicYear").value;
+    const semester = document.getElementById("semester").value;
+    const course = document.getElementById("courseFilter").value;
+
+    const reportName = `${reportType} - ${course === 'all' ? 'All Programs' : course} (${semester}, ${year})`;
+    const todayStr = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+    saveGeneratedReport({
+        id: Date.now(),
+        name: reportName,
+        type: reportType.split(" ")[0],
+        reportType: reportType,
+        course: course,
+        date: todayStr,
+        author: "Administrator"
+    });
+
+    alert(`Report generated: "${reportName}" added to persistent history.`);
+});
+
+/* ========================== SEARCH GENERATED REPORTS ========================== */
+document.getElementById("reportSearch").addEventListener("keyup", function() {
+    const val = this.value.toLowerCase();
+    document.querySelectorAll("#reportsTableBody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(val) ? "" : "none";
+    });
+});
+
+/* ========================== LOGOUT & UTILS ========================== */
+const today = new Date();
+document.getElementById("updatedDate").innerHTML = "Updated: " + today.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+document.querySelector('a[href="login.html"]').addEventListener("click", function(e) {
+    e.preventDefault();
+    if (confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem("akademiko_logged_in");
+        localStorage.removeItem("akademiko_email");
+        window.location.href = "../auth/login.html";
+    }
+});
+
+window.onload = () => {
+    syncAdminSidebar();
+    loadReportsData();
+};
+</script>
+</body>
+</html>

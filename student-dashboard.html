@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AkademikoAI | Student Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#0e1b2b;
+color:white;
+display:flex;
+}
+
+/* ===========================
+SIDEBAR
+=========================== */
+
+.sidebar{
+width:250px;
+height:100vh;
+background:#0a1624;
+border-right:1px solid rgba(255,255,255,.05);
+position:fixed;
+left:0;
+top:0;
+padding:25px 18px;
+overflow-y:auto;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:35px;
+}
+
+.logo-box{
+width:42px;
+height:42px;
+background:linear-gradient(135deg,#46d9d7,#39d37b);
+border-radius:12px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-weight:800;
+color:#102233;
+}
+
+.logo h2{
+font-size:24px;
+font-weight:800;
+}
+
+.logo span{
+color:#35d784;
+}
+
+.sidebar-title{
+margin-top:30px;
+margin-bottom:10px;
+font-size:12px;
+color:#7e8b9b;
+font-weight:700;
+text-transform:uppercase;
+}
+
+.menu{
+list-style:none;
+}
+
+.menu li{
+margin-bottom:8px;
+}
+
+.menu a{
+display:flex;
+align-items:center;
+gap:12px;
+padding:14px 15px;
+text-decoration:none;
+color:#b4bec9;
+border-radius:10px;
+transition:.3s;
+}
+
+.menu a:hover{
+background:#16263a;
+}
+
+.menu .active{
+background:#24c87d;
+color:#0f2234;
+font-weight:700;
+}
+
+.profile-mini{
+margin-top:35px;
+padding:16px;
+background:#16263a;
+border-radius:14px;
+text-align:center;
+}
+
+.profile-mini .avatar{
+width:56px;
+height:56px;
+border-radius:50%;
+background:linear-gradient(135deg,#46d9d7,#39d37b);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+color:#102233;
+font-size:20px;
+margin:0 auto 10px;
+}
+
+.profile-mini h4{
+font-size:14px;
+}
+
+.profile-mini p{
+font-size:12px;
+color:#8793a0;
+margin-top:2px;
+}
+
+/* ===========================
+MAIN CONTENT
+=========================== */
+
+.main{
+margin-left:250px;
+width:calc(100% - 250px);
+padding:30px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+flex-wrap:wrap;
+gap:15px;
+}
+
+.header h1{
+font-size:36px;
+font-weight:800;
+}
+
+.header p{
+color:#8e99a5;
+margin-top:6px;
+}
+
+.live{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.live-badge{
+background:#0a6d9d;
+padding:8px 16px;
+border-radius:25px;
+font-size:13px;
+font-weight:600;
+color:#74d8ff;
+}
+
+.updated{
+color:#94a0ab;
+font-size:14px;
+}
+
+.save-btn{
+background:linear-gradient(135deg,#46d9d7,#39d37b);
+border:none;
+color:#0f2234;
+font-weight:700;
+padding:12px 22px;
+border-radius:12px;
+cursor:pointer;
+font-size:14px;
+transition:.2s;
+}
+
+.save-btn:hover{
+transform:translateY(-2px);
+}
+
+.toast{
+position:fixed;
+top:25px;
+right:25px;
+background:#182636;
+border:1px solid #38d889;
+color:#c6ffe2;
+padding:14px 20px;
+border-radius:12px;
+font-size:14px;
+font-weight:600;
+opacity:0;
+pointer-events:none;
+transition:.3s;
+z-index:99;
+}
+
+.toast.show{
+opacity:1;
+transform:translateY(6px);
+}
+
+/* ===========================
+PANELS / GRID
+=========================== */
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+margin-bottom:20px;
+}
+
+.panel{
+background:#182636;
+border-radius:18px;
+padding:24px;
+border:1px solid rgba(255,255,255,.06);
+}
+
+.panel-title{
+font-size:15px;
+font-weight:700;
+margin-bottom:20px;
+color:#c6d0da;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.panel-sub{
+font-size:12px;
+color:#7d8994;
+margin-top:-14px;
+margin-bottom:20px;
+}
+
+/* ===========================
+FORM FIELDS
+=========================== */
+
+.field{
+margin-bottom:16px;
+}
+
+.field label{
+display:block;
+font-size:13px;
+color:#93a0ac;
+margin-bottom:8px;
+font-weight:600;
+}
+
+.field input,
+.field select{
+width:100%;
+padding:13px 15px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,.08);
+background:#0e1b2b;
+color:white;
+outline:none;
+font-size:14px;
+transition:.2s;
+}
+
+.field input:focus,
+.field select:focus{
+border-color:#39d37b;
+}
+
+.field input::placeholder{
+color:#5c6773;
+}
+
+.row-2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
+
+/* ===========================
+FACTOR RADIO GROUPS
+=========================== */
+
+.factor{
+margin-bottom:26px;
+padding-bottom:22px;
+border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.factor:last-child{
+border-bottom:none;
+margin-bottom:0;
+padding-bottom:0;
+}
+
+.factor-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:6px;
+}
+
+.factor-top .fname{
+font-size:14px;
+font-weight:600;
+color:#dbe3ea;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.factor-top .fval{
+font-size:12px;
+font-weight:700;
+padding:4px 12px;
+border-radius:20px;
+background:#0e1b2b;
+color:#7d8994;
+}
+
+.factor-desc{
+font-size:12px;
+color:#7d8994;
+margin-bottom:14px;
+}
+
+.radio-options{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.radio-option{
+position:relative;
+}
+
+.radio-option input[type="radio"]{
+position:absolute;
+opacity:0;
+width:100%;
+height:100%;
+margin:0;
+cursor:pointer;
+}
+
+.radio-option label{
+display:inline-block;
+padding:10px 18px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,.1);
+background:#0e1b2b;
+color:#a9b4bf;
+font-size:13px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+user-select:none;
+}
+
+.radio-option input[type="radio"]:hover + label{
+border-color:#39d37b88;
+color:#dbe3ea;
+}
+
+.radio-option input[type="radio"]:checked + label{
+background:var(--sev-color, #39d37b);
+border-color:var(--sev-color, #39d37b);
+color:#0f2234;
+}
+
+.other-factor{
+display:flex;
+gap:10px;
+margin-top:22px;
+}
+
+.other-factor input{
+flex:1;
+}
+
+.add-btn{
+background:#223244;
+border:none;
+color:#c4ced8;
+padding:0 18px;
+border-radius:10px;
+cursor:pointer;
+font-weight:700;
+}
+
+.add-btn:hover{
+background:#27384b;
+}
+
+.chips{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:12px;
+}
+
+.chip{
+background:#0e1b2b;
+border:1px solid rgba(255,255,255,.08);
+padding:8px 14px;
+border-radius:20px;
+font-size:12px;
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.chip button{
+background:none;
+border:none;
+color:#ff7378;
+cursor:pointer;
+font-size:14px;
+font-weight:700;
+}
+
+/* ===========================
+SUMMARY CARD
+=========================== */
+
+.summary-score{
+text-align:center;
+padding:20px 0;
+}
+
+.summary-score h2{
+font-size:52px;
+font-weight:800;
+}
+
+.summary-score p{
+color:#8e99a5;
+margin-top:6px;
+font-size:14px;
+}
+
+.level-badge{
+display:inline-block;
+margin-top:14px;
+padding:8px 20px;
+border-radius:25px;
+font-weight:700;
+font-size:13px;
+}
+
+textarea{
+width:100%;
+padding:13px 15px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,.08);
+background:#0e1b2b;
+color:white;
+outline:none;
+font-size:14px;
+resize:vertical;
+min-height:90px;
+font-family:'Inter',sans-serif;
+}
+
+textarea:focus{
+border-color:#39d37b;
+}
+
+.footer-note{
+font-size:12px;
+color:#5c6773;
+margin-top:10px;
+line-height:1.6;
+}
+
+@media(max-width:900px){
+.sidebar{display:none;}
+.main{margin-left:0;width:100%;}
+.grid{grid-template-columns:1fr;}
+.row-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===========================
+SIDEBAR
+=========================== -->
+<div class="sidebar">
+
+<div class="logo">
+<div class="logo-box">Ak</div>
+<h2>Akademiko<span>AI</span></h2>
+</div>
+
+<div class="sidebar-title">Dashboard</div>
+<ul class="menu">
+<li><a href="student-dashboard.html" class="active">🏠 My Dashboard</a></li>
+<li><a href="#">📚 My Grades</a></li>
+<li><a href="#">📅 Attendance</a></li>
+<li><a href="#">🔔 Notifications</a></li>
+</ul>
+
+<div class="sidebar-title">Account</div>
+<ul class="menu">
+<li><a href="#">⚙ Settings</a></li>
+<li><a href="login.html">🚪 Logout</a></li>
+</ul>
+
+<div class="profile-mini">
+<div class="avatar" id="avatarInitials">--</div>
+<h4 id="miniName">No name set</h4>
+<p id="miniId">No student no.</p>
+</div>
+
+</div>
+
+<!-- ===========================
+MAIN
+=========================== -->
+<div class="main">
+
+<div class="header">
+<div>
+<h1>My Academic Profile</h1>
+<p>Help us understand your situation better so we can support you early.</p>
+</div>
+
+<div class="live">
+<div class="live-badge">● Profile Private</div>
+<div class="updated" id="updatedDate">Not saved yet</div>
+<button class="save-btn" id="saveBtn">💾 Save Profile</button>
+</div>
+</div>
+
+<div class="grid">
+
+<!-- PERSONAL INFO -->
+<div class="panel">
+<div class="panel-title">👤 Personal Information</div>
+<div class="panel-sub">Basic details used to identify your student profile.</div>
+
+<div class="row-2">
+<div class="field">
+<label>Full Name</label>
+<input type="text" id="fullName" placeholder="e.g. Juan Dela Cruz">
+</div>
+<div class="field">
+<label>Student No.</label>
+<input type="text" id="studentNo" placeholder="e.g. 2024-00123">
+</div>
+</div>
+
+<div class="field">
+<label>Email Address</label>
+<input type="email" id="email" placeholder="e.g. juan.delacruz@udm.edu.ph">
+</div>
+
+<div class="row-2">
+<div class="field">
+<label>Course / Program</label>
+<input type="text" id="course" placeholder="e.g. BEED, BSED Math">
+</div>
+<div class="field">
+<label>Year & Section</label>
+<input type="text" id="section" placeholder="e.g. 3A">
+</div>
+</div>
+
+<div class="row-2">
+<div class="field">
+<label>City / Municipality</label>
+<input type="text" id="city" placeholder="e.g. Manila">
+</div>
+<div class="field">
+<label>Province</label>
+<input type="text" id="province" placeholder="e.g. Metro Manila">
+</div>
+</div>
+
+<div class="row-2">
+    <div class="field">
+        <label>Attendance Rate (%)</label>
+        <input type="number" id="attendanceInput" placeholder="e.g. 85" min="0" max="100" step="1">
+    </div>
+    <div class="field">
+        <label>Current GWA / Grade Percentage</label>
+        <input type="number" id="gwaInput" placeholder="e.g. 88.5" min="0" max="100" step="0.1">
+    </div>
+</div>
+
+</div>
+
+<!-- SUMMARY -->
+<div class="panel">
+<div class="panel-title">📊 Wellbeing Snapshot</div>
+<div class="panel-sub">A quick overview based on the factors you shared.</div>
+
+<div class="summary-score">
+<h2 id="scoreValue" class="green">0</h2>
+<p>Composite External Risk Score</p>
+<div class="level-badge" id="levelBadge" style="background:#38d88933;color:#38d889;">Low Impact</div>
+</div>
+
+<div class="footer-note">
+This score is a self-reported indicator only, not a diagnosis. It's meant to help advisers reach out earlier if you're struggling. You control what you share.
+</div>
+</div>
+
+</div>
+
+<!-- EXTERNAL FACTORS -->
+<div class="panel" style="margin-bottom:20px;">
+<div class="panel-title">🧩 External Factors Affecting My Studies</div>
+<div class="panel-sub">Select the option that best describes your current situation for each factor.</div>
+
+<div id="factorsContainer"></div>
+
+<div class="other-factor">
+<input type="text" id="otherFactorInput" placeholder="Add another factor not listed above...">
+<button class="add-btn" id="addFactorBtn">+ Add</button>
+</div>
+
+<div class="chips" id="customChips"></div>
+</div>
+
+<!-- NOTES -->
+<div class="panel">
+<div class="panel-title">📝 Additional Notes (Optional)</div>
+<div class="panel-sub">Anything else you'd like your adviser to know? This is kept confidential.</div>
+<textarea id="notes" placeholder="Share anything relevant — this helps your adviser understand your context better..."></textarea>
+</div>
+
+</div>
+
+<div class="toast" id="toast">✔ Profile saved successfully</div>
+
+<script>
+
+/* ==========================
+   SEVERITY COLOR SCALE
+========================== */
+function colorForIndex(index, total){
+  if(total <= 1) return "#38d889";
+  const ratio = index / (total - 1);
+  if(ratio >= 0.75) return "#ff5c63";
+  if(ratio >= 0.4) return "#ffb22d";
+  return "#38d889";
+}
+
+const defaultFactors = [
+  { id:"mental_health", name:"Mental Health", icon:"🧠", desc:"How much is your mental/emotional wellbeing affecting your studies right now?", options:["Not affected","Mildly affected","Moderately affected","Severely affected"] },
+  { id:"financial", name:"Financial Instability", icon:"💸", desc:"How difficult is it to afford tuition, materials, transportation, or daily needs?", options:["Not a concern","Occasional difficulty","Frequent difficulty","Severe difficulty"] },
+  { id:"family_problems", name:"Family Problems", icon:"🏠", desc:"Conflict, instability, or responsibilities at home affecting your studies.", options:["None","Occasional","Frequent","Ongoing / Severe"] },
+  { id:"course_mismatch", name:"Course Mismatch", icon:"🎓", desc:"Does your current program fit your interests and strengths?", options:["Good fit","Somewhat mismatched","Considering shifting","Strongly mismatched"] },
+  { id:"health", name:"Physical Health", icon:"🩺", desc:"Illness, fatigue, or medical conditions affecting attendance or focus.", options:["Good health","Occasional issues","Manageable chronic condition","Frequent / serious illness"] },
+  { id:"working_student", name:"Working Student Status", icon:"💼", desc:"Are you currently balancing a job alongside your academic responsibilities?", options:["Not Employed","Part Time Employed","Full Time Employed"] },
+  { id:"social", name:"Social / Peer Issues", icon:"🤝", desc:"Difficulty connecting with classmates, isolation, or peer conflict.", options:["None","Mild","Moderate","Severe / Isolated"] },
+  { id:"commute", name:"Commute / Distance", icon:"🚌", desc:"Typical one-way travel time to and from school.", options:["Under 30 mins","30 mins – 1 hour","1 – 2 hours","Over 2 hours"] }
+];
+
+const defaultCustomOptions = ["Not affecting me","Mildly affecting me","Moderately affecting me","Severely affecting me"];
+let customFactors = [];
+
+const container = document.getElementById("factorsContainer");
+const chips = document.getElementById("customChips");
+
+function renderFactor(factor){
+  const wrap = document.createElement("div");
+  wrap.className = "factor";
+  wrap.dataset.id = factor.id;
+
+  const optionsHTML = factor.options.map((opt, idx) => {
+    const color = colorForIndex(idx, factor.options.length);
+    const inputId = `opt-${factor.id}-${idx}`;
+    return `
+      <div class="radio-option" style="--sev-color:${color};">
+        <input type="radio" name="factor-${factor.id}" id="${inputId}" value="${idx}">
+        <label for="${inputId}">${opt}</label>
+      </div>
+    `;
+  }).join("");
+
+  wrap.innerHTML = `
+    <div class="factor-top">
+      <div class="fname">${factor.icon || "📌"} ${factor.name}</div>
+      <div class="fval" id="val-${factor.id}">Not answered</div>
+    </div>
+    <div class="factor-desc">${factor.desc || "Custom factor you added."}</div>
+    <div class="radio-options">${optionsHTML}</div>
+  `;
+
+  container.appendChild(wrap);
+
+  const valDisplay = wrap.querySelector(`#val-${factor.id}`);
+  const radios = wrap.querySelectorAll(`input[name="factor-${factor.id}"]`);
+
+  radios.forEach(radio => {
+    radio.addEventListener("change", function(){
+      const idx = Number(this.value);
+      const color = colorForIndex(idx, factor.options.length);
+      valDisplay.innerText = factor.options[idx];
+      valDisplay.style.color = color;
+      valDisplay.style.background = color + "22";
+      updateScore();
+    });
+  });
+}
+
+defaultFactors.forEach(renderFactor);
+
+document.getElementById("addFactorBtn").addEventListener("click", addCustomFactor);
+document.getElementById("otherFactorInput").addEventListener("keyup", function(e){
+  if(e.key === "Enter") addCustomFactor();
+});
+
+function addCustomFactor(){
+  const input = document.getElementById("otherFactorInput");
+  const name = input.value.trim();
+  if(!name) return;
+
+  const id = "custom_" + Date.now();
+  const factor = { id, name, icon:"➕", desc:"Custom factor you added.", options: defaultCustomOptions.slice() };
+  customFactors.push(factor);
+  renderFactor(factor);
+
+  const chip = document.createElement("div");
+  chip.className = "chip";
+  chip.innerHTML = `${name} <button data-id="${id}">✕</button>`;
+  chips.appendChild(chip);
+
+  chip.querySelector("button").addEventListener("click", function(){
+    document.querySelector(`.factor[data-id="${id}"]`).remove();
+    chip.remove();
+    customFactors = customFactors.filter(f => f.id !== id);
+    updateScore();
+  });
+
+  input.value = "";
+  updateScore();
+}
+
+function updateScore(){
+  const allFactors = [...defaultFactors, ...customFactors];
+  let sumRatio = 0;
+  let answeredCount = 0;
+
+  allFactors.forEach(factor => {
+    const checked = document.querySelector(`input[name="factor-${factor.id}"]:checked`);
+    if(checked){
+      const idx = Number(checked.value);
+      const maxIdx = factor.options.length - 1;
+      sumRatio += maxIdx === 0 ? 0 : idx / maxIdx;
+      answeredCount++;
+    }
+  });
+
+  const pct = answeredCount === 0 ? 0 : Math.round((sumRatio / answeredCount) * 100);
+  const scoreEl = document.getElementById("scoreValue");
+  const badge = document.getElementById("levelBadge");
+
+  scoreEl.innerText = pct;
+
+  if(pct >= 60){
+    scoreEl.style.color = "#ff6666";
+    badge.style.background = "#ff5c6333";
+    badge.style.color = "#ff7378";
+    badge.innerText = "High Impact";
+  } else if(pct >= 30){
+    scoreEl.style.color = "#ffb22d";
+    badge.style.background = "#ffb22d33";
+    badge.style.color = "#ffbc3b";
+    badge.innerText = "Moderate Impact";
+  } else {
+    scoreEl.style.color = "#38d889";
+    badge.style.background = "#38d88933";
+    badge.style.color = "#38d889";
+    badge.innerText = "Low Impact";
+  }
+}
+
+const fullNameInput = document.getElementById("fullName");
+const studentNoInput = document.getElementById("studentNo");
+
+function updateMiniProfile(){
+  const name = fullNameInput.value.trim();
+  const sid = studentNoInput.value.trim();
+
+  document.getElementById("miniName").innerText = name || "No name set";
+  document.getElementById("miniId").innerText = sid || "No student no.";
+
+  const initials = name
+    ? name.split(" ").filter(Boolean).slice(0,2).map(w => w[0].toUpperCase()).join("")
+    : "--";
+
+  document.getElementById("avatarInitials").innerText = initials;
+}
+
+fullNameInput.addEventListener("input", updateMiniProfile);
+studentNoInput.addEventListener("input", updateMiniProfile);
+
+function collectData(){
+  const answers = {};
+  [...defaultFactors, ...customFactors].forEach(factor => {
+    const checked = document.querySelector(`input[name="factor-${factor.id}"]:checked`);
+    if(checked){ answers[factor.id] = Number(checked.value); }
+  });
+
+  return {
+    fullName: document.getElementById("fullName").value,
+    studentNo: document.getElementById("studentNo").value,
+    email: document.getElementById("email").value,
+    course: document.getElementById("course").value,
+    section: document.getElementById("section").value,
+    city: document.getElementById("city").value,
+    province: document.getElementById("province").value,
+    notes: document.getElementById("notes").value,
+    attendance: document.getElementById("attendanceInput").value,
+    gwa: document.getElementById("gwaInput").value,
+    customFactors,
+    answers,
+    savedAt: new Date().toISOString()
+  };
+}
+
+function showToast(){
+  const toast = document.getElementById("toast");
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+document.getElementById("saveBtn").addEventListener("click", async function(){
+  const data = collectData();
+  const attendanceVal = parseFloat(document.getElementById("attendanceInput").value) || 0;
+  const gwaVal = parseFloat(document.getElementById("gwaInput").value) || 0;
+  const loggedInEmail = localStorage.getItem("akademiko_email");
+
+  const payload = {
+    studentName: data.fullName || "Anonymous Student",
+    studentNo: data.studentNo || "Pending ID",
+    email: loggedInEmail, // Forces it to use the authenticated account email
+    course: data.course || "N/A",
+    section: data.section || "N/A",
+    city: data.city || "", 
+    province: data.province || "",
+    notes: data.notes || "",
+    Mental_Health_Score: data.answers.mental_health || 0,
+    Financial_Instability: data.answers.financial || 0,
+    Family_Problems: data.answers.family_problems || 0,
+    Working_Status: data.answers.working_student || 0,
+    Commute_Level: data.answers.commute || 0,
+    Attendance_Rate: attendanceVal, 
+    GWA_Percentage: gwaVal   
+  };
+
+  try {
+    const response = await fetch('http://localhost:8080/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    document.getElementById("updatedDate").innerText = "Saved: " + new Date().toLocaleString();
+    
+    const badge = document.getElementById("levelBadge");
+    badge.innerText = `${result.predicted_risk} (${result.confidence_score}%)`;
+    
+    if(result.predicted_risk === "High Risk") {
+        badge.style.background = "#ff5c6333";
+        badge.style.color = "#ff7378";
+    } else if (result.predicted_risk === "Moderate Risk") {
+        badge.style.background = "#ffb22d33";
+        badge.style.color = "#ffbc3b";
+    } else {
+        badge.style.background = "#38d88933";
+        badge.style.color = "#38d889";
+    }
+
+    showToast();
+  } catch (error) {
+    console.error("Failed to reach AI:", error);
+    alert("Error connecting to the Akademiko AI engine.");
+  }
+});
+
+async function loadData() {
+    // Session Check
+    if (localStorage.getItem("akademiko_logged_in") !== "true") {
+        window.location.href = "../auth/login.html";
+        return;
+    }
+
+    const userEmail = localStorage.getItem("akademiko_email");
+    if (!userEmail) return;
+
+    // Auto-fill and lock the email field
+    const emailField = document.getElementById("email");
+    emailField.value = userEmail;
+    emailField.readOnly = true;
+    emailField.style.opacity = "0.7";
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/student/${userEmail}`);
+        const result = await response.json();
+
+        if (!result.success || !result.profile) return;
+
+        const saved = result.profile;
+
+        document.getElementById("fullName").value = saved.studentName || "";
+        document.getElementById("studentNo").value = saved.studentNo || "";
+        document.getElementById("course").value = saved.course || "";
+        document.getElementById("section").value = saved.section || "";
+        document.getElementById("attendanceInput").value = saved.attendance || "";
+        document.getElementById("gwaInput").value = saved.gwa || "";
+
+        if (saved.timestamp) {
+            document.getElementById("updatedDate").innerText =
+                "Saved: " + new Date(saved.timestamp).toLocaleString("en-US", { month:"short", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
+        }
+
+        updateMiniProfile();
+        updateScore();
+
+    } catch (error) {
+        console.log("No existing profile found yet for this account (Normal for new users).");
+    }
+}
+
+document.querySelector('a[href="login.html"]').addEventListener("click", function(e){
+    e.preventDefault();
+    if(confirm("Are you sure you want to logout?")){
+        localStorage.removeItem("akademiko_logged_in");
+        localStorage.removeItem("akademiko_email");
+        window.location.href = "../auth/login.html";
+    }
+});
+
+// Run initialization on page load
+window.onload = function() {
+    loadData();
+    updateScore();
+};
+</script>

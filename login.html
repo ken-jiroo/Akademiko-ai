@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkademikoAI - Login</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Inter',sans-serif;
+        }
+
+        body{
+            background:#0f2234;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            color:white;
+        }
+
+        .container{
+            width:100%;
+            max-width:550px;
+            padding:20px;
+            text-align:center;
+        }
+
+        /* Logo */
+
+        .logo{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+            margin-bottom:35px;
+        }
+
+        .logo-icon{
+            width:58px;
+            height:58px;
+            border-radius:15px;
+            background:linear-gradient(135deg,#4ad4d9,#45d178);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-weight:800;
+            color:#102333;
+            font-size:28px;
+        }
+
+        .logo h2{
+            font-size:30px;
+            font-weight:800;
+        }
+
+        .logo span{
+            color:#36d889;
+        }
+
+        /* Heading */
+
+        h1{
+            font-size:60px;
+            line-height:1;
+            font-weight:800;
+            margin-bottom:20px;
+        }
+
+        .subtitle{
+            color:#a9b4bf;
+            font-size:24px;
+            margin-bottom:45px;
+        }
+
+        /* Switch */
+
+        .switch{
+            width:340px;
+            margin:0 auto 45px;
+            background:#1b2d40;
+            padding:7px;
+            border-radius:40px;
+            display:flex;
+            border:1px solid rgba(255,255,255,.08);
+        }
+
+        .switch button{
+            flex:1;
+            border:none;
+            background:transparent;
+            color:#b6c1cc;
+            padding:14px;
+            border-radius:30px;
+            font-size:20px;
+            cursor:pointer;
+            font-weight:600;
+            transition:.25s ease;
+        }
+
+        /* Hover state (only applies to the button that ISN'T active) */
+        .switch button:hover:not(.active){
+            background:rgba(54,216,137,.15);
+            color:#36d889;
+            transform:translateY(-1px);
+        }
+
+        .switch .active{
+            background:#36d889;
+            color:#102333;
+        }
+
+        /* Card */
+
+        .login-card{
+
+            background:#1b2d40;
+            padding:40px;
+            border-radius:22px;
+            border:1px solid rgba(255,255,255,.06);
+
+        }
+
+        .form-group{
+            text-align:left;
+            margin-bottom:25px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:10px;
+            color:#b8c3cf;
+            font-size:14px;
+            font-weight:600;
+            letter-spacing:1px;
+        }
+
+        input{
+            width:100%;
+            height:58px;
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,.08);
+            background:#2a3949;
+            color:white;
+            font-size:17px;
+            padding:0 18px;
+            outline:none;
+        }
+
+        input::placeholder{
+            color:#8e99a4;
+        }
+
+        input:focus{
+            border-color:#36d889;
+        }
+
+        .login-btn{
+
+            width:100%;
+            height:60px;
+            border:none;
+            border-radius:14px;
+            background:linear-gradient(90deg,#39d68b,#2cb672);
+            color:#102333;
+            font-size:24px;
+            font-weight:700;
+            cursor:pointer;
+            margin-top:10px;
+            transition:.2s ease;
+
+        }
+
+        .login-btn:hover{
+            opacity:.95;
+            transform:translateY(-1px);
+        }
+
+        .footer{
+            margin-top:28px;
+            color:#8f9aa4;
+            font-size:17px;
+        }
+
+        .footer a{
+            color:#36d889;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        @media(max-width:768px){
+
+            h1{
+                font-size:42px;
+            }
+
+            .subtitle{
+                font-size:18px;
+            }
+
+            .switch{
+                width:100%;
+            }
+
+            .login-card{
+                padding:25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Logo -->
+
+    <div class="logo">
+
+        <div class="logo-icon">Ak</div>
+
+        <h2>Akademiko<span>AI</span></h2>
+
+    </div>
+
+    <!-- Heading -->
+
+    <h1>
+        Academic Risk,<br>
+        Detected Early.
+    </h1>
+
+    <p class="subtitle">
+        Deep learning-powered platform for early identification of at-risk CED students.
+    </p>
+
+    <!-- User Switch -->
+
+    <div class="switch">
+
+        <button id="adminToggle" class="active">Faculty</button>
+
+        <button id="studentToggle">Student</button>
+
+    </div>
+
+    <!-- Login Card -->
+
+    <div class="login-card">
+
+        <div class="form-group">
+
+            <label>EMAIL ADDRESS</label>
+
+            <input
+                type="email"
+                id="emailInput"
+                placeholder="Enter your institutional email">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>PASSWORD</label>
+
+            <input
+                type="password"
+                id="passwordInput"
+                placeholder="Enter your password">
+
+        </div>
+
+        <button class="login-btn" id="loginBtn">
+            Sign In to Akademiko AI
+        </button>
+
+        <div class="footer">
+
+            Forgot password?
+            <a href="#">Contact your system adminstrator</a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* ==========================
+   ROLE TOGGLE (Administrator / Student)
+========================== */
+
+const adminToggle = document.getElementById("adminToggle");
+const studentToggle = document.getElementById("studentToggle");
+const loginBtn = document.getElementById("loginBtn");
+
+// Track which role is currently selected. Defaults to "admin" since
+// the Administrator button starts with the .active class in the markup.
+let selectedRole = "admin";
+
+adminToggle.addEventListener("click", function(){
+    selectedRole = "admin";
+    adminToggle.classList.add("active");
+    studentToggle.classList.remove("active");
+});
+
+studentToggle.addEventListener("click", function(){
+    selectedRole = "student";
+    studentToggle.classList.add("active");
+    adminToggle.classList.remove("active");
+});
+
+/* ==========================
+   LOGIN BUTTON
+========================== */
+
+loginBtn.addEventListener("click", async function(){
+    const email = document.getElementById("emailInput").value;
+    const password = document.getElementById("passwordInput").value;
+
+    if(email === "" || password === ""){
+        alert("Please enter your email and password.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:8080/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, role: selectedRole })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Clear any old student profile data from previous sessions
+            localStorage.removeItem("akademikoai_student_profile");
+            
+            localStorage.setItem("akademiko_logged_in", "true");
+            localStorage.setItem("akademiko_role", result.role);
+            localStorage.setItem("akademiko_email", email); // Save logged-in email
+
+            if(result.role === "admin"){
+                window.location.href = "../admin/admin-dashboard.html";
+            } else {
+                window.location.href = "../student/student-dashboard.html";
+            }
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error("Login connection error:", error);
+        alert("Could not connect to the server.");
+    }
+});
+
+</script>
+
+</body>
+</html>
