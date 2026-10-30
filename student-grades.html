@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AkademikoAI | My Academic Grade Breakdown</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Shared Theme & Layout Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/student-dashboard.css">
+  
+  <script src="../assets/js/route-guard.js"></script>
+  <script src="../assets/js/theme.js"></script>
+
+  <style>
+    .grade-overview-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .overview-card {
+      background: var(--bg-panel, #162232);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .overview-card small {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted, #a9b4bf);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .overview-card h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+    }
+    .overview-card p {
+      margin: 4px 0 0 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .assessment-cluster-card {
+      background: var(--bg-panel, #162232);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .cluster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 10px;
+    }
+    .cluster-header h3 {
+      margin: 0;
+      font-size: 15px;
+      color: #4ad4d9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cluster-weight-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #36d889;
+      background: rgba(54, 216, 137, 0.12);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .score-items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    .score-tile {
+      background: var(--bg-input, #1e2c3c);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.06));
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      transition: transform 0.15s ease;
+    }
+    .score-tile .item-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .score-tile .item-points {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .score-tile .item-pct {
+      font-size: 11px;
+      font-weight: 700;
+      color: #36d889;
+    }
+    .score-tile.ungraded {
+      opacity: 0.55;
+      background: rgba(0,0,0,0.15);
+    }
+    .score-tile.ungraded .item-points {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .standing-banner {
+      background: rgba(54, 216, 137, 0.08);
+      border: 1px solid rgba(54, 216, 137, 0.25);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .standing-banner.danger {
+      background: rgba(255, 92, 99, 0.08);
+      border-color: rgba(255, 92, 99, 0.3);
+    }
+    .standing-banner.warning {
+      background: rgba(255, 178, 45, 0.08);
+      border-color: rgba(255, 178, 45, 0.3);
+    }
+    .print-slip-btn {
+      background: #4ad4d9;
+      color: #102233;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .print-slip-btn:hover {
+      background: #36d889;
+      transform: translateY(-1px);
+    }
+
+    /* =================== FEATURE 1: PRINT / PDF STYLING =================== */
+    .print-only-header {
+      display: none;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #102233 !important;
+        font-size: 12pt;
+      }
+      .sidebar, .live, .theme-toggle-btn, .print-slip-btn, #logoutBtn {
+        display: none !important;
+      }
+      .main {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .print-only-header {
+        display: block !important;
+        text-align: center;
+        border-bottom: 2px solid #102233;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+      }
+      .print-only-header h2 {
+        margin: 0;
+        font-size: 18pt;
+        letter-spacing: 1px;
+        color: #102233;
+      }
+      .print-only-header h4 {
+        margin: 4px 0;
+        font-size: 12pt;
+        color: #445566;
+      }
+      .print-only-header p {
+        margin: 0;
+        font-size: 10pt;
+        color: #667788;
+      }
+      .header h1 {
+        font-size: 16pt !important;
+        color: #102233 !important;
+      }
+      .header p {
+        display: none;
+      }
+      .standing-banner {
+        border: 1px solid #999 !important;
+        background: #f8f9fa !important;
+        color: #102233 !important;
+      }
+      .standing-banner h4, .standing-banner p {
+        color: #102233 !important;
+      }
+      .grade-overview-cards {
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+      }
+      .overview-card, .assessment-cluster-card, .score-tile {
+        background: #ffffff !important;
+        border: 1px solid #ccc !important;
+        color: #102233 !important;
+        box-shadow: none !important;
+      }
+      .overview-card h2, .score-tile .item-points, .cluster-header h3 {
+        color: #102233 !important;
+      }
+      .cluster-weight-tag {
+        border: 1px solid #102233 !important;
+        background: transparent !important;
+        color: #102233 !important;
+      }
+      .score-tile.ungraded {
+        opacity: 0.7;
+        background: #fafafa !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- PRINT ONLY INSTITUTIONAL HEADER -->
+<div class="print-only-header">
+  <h2>UNIVERSIDAD DE MANILA</h2>
+  <h4>COLLEGE OF EDUCATION • ACADEMIC EVALUATION SYSTEM</h4>
+  <p>Official Formative Midterm Grade Breakdown & Progressive Risk Slip</p>
+</div>
+
+<!-- =========================== SIDEBAR =========================== -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-box">Ak</div>
+    <h2>Akademiko<span>AI</span></h2>
+  </div>
+
+  <div class="sidebar-title">Student Portal</div>
+  <ul class="menu">
+    <li><a href="student-dashboard.html"> My Profile & Survey</a></li>
+    <li><a href="student-grades.html" class="active"> My Grades & Breakdown</a></li>
+    <li><a href="student-notifications.html"> Grade Notices & Alerts</a></li>
+  </ul>
+
+  <div class="sidebar-title">Account</div>
+  <ul class="menu">
+    <li><a href="login.html" id="logoutBtn"> Logout</a></li>
+  </ul>
+
+  <div class="profile-mini">
+    <div class="avatar" id="avatarInitials">--</div>
+    <h4 id="miniName">Student</h4>
+    <p id="miniId">--</p>
+  </div>
+</div>
+
+<!-- =========================== MAIN =========================== -->
+<div class="main">
+  <div class="header">
+    <div>
+      <h1>Academic Progress & Itemized Gradebook</h1>
+      <p>Official read-only breakdown of your formative assessments recorded by your course faculty.</p>
+    </div>
+
+    <div class="live">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+      
+      <!-- FEATURE 1: PRINT / PDF BUTTON -->
+      <button class="print-slip-btn" id="btnPrintSlip" title="Print or save official grade slip as PDF">
+         Print / Save PDF
+      </button>
+
+      <div class="live-badge" style="color:#36d889;">● Official Record Verified</div>
+      <div class="updated" id="updatedDate">Loading...</div>
+    </div>
+  </div>
+
+  <!-- STANDING BANNER -->
+  <div class="standing-banner" id="standingBanner">
+    <div>
+      <h4 style="margin:0 0 2px 0; font-size:14px; color:#36d889;" id="standingBannerTitle">Status: Regular Standing</h4>
+      <p style="margin:0; font-size:12px; color:var(--text-muted);" id="standingBannerDesc">
+        Your current running average is in good standing. Keep up your active course participation.
+      </p>
+    </div>
+    <span class="level-badge" id="standingBadge" style="background:#38d88933; color:#38d889; font-size:12px;">Low Risk</span>
+  </div>
+
+  <!-- TOP SUMMARY CARDS -->
+  <div class="grade-overview-cards">
+    <div class="overview-card">
+      <small>Running Weighted GWA</small>
+      <h2 style="color:#36d889;" id="cardRunningGwa">0.0%</h2>
+      <p>Based on assessments administered so far</p>
+    </div>
+    <div class="overview-card">
+      <small>Recorded Attendance Rate</small>
+      <h2 style="color:#4ad4d9;" id="cardAttendance">0%</h2>
+      <p>Verified classroom participation rate</p>
+    </div>
+    <div class="overview-card">
+      <small>Enrolled Block</small>
+      <h2 style="color:var(--text-primary); font-size:20px;" id="cardCourseSec">--</h2>
+      <p id="cardStudentNo">Student ID: --</p>
+    </div>
+  </div>
+
+  <!-- CLUSTER 1: QUIZZES -->
+  <div class="assessment-cluster-card">
+    <div class="cluster-header">
+      <h3>📝 Quizzes & Knowledge Checks</h3>
+      <span class="cluster-weight-tag">Formative Evaluation</span>
+    </div>
+    <div class="score-items-grid" id="quizzesGrid">
+      <div class="score-tile ungraded"><span class="item-title">Quiz 1</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Quiz 2</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Quiz 3</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Quiz 4</span><div class="item-points">Not Graded</div></div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 2: PRACTICAL ACTIVITIES / LABS -->
+  <div class="assessment-cluster-card">
+    <div class="cluster-header">
+      <h3>🎯 Practical Activities & Class Outputs</h3>
+      <span class="cluster-weight-tag">Hands-on Tasks</span>
+    </div>
+    <div class="score-items-grid" id="activitiesGrid">
+      <div class="score-tile ungraded"><span class="item-title">Activity 1</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Activity 2</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Activity 3</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Activity 4</span><div class="item-points">Not Graded</div></div>
+    </div>
+  </div>
+
+  <!-- CLUSTER 3: PROJECTS & MAJOR EXAMS -->
+  <div class="assessment-cluster-card">
+    <div class="cluster-header">
+      <h3>🔬 Projects & Major Term Examinations</h3>
+      <span class="cluster-weight-tag">Summative Assessments</span>
+    </div>
+    <div class="score-items-grid" id="projectsExamsGrid">
+      <div class="score-tile ungraded"><span class="item-title">Project 1</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Project 2</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Midterm Exam</span><div class="item-points">Not Graded</div></div>
+      <div class="score-tile ungraded"><span class="item-title">Final Exam</span><div class="item-points">Not Graded</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+if (localStorage.getItem("akademiko_logged_in") !== "true") {
+  window.location.href = "../auth/login.html";
+}
+
+const studentEmail = localStorage.getItem("akademiko_email") || "";
+
+// Print button handler
+document.getElementById("btnPrintSlip").addEventListener("click", () => {
+  window.print();
+});
+
+function renderScoreTile(title, item, defaultTotal = 50) {
+  if (!item || item.score === null || item.score === undefined || isNaN(item.score)) {
+    return `
+      <div class="score-tile ungraded">
+        <span class="item-title">${title}</span>
+        <div class="item-points">Pending</div>
+        <span class="item-pct" style="color:var(--text-muted); font-size:10px;">Awaiting Scoring</span>
+      </div>
+    `;
+  }
+
+  const total = item.total || defaultTotal;
+  const pct = Math.round((item.score / total) * 100);
+  const color = pct < 75 ? "#ff5c63" : "#36d889";
+
+  return `
+    <div class="score-tile">
+      <span class="item-title">${title}</span>
+      <div class="item-points">${item.score} <small style="font-size:11px; color:var(--text-muted);">/ ${total}</small></div>
+      <span class="item-pct" style="color:${color}; font-weight:700;">${pct}%</span>
+    </div>
+  `;
+}
+
+async function loadStudentGrades() {
+  try {
+    const res = await fetch(`http://localhost:8080/api/student/class-record/${encodeURIComponent(studentEmail)}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      console.warn("Could not load class record data.");
+      return;
+    }
+
+    // Mini profile update
+    const name = data.studentName || "Student";
+    document.getElementById("miniName").innerText = name;
+    document.getElementById("miniId").innerText = data.studentNo || "--";
+    
+    const initials = name.split(" ").filter(Boolean).map(n => n[0]).slice(0, 2).join("").toUpperCase();
+    document.getElementById("avatarInitials").innerText = initials || "ST";
+
+    // Overview cards
+    const gwa = data.gwa ?? 0;
+    const att = data.attendance ?? 0;
+    const gwaEl = document.getElementById("cardRunningGwa");
+    gwaEl.innerText = `${gwa}%`;
+    gwaEl.style.color = (gwa > 0 && gwa < 75) ? "#ff5c63" : "#36d889";
+
+    document.getElementById("cardAttendance").innerText = `${att}%`;
+    document.getElementById("cardCourseSec").innerText = `${data.course || 'BSED'} ${data.section || '3A'}`;
+    document.getElementById("cardStudentNo").innerText = `Student ID: ${data.studentNo || '--'}`;
+
+    // Standing banner
+    const banner = document.getElementById("standingBanner");
+    const bannerTitle = document.getElementById("standingBannerTitle");
+    const bannerDesc = document.getElementById("standingBannerDesc");
+    const badge = document.getElementById("standingBadge");
+    const risk = data.riskLevel || "Low Risk";
+
+    badge.innerText = risk;
+
+    if (risk === "High Risk" || (gwa > 0 && gwa < 75)) {
+      banner.className = "standing-banner danger";
+      bannerTitle.innerText = "⚠️ Attention Needed: Academic Risk Notice";
+      bannerTitle.style.color = "#ff5c63";
+      bannerDesc.innerText = "Your current running scores indicate potential academic difficulty. We recommend contacting your faculty adviser for consultation.";
+      badge.style.background = "#ff5c6333";
+      badge.style.color = "#ff5c63";
+    } else if (risk === "Moderate Risk" || (gwa >= 75 && gwa < 78)) {
+      banner.className = "standing-banner warning";
+      bannerTitle.innerText = "Notice: Close Academic Monitoring";
+      bannerTitle.style.color = "#ffb22d";
+      bannerDesc.innerText = "You are currently near the threshold. Ensure you submit all upcoming activities and maintain good attendance.";
+      badge.style.background = "#ffb22d33";
+      badge.style.color = "#ffb22d";
+    } else {
+      banner.className = "standing-banner";
+      bannerTitle.innerText = "Status: Regular Passing Standing";
+      bannerTitle.style.color = "#36d889";
+      bannerDesc.innerText = "Your current running scores are on track. Keep up your active course participation.";
+      badge.style.background = "#38d88933";
+      badge.style.color = "#38d889";
+    }
+
+    // Populate Itemized Grids
+    const rec = data.classRecord || {};
+
+    // Quizzes (1 to 4)
+    const quizzesGrid = document.getElementById("quizzesGrid");
+    quizzesGrid.innerHTML = [
+      renderScoreTile("Quiz 1", rec.quizzes?.[0], 20),
+      renderScoreTile("Quiz 2", rec.quizzes?.[1], 20),
+      renderScoreTile("Quiz 3", rec.quizzes?.[2], 25),
+      renderScoreTile("Quiz 4", rec.quizzes?.[3], 30)
+    ].join("");
+
+    // Activities (1 to 4)
+    const activitiesGrid = document.getElementById("activitiesGrid");
+    activitiesGrid.innerHTML = [
+      renderScoreTile("Activity 1", rec.activities?.[0], 50),
+      renderScoreTile("Activity 2", rec.activities?.[1], 50),
+      renderScoreTile("Activity 3", rec.activities?.[2], 50),
+      renderScoreTile("Activity 4", rec.activities?.[3], 50)
+    ].join("");
+
+    // Projects & Exams
+    const projectsExamsGrid = document.getElementById("projectsExamsGrid");
+    projectsExamsGrid.innerHTML = [
+      renderScoreTile("Project 1", rec.projects?.[0], 100),
+      renderScoreTile("Project 2", rec.projects?.[1], 100),
+      renderScoreTile("Midterm Exam", rec.exams?.[0], 100),
+      renderScoreTile("Final Exam", rec.exams?.[1], 100)
+    ].join("");
+
+  } catch (err) {
+    console.error("Error loading student grades:", err);
+  }
+}
+
+document.getElementById("logoutBtn").onclick = (e) => {
+  e.preventDefault();
+  if (confirm("Logout of Student Portal?")) {
+    localStorage.removeItem("akademiko_logged_in");
+    localStorage.removeItem("akademiko_email");
+    window.location.href = "../auth/login.html";
+  }
+};
+
+const today = new Date();
+document.getElementById("updatedDate").innerHTML = "Term: " + today.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+
+window.onload = loadStudentGrades;
+</script>
+</body>
+</html>

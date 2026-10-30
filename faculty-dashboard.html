@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AkademikoAI | Faculty Class Record & Grades</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Modular Asset Pipeline -->
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/admin-shared.css">
+
+  <script src="../assets/js/route-guard.js"></script>
+  <script src="../assets/js/theme.js"></script>
+
+  <style>
+    .faculty-badge {
+      background: rgba(54, 216, 137, 0.15);
+      color: #36d889;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .weight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .weight-box {
+      background: var(--bg-input, #1e2c3c);
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+    }
+    .weight-box label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted, #a9b4bf);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .weight-box input {
+      width: 100%;
+      height: 38px;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 700;
+      border-radius: 8px;
+    }
+    .calc-banner {
+      background: rgba(54, 216, 137, 0.1);
+      border: 1px solid rgba(54, 216, 137, 0.25);
+      padding: 12px 16px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .calc-banner h4 {
+      margin: 0;
+      color: #36d889;
+      font-size: 14px;
+    }
+    .calc-banner span {
+      font-size: 20px;
+      font-weight: 800;
+      color: #36d889;
+    }
+    .sortable-th {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s ease;
+    }
+    .sortable-th:hover {
+      color: #36d889 !important;
+    }
+    .filter-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      background: var(--bg-input, #1e2c3c);
+      color: var(--text-primary, #ffffff);
+      transition: all 0.15s ease;
+    }
+    .filter-btn.active {
+      background: #36d889 !important;
+      color: #102233 !important;
+      border-color: #36d889 !important;
+    }
+    .section-select-pill {
+      background: var(--bg-input, #1e2c3c);
+      color: #36d889;
+      border: 1px solid rgba(54, 216, 137, 0.4);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+    .trend-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-left: 6px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .trend-pill:hover {
+      transform: scale(1.05);
+    }
+    .trend-improved {
+      background: rgba(54, 216, 137, 0.15);
+      color: #36d889;
+      border: 1px solid rgba(54, 216, 137, 0.3);
+    }
+    .trend-regressed {
+      background: rgba(255, 92, 99, 0.15);
+      color: #ff5c63;
+      border: 1px solid rgba(255, 92, 99, 0.3);
+    }
+    .trend-stable {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- =========================== SIDEBAR =========================== -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-box">Ak</div>
+    <h2>Akademiko<span>AI</span></h2>
+  </div>
+
+  <div class="admin-mini-profile">
+    <img src="https://ui-avatars.com/api/?name=Faculty&background=223244&color=36d889" id="facultyPhoto" alt="Avatar">
+    <div class="admin-mini-info">
+      <h4 id="facultyName">Faculty Instructor</h4>
+      <span class="faculty-badge" id="facultyDept">Department</span>
+    </div>
+  </div>
+
+  <div class="sidebar-title">Faculty Portal</div>
+  <ul class="menu">
+    <li><a href="faculty-dashboard.html" class="active"> Class Roster & Grades</a></li>
+    <li><a href="faculty-class-record.html"> Granular Class Record</a></li>
+    <li><a href="#" id="openWeightModalBtn"> Grading Criteria</a></li>
+    <li><a href="#" id="openNotifModalBtn"> Advisory Alerts <span id="sidebarNotifBadge" style="background:#ff5c63; color:white; border-radius:10px; padding:1px 6px; font-size:10px; display:none;">0</span></a></li>
+    <li><a href="login.html" id="logoutBtn"> Logout</a></li>
+  </ul>
+</div>
+
+<!-- =========================== MAIN =========================== -->
+<div class="main">
+  <div class="header">
+    <div>
+      <h1>Class Record & Grade Manager</h1>
+      <p>Official grade sheet for your designated section with longitudinal risk trajectory.</p>
+    </div>
+    <div class="live">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+
+      <!-- Section Switcher in case Faculty teaches multiple blocks -->
+      <select class="section-select-pill" id="sectionSelector" title="Current Assigned Section">
+        <option value="3A">Section 3A</option>
+        <option value="3B">Section 3B</option>
+        <option value="3C">Section 3C</option>
+      </select>
+
+      <button class="add-btn" id="btnOpenCsvModal" style="background:#4ad4d9; color:#102233; font-weight:700; border:none;">📥 Import CSV Scores</button>
+      <button class="add-btn" id="openHeaderNotifBtn" style="background:var(--bg-input); color:var(--text-primary); border:1px solid var(--border-color); position:relative;">
+        🔔 Advisories <span id="headerNotifBadge" style="background:#ff5c63; color:white; border-radius:50%; padding:2px 6px; font-size:11px; margin-left:4px; display:none;">0</span>
+      </button>
+      <button class="add-btn" id="btnHeaderWeights" style="background:var(--bg-input); color:var(--text-primary); border:1px solid var(--border-color);">⚙️ Edit Weights</button>
+      <div class="updated" id="updatedDate">Loading...</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="cards">
+    <div class="card"><small>Assigned Students</small><h2 class="blue" id="statTotal">0</h2><p id="sectionSubLabel">In your assigned block</p></div>
+    <div class="card"><small>High Risk Cases</small><h2 class="red" id="statHigh">0</h2><p>GWA &lt; 75% or flagged</p></div>
+    <div class="card"><small>Moderate Risk</small><h2 class="orange" id="statModerate">0</h2><p>Needs monitoring</p></div>
+    <div class="card"><small>Good Standing</small><h2 class="green" id="statLow">0</h2><p>Regular / Passing</p></div>
+  </div>
+
+  <!-- ROSTER TABLE PANEL -->
+  <div class="panel">
+    <div class="table-header" style="flex-wrap:wrap; gap:12px;">
+      <h2>Enrolled Section Roster</h2>
+      <div class="controls" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <input type="text" class="search-box" id="rosterSearch" placeholder="Search student name or ID..." style="width: 230px;">
+        <div class="filters" style="display:flex; gap:6px;">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="high" style="color:#ff5c63;">High Risk</button>
+          <button class="filter-btn" data-filter="mod" style="color:#ffb22d;">Moderate</button>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable-th" onclick="sortTable('studentNo')">Student No. <span id="sort_studentNo">⬍</span></th>
+          <th class="sortable-th" onclick="sortTable('studentName')">Student Name <span id="sort_studentName">⬍</span></th>
+          <th>Program & Section</th>
+          <th class="sortable-th" onclick="sortTable('attendance')">Attendance (%) <span id="sort_attendance">⬍</span></th>
+          <th class="sortable-th" onclick="sortTable('gwa')">Official GWA (%) <span id="sort_gwa">⬍</span></th>
+          <th>Risk Level & Trajectory</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="rosterTableBody">
+        <tr>
+          <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading department roster...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- =========================== MODAL 1: GRADING CRITERIA WEIGHTS =========================== -->
+<div class="modal" id="weightModal">
+  <div class="modal-content" style="width: 520px;">
+    <h3>Custom Syllabus Grade Weights</h3>
+    <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">
+      Set your preferred percentage distribution. Total must equal 100%. Any component can be 0%.
+    </p>
+
+    <div class="weight-grid">
+      <div class="weight-box">
+        <label>Quizzes (%)</label>
+        <input type="number" id="wtQuiz" min="0" max="100" value="20">
+      </div>
+      <div class="weight-box">
+        <label>Activities (%)</label>
+        <input type="number" id="wtAct" min="0" max="100" value="20">
+      </div>
+      <div class="weight-box">
+        <label>Projects (%)</label>
+        <input type="number" id="wtProj" min="0" max="100" value="20">
+      </div>
+      <div class="weight-box">
+        <label>Major Exams (%)</label>
+        <input type="number" id="wtExam" min="0" max="100" value="30">
+      </div>
+      <div class="weight-box">
+        <label>Attendance (%)</label>
+        <input type="number" id="wtAtt" min="0" max="100" value="10">
+      </div>
+    </div>
+
+    <p style="font-size:12px; font-weight:700; color:var(--text-muted);" id="weightSumNotice">Total: 100%</p>
+
+    <div class="modal-actions" style="margin-top:20px;">
+      <button class="cancel-btn" id="closeWeightModalBtn">Cancel</button>
+      <button class="submit-btn" id="saveWeightsBtn">Save Criteria</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 2: CONNECTED CLASS RECORD SUMMARY =========================== -->
+<div class="modal" id="editGradeModal">
+  <div class="modal-content" style="width: 580px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="margin:0;">Class Record & Term Grade Summary</h3>
+      <a href="faculty-class-record.html" style="font-size:12px; color:#4ad4d9; text-decoration:none; font-weight:700;">Open Detailed Gradebook ↗</a>
+    </div>
+    <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
+      Student: <strong id="modalStudentName" style="color:var(--text-primary);">--</strong>
+    </p>
+
+    <h4 style="font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-secondary); margin-bottom:8px;">
+      Calculated Component Percentages (From Formative Gradebook)
+    </h4>
+    <div class="weight-grid">
+      <div class="weight-box">
+        <label id="lblQuiz">Quizzes (20%)</label>
+        <input type="text" id="dispQuizPct" readonly style="background:var(--bg-subtle, rgba(0,0,0,0.25)); color:#36d889; cursor:default;" value="--">
+      </div>
+      <div class="weight-box">
+        <label id="lblAct">Activities (20%)</label>
+        <input type="text" id="dispActPct" readonly style="background:var(--bg-subtle, rgba(0,0,0,0.25)); color:#36d889; cursor:default;" value="--">
+      </div>
+      <div class="weight-box">
+        <label id="lblProj">Projects (20%)</label>
+        <input type="text" id="dispProjPct" readonly style="background:var(--bg-subtle, rgba(0,0,0,0.25)); color:#36d889; cursor:default;" value="--">
+      </div>
+      <div class="weight-box">
+        <label id="lblExam">Exams (30%)</label>
+        <input type="text" id="dispExamPct" readonly style="background:var(--bg-subtle, rgba(0,0,0,0.25)); color:#36d889; cursor:default;" value="--">
+      </div>
+      <div class="weight-box">
+        <label id="lblAtt">Attendance (10%)</label>
+        <input type="number" id="modalAttendance" min="0" max="100" style="color:#4ad4d9; font-weight:700;" placeholder="0">
+      </div>
+    </div>
+
+    <!-- Live Auto-Calculation Banner -->
+    <div class="calc-banner">
+      <div>
+        <h4>Auto-Calculated Running Average</h4>
+        <small style="color:var(--text-muted); font-size:11px;">Aggregated automatically from itemized quizzes, activities, and exams</small>
+      </div>
+      <span id="displayCalculatedGrade">0.0%</span>
+    </div>
+
+    <!-- Official Submitted GWA -->
+    <div class="form-group" style="margin-top:10px;">
+      <label>Official Submitted GWA (%) <span style="font-weight:400; color:var(--text-muted);">(Adjustable for term posting)</span></label>
+      <input type="number" id="modalFinalGwa" min="0" max="100" step="0.1" style="font-weight:800; font-size:18px; color:#36d889;">
+    </div>
+
+    <div class="modal-actions" style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+      <a href="faculty-class-record.html" style="font-size:12px; color:#4ad4d9; font-weight:700; text-decoration:none;">📝 Edit Itemized Scores</a>
+      <div style="display:flex; gap:10px;">
+        <button class="cancel-btn" id="modalCloseBtn">Cancel</button>
+        <button class="submit-btn" id="btnSaveGrade">Post Official Grade</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 3: IN-APP ADVISORY NOTIFICATIONS =========================== -->
+<div class="modal" id="notifModal">
+  <div class="modal-content" style="width: 580px; max-height:85vh;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h3 style="margin:0;">🔔 Section Advisory Notices</h3>
+      <button class="cancel-btn" id="closeNotifModalBtn" style="padding:4px 10px;">✕</button>
+    </div>
+    <div id="facultyNotifList" style="display:flex; flex-direction:column; gap:12px; max-height:60vh; overflow-y:auto; padding-right:5px;">
+      <p style="color:var(--text-muted); text-align:center;">Loading notices...</p>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 4: CSV BATCH SCORE IMPORT =========================== -->
+<div class="modal" id="csvImportModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="width: 540px; background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; padding:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0; color:#4ad4d9; font-size:17px;">📥 Batch Import Section Scores (CSV)</h3>
+      <button class="cancel-btn" id="closeCsvModalBtn" style="padding:4px 10px; cursor:pointer;">✕</button>
+    </div>
+    <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
+      Quickly update attendance and final GWA for your assigned section in bulk.
+    </p>
+
+    <div style="background:rgba(0,0,0,0.25); padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.06);">
+      <small style="color:var(--text-muted); display:block; margin-bottom:4px;">Expected Header Format:</small>
+      <code style="font-size:12px; color:#36d889;">studentNo, attendance, gwa</code>
+      <small style="color:var(--text-muted); display:block; margin-top:6px;">
+        Example row: <span style="color:#ffffff;">23-20-278, 92, 86.5</span>
+      </small>
+    </div>
+
+    <!-- Visible Custom File Upload Dropzone -->
+    <div class="form-group" style="margin-bottom:18px;">
+      <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">Select CSV File</label>
+      <input type="file" id="csvFileInput" accept=".csv" style="display:none;">
+      
+      <div id="csvUploadBox" style="border: 2px dashed rgba(74, 212, 217, 0.4); border-radius: 10px; padding: 22px; text-align: center; cursor: pointer; background: rgba(0,0,0,0.15); transition: all 0.2s ease;">
+        <div style="font-size:26px; margin-bottom:6px;">📄</div>
+        <strong id="csvFileNameDisplay" style="color:#4ad4d9; font-size:13px; display:block;">Click to browse or drop your .CSV file here</strong>
+        <small style="color:var(--text-muted); font-size:11px;">Supports standard CSV exported from Excel</small>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+      <button type="button" id="btnDownloadTemplate" style="background:transparent; border:none; color:#4ad4d9; font-size:12px; cursor:pointer; font-weight:700;">📄 Download Section Template</button>
+      <div style="display:flex; gap:10px;">
+        <button class="cancel-btn" id="cancelCsvBtn" style="padding:8px 14px; border-radius:8px; cursor:pointer;">Cancel</button>
+        <button class="submit-btn" id="btnProcessCsv" style="background:#4ad4d9; color:#102233; font-weight:700; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">Upload & Update Roster</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 5: LONGITUDINAL EVALUATION HISTORY AUDIT =========================== -->
+<div class="modal" id="trajectoryHistoryModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="width: 520px; background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; padding:24px; max-height:80vh; overflow-y:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0; color:#36d889; font-size:16px;">📈 Academic Evaluation History & Trajectory</h3>
+      <button id="closeTrajectoryModalBtn" style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;">✕</button>
+    </div>
+    <p style="color:var(--text-muted); font-size:12px; margin-bottom:14px;">
+      Student: <strong id="historyStudentName" style="color:var(--text-primary);">--</strong>
+    </p>
+
+    <div id="historyTimelineContainer" style="display:flex; flex-direction:column; gap:10px;">
+      <p style="color:var(--text-muted); font-size:12px;">Loading history snapshots...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========================== SESSION GUARD ========================== */
+if (localStorage.getItem("akademiko_logged_in") !== "true") {
+  window.location.href = "../auth/login.html";
+}
+
+const currentEmail = localStorage.getItem("akademiko_email") || "";
+let allLoadedStudents = [];
+let departmentStudents = [];
+let facultyDepartment = "";
+let assignedSection = "3A"; // Defaults to 3A
+let selectedStudent = null;
+
+let currentSortCol = "";
+let isAscending = true;
+let currentFilter = "all";
+
+let facultyWeights = {
+  quiz: 20,
+  act: 20,
+  proj: 20,
+  exam: 30,
+  att: 10
+};
+
+function loadFacultyWeights() {
+  const saved = localStorage.getItem(`syllabus_weights_${currentEmail}`) || localStorage.getItem(`weights_${currentEmail}`);
+  if (saved) {
+    try {
+      facultyWeights = JSON.parse(saved);
+    } catch(e) {}
+  }
+  document.getElementById("wtQuiz").value = facultyWeights.quiz ?? 20;
+  document.getElementById("wtAct").value = facultyWeights.act ?? 20;
+  document.getElementById("wtProj").value = facultyWeights.proj ?? 20;
+  document.getElementById("wtExam").value = facultyWeights.exam ?? 30;
+  document.getElementById("wtAtt").value = facultyWeights.att ?? 10;
+  updateScoreLabels();
+}
+
+function updateScoreLabels() {
+  document.getElementById("lblQuiz").innerText = `Quizzes (${facultyWeights.quiz ?? 20}%)`;
+  document.getElementById("lblAct").innerText = `Activities (${facultyWeights.act ?? 20}%)`;
+  document.getElementById("lblProj").innerText = `Projects (${facultyWeights.proj ?? 20}%)`;
+  document.getElementById("lblExam").innerText = `Exams (${facultyWeights.exam ?? 30}%)`;
+  document.getElementById("lblAtt").innerText = `Attendance (${facultyWeights.att ?? 10}%)`;
+}
+
+// Resilient extraction of section numbers (e.g. "Section 3A", "3-A", " 3A " -> "3A")
+function extractCoreSection(sec) {
+  if (!sec) return "";
+  const match = String(sec).toUpperCase().match(/([0-9]+[A-Z]?|[A-Z][0-9]*)/);
+  return match ? match[0] : String(sec).trim().toUpperCase();
+}
+
+/* ========================== HEADER & ROSTER LOAD ========================== */
+async function loadFacultyHeader() {
+  try {
+    const res = await fetch(`http://localhost:8080/api/faculty/profile/${encodeURIComponent(currentEmail)}`);
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById("facultyName").innerText = data.facultyName || "Faculty Instructor";
+      facultyDepartment = (data.department || "").trim();
+      
+      const serverSec = (data.assignedSection || "").trim();
+      assignedSection = serverSec || "3A";
+
+      const selector = document.getElementById("sectionSelector");
+      if (selector) selector.value = extractCoreSection(assignedSection);
+
+      const badgeText = `${facultyDepartment} • Section ${assignedSection}`;
+      document.getElementById("facultyDept").innerText = badgeText;
+      
+      const sub = document.getElementById("sectionSubLabel");
+      if (sub) sub.innerText = `Enrolled in Section ${assignedSection}`;
+
+      if (data.profilePhoto) document.getElementById("facultyPhoto").src = data.profilePhoto;
+
+      loadFacultyNotifications();
+    }
+  } catch (err) {
+    console.warn("Could not load faculty details:", err);
+  }
+}
+
+async function loadFacultyNotifications() {
+  const list = document.getElementById("facultyNotifList");
+  const hBadge = document.getElementById("headerNotifBadge");
+  const sBadge = document.getElementById("sidebarNotifBadge");
+
+  try {
+    const queryParams = (facultyDepartment && assignedSection)
+      ? `?course=${encodeURIComponent(facultyDepartment)}&section=${encodeURIComponent(assignedSection)}`
+      : "";
+
+    const res = await fetch(`http://localhost:8080/api/faculty/notifications${queryParams}`);
+    const data = await res.json();
+
+    if (data.success && data.notifications && data.notifications.length > 0) {
+      const count = data.notifications.length;
+      hBadge.innerText = count;
+      hBadge.style.display = "inline-block";
+      sBadge.innerText = count;
+      sBadge.style.display = "inline-block";
+
+      list.innerHTML = "";
+      data.notifications.forEach(n => {
+        list.innerHTML += `
+          <div style="background:var(--bg-input, #1e2c3c); padding:14px; border-radius:12px; border-left:4px solid #ff5c63; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <strong style="color:#ff7b80; font-size:14px;">${n.title}</strong>
+              <small style="color:var(--text-muted);">${new Date(n.timestamp).toLocaleDateString()}</small>
+            </div>
+            <p style="font-size:13px; color:var(--text-primary); margin:0 0 8px 0; line-height:1.4;">${n.message}</p>
+            <div style="font-size:11px; color:var(--text-muted);">
+              Student Metrics: <strong>GWA ${n.finalGwa}%</strong> • <strong>Attendance ${n.attendance}%</strong>
+            </div>
+          </div>
+        `;
+      });
+    } else {
+      hBadge.style.display = "none";
+      sBadge.style.display = "none";
+      list.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:25px;">No administrative notices for your section.</p>`;
+    }
+  } catch (err) {
+    console.error("Could not load notifications:", err);
+    list.innerHTML = `<p style="color:#ff6666; text-align:center; padding:20px;">Could not retrieve notices from server.</p>`;
+  }
+}
+
+async function loadDepartmentRoster() {
+  try {
+    await loadFacultyHeader();
+    const res = await fetch('http://localhost:8080/api/alerts');
+    allLoadedStudents = await res.json();
+
+    if (!Array.isArray(allLoadedStudents)) {
+      document.getElementById("rosterTableBody").innerHTML = '<tr><td colspan="7" style="color:#ff6666; text-align:center;">Invalid data returned from database.</td></tr>';
+      return;
+    }
+
+    // Populate available sections dynamically in selector dropdown
+    const availableSections = [...new Set(allLoadedStudents
+      .filter(s => !facultyDepartment || (s.course || "").toLowerCase() === facultyDepartment.toLowerCase())
+      .map(s => extractCoreSection(s.section))
+      .filter(Boolean)
+    )].sort();
+
+    const selector = document.getElementById("sectionSelector");
+    if (selector && availableSections.length > 0) {
+      selector.innerHTML = "";
+      availableSections.forEach(sec => {
+        const opt = document.createElement("option");
+        opt.value = sec;
+        opt.innerText = `Section ${sec}`;
+        if (sec === extractCoreSection(assignedSection)) opt.selected = true;
+        selector.appendChild(opt);
+      });
+    }
+
+    filterStudentsBySection();
+
+  } catch (err) {
+    console.error("Error loading roster:", err);
+    document.getElementById("rosterTableBody").innerHTML = '<tr><td colspan="7" style="color:#ff6666; text-align:center;">Failed to connect to database.</td></tr>';
+  }
+}
+
+function filterStudentsBySection() {
+  const targetCore = extractCoreSection(assignedSection);
+
+  departmentStudents = allLoadedStudents.filter(s => {
+    const studentCourse = (s.course || "").trim();
+    const studentSecCore = extractCoreSection(s.section);
+
+    const courseMatches = !facultyDepartment || studentCourse.toLowerCase() === facultyDepartment.toLowerCase();
+    return courseMatches && (studentSecCore === targetCore || !targetCore);
+  });
+
+  updateStatCards(departmentStudents);
+  applyRosterFilters();
+}
+
+// Section Selector Change Handler
+document.getElementById("sectionSelector").addEventListener("change", function() {
+  assignedSection = this.value;
+  document.getElementById("facultyDept").innerText = `${facultyDepartment} • Section ${assignedSection}`;
+  document.getElementById("sectionSubLabel").innerText = `Enrolled in Section ${assignedSection}`;
+  filterStudentsBySection();
+});
+
+function updateStatCards(students) {
+  let high = 0, mod = 0, low = 0;
+  students.forEach(s => {
+    if (s.riskLevel === "High Risk") high++;
+    else if (s.riskLevel === "Moderate Risk") mod++;
+    else low++;
+  });
+
+  document.getElementById("statTotal").innerText = students.length;
+  document.getElementById("statHigh").innerText = high;
+  document.getElementById("statModerate").innerText = mod;
+  document.getElementById("statLow").innerText = low;
+}
+
+function renderRoster(students) {
+  const tbody = document.getElementById("rosterTableBody");
+  tbody.innerHTML = '';
+
+  if (!students || students.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:25px;">No students found enrolled under ${facultyDepartment} Section ${assignedSection}.</td></tr>`;
+    return;
+  }
+
+  students.forEach(s => {
+    let badgeClass = "success";
+    if (s.riskLevel === "High Risk") badgeClass = "danger";
+    else if (s.riskLevel === "Moderate Risk") badgeClass = "warning";
+
+    const gwaClass = (Number(s.gwa) < 75) ? "color:#ff5c63;" : "color:#36d889;";
+
+    // Feature 1: Longitudinal Trend Badge
+    const trend = s.riskTrend || "Stable";
+    let trendClass = "trend-stable";
+    let trendIcon = "● Stable";
+    if (trend === "Improved") { trendClass = "trend-improved"; trendIcon = "▲ Improved"; }
+    else if (trend === "Regressed") { trendClass = "trend-regressed"; trendIcon = "▼ Regressed"; }
+
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${s.studentNo || "Pending"}</strong></td>
+        <td>${s.studentName || "Anonymous Student"}</td>
+        <td>${s.course || "N/A"} ${s.section || ""}</td>
+        <td><strong>${s.attendance ?? 0}%</strong></td>
+        <td><strong style="${gwaClass}">${s.gwa ?? 0}%</strong></td>
+        <td>
+          <span class="badge ${badgeClass}">${s.riskLevel || "Low Risk"}</span>
+          <span class="trend-pill ${trendClass}" title="Click to view evaluation history" onclick="openTrajectoryModal('${s.studentNo}')">${trendIcon}</span>
+        </td>
+        <td>
+          <button class="action edit" onclick="openClassRecordModal('${s.studentNo}')">📝 Class Record</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+/* ========================== FEATURE 1: TRAJECTORY HISTORY MODAL ========================== */
+const trajectoryModal = document.getElementById("trajectoryHistoryModal");
+document.getElementById("closeTrajectoryModalBtn").onclick = () => trajectoryModal.style.display = "none";
+
+function openTrajectoryModal(studentNo) {
+  const student = departmentStudents.find(s => s.studentNo === studentNo);
+  if (!student) return;
+
+  document.getElementById("historyStudentName").innerText = `${student.studentName} (${student.studentNo})`;
+  const container = document.getElementById("historyTimelineContainer");
+  container.innerHTML = "";
+
+  const history = student.assessmentHistory || [];
+
+  // Add current active snapshot as first entry
+  const activeEntry = `
+    <div style="background:rgba(54, 216, 137, 0.08); border-left:4px solid #36d889; padding:10px 14px; border-radius:8px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+        <strong style="color:#36d889; font-size:12px;">Active Current Evaluation</strong>
+        <small style="color:var(--text-muted);">${new Date(student.timestamp || Date.now()).toLocaleDateString()}</small>
+      </div>
+      <div style="font-size:12px; color:var(--text-primary);">
+        GWA: <strong>${student.gwa ?? 0}%</strong> • Attendance: <strong>${student.attendance ?? 0}%</strong> • Standing: <strong>${student.riskLevel || 'Low Risk'}</strong>
+      </div>
+    </div>
+  `;
+  container.innerHTML += activeEntry;
+
+  if (history.length === 0) {
+    container.innerHTML += `<p style="color:var(--text-muted); font-size:11px; padding:10px 0; margin:0;">No prior evaluation snapshots recorded yet. Longitudinal baseline established.</p>`;
+  } else {
+    history.forEach(h => {
+      const isHigh = h.riskLevel === "High Risk";
+      const color = isHigh ? "#ff5c63" : (h.riskLevel === "Moderate Risk" ? "#ffb22d" : "#4ad4d9");
+      container.innerHTML += `
+        <div style="background:rgba(0,0,0,0.25); border-left:4px solid ${color}; padding:10px 14px; border-radius:8px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <strong style="color:${color}; font-size:12px;">${h.term || 'Prior Assessment'}</strong>
+            <small style="color:var(--text-muted);">${new Date(h.evaluatedAt).toLocaleDateString()}</small>
+          </div>
+          <div style="font-size:12px; color:var(--text-primary);">
+            GWA: <strong>${h.gwa ?? 0}%</strong> • Attendance: <strong>${h.attendance ?? 0}%</strong> • Standing: <strong>${h.riskLevel}</strong>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  trajectoryModal.style.display = "flex";
+}
+
+/* ========================== SORTING & FILTERING LOGIC ========================== */
+function sortTable(column) {
+  const icons = ['studentNo', 'studentName', 'attendance', 'gwa'];
+  icons.forEach(id => {
+    const el = document.getElementById(`sort_${id}`);
+    if (el) el.innerText = '⬍';
+  });
+
+  if (currentSortCol === column) {
+    isAscending = !isAscending;
+  } else {
+    currentSortCol = column;
+    isAscending = true;
+  }
+
+  const activeIcon = document.getElementById(`sort_${column}`);
+  if (activeIcon) activeIcon.innerText = isAscending ? '▲' : '▼';
+
+  departmentStudents.sort((a, b) => {
+    let valA = a[column];
+    let valB = b[column];
+
+    if (column === 'gwa' || column === 'attendance') {
+      valA = Number(valA) || 0;
+      valB = Number(valB) || 0;
+    } else {
+      valA = String(valA || "").toLowerCase();
+      valB = String(valB || "").toLowerCase();
+    }
+
+    if (valA < valB) return isAscending ? -1 : 1;
+    if (valA > valB) return isAscending ? 1 : -1;
+    return 0;
+  });
+
+  applyRosterFilters();
+}
+
+function applyRosterFilters() {
+  const query = (document.getElementById("rosterSearch").value || "").toLowerCase();
+  
+  const filtered = departmentStudents.filter(s => {
+    const matchesSearch = (s.studentName && s.studentName.toLowerCase().includes(query)) ||
+                          (s.studentNo && s.studentNo.toLowerCase().includes(query));
+
+    if (!matchesSearch) return false;
+
+    if (currentFilter === "high") return s.riskLevel === "High Risk";
+    if (currentFilter === "mod") return s.riskLevel === "Moderate Risk";
+    return true;
+  });
+
+  renderRoster(filtered);
+}
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", function() {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    this.classList.add("active");
+    currentFilter = this.getAttribute("data-filter");
+    applyRosterFilters();
+  });
+});
+
+document.getElementById("rosterSearch").addEventListener("keyup", applyRosterFilters);
+
+/* ========================== CONNECTED CLASS RECORD MODAL ========================== */
+const gradeModal = document.getElementById("editGradeModal");
+
+function openClassRecordModal(studentNo) {
+  selectedStudent = departmentStudents.find(s => s.studentNo === studentNo);
+  if (!selectedStudent) return;
+
+  document.getElementById("modalStudentName").innerText = `${selectedStudent.studentName} (${selectedStudent.studentNo})`;
+  
+  const rec = selectedStudent.classRecord || {};
+  const currentAtt = rec.attendanceRate !== undefined ? rec.attendanceRate : (selectedStudent.attendance ?? 0);
+  document.getElementById("modalAttendance").value = currentAtt;
+
+  // Helper: compute actual percentage earned from an array of { score, total }
+  const calcClusterPct = (items) => {
+    if (!items || items.length === 0) return null;
+    let earned = 0, total = 0;
+    items.forEach(i => {
+      if (i.score !== null && i.score !== undefined && !isNaN(i.score) && i.total > 0) {
+        earned += i.score;
+        total += i.total;
+      }
+    });
+    return total > 0 ? parseFloat(((earned / total) * 100).toFixed(1)) : null;
+  };
+
+  const qPct = calcClusterPct(rec.quizzes);
+  const aPct = calcClusterPct(rec.activities);
+  const pPct = calcClusterPct(rec.projects);
+  const ePct = calcClusterPct(rec.exams);
+
+  document.getElementById("dispQuizPct").value = qPct !== null ? `${qPct}%` : "Pending";
+  document.getElementById("dispActPct").value = aPct !== null ? `${aPct}%` : "Pending";
+  document.getElementById("dispProjPct").value = pPct !== null ? `${pPct}%` : "Pending";
+  document.getElementById("dispExamPct").value = ePct !== null ? `${ePct}%` : "Pending";
+
+  // Compute live running average using available components & current syllabus weights
+  let totalWeight = 0;
+  let earnedWeight = 0;
+
+  const wQ = (facultyWeights.quiz ?? 20) / 100;
+  const wA = (facultyWeights.act ?? 20) / 100;
+  const wP = (facultyWeights.proj ?? 20) / 100;
+  const wE = (facultyWeights.exam ?? 30) / 100;
+  const wAtt = (facultyWeights.att ?? 10) / 100;
+
+  if (qPct !== null && wQ > 0) { earnedWeight += qPct * wQ; totalWeight += wQ; }
+  if (aPct !== null && wA > 0) { earnedWeight += aPct * wA; totalWeight += wA; }
+  if (pPct !== null && wP > 0) { earnedWeight += pPct * wP; totalWeight += wP; }
+  if (ePct !== null && wE > 0) { earnedWeight += ePct * wE; totalWeight += wE; }
+  if (currentAtt > 0 && wAtt > 0) { earnedWeight += currentAtt * wAtt; totalWeight += wAtt; }
+
+  const runningAvg = totalWeight > 0 ? parseFloat((earnedWeight / totalWeight).toFixed(1)) : (selectedStudent.gwa ?? 0);
+
+  document.getElementById("displayCalculatedGrade").innerText = `${runningAvg}%`;
+  document.getElementById("modalFinalGwa").value = selectedStudent.gwa || runningAvg;
+
+  gradeModal.style.display = "flex";
+}
+
+document.getElementById("modalCloseBtn").onclick = () => gradeModal.style.display = "none";
+
+// Re-calculate when attendance is edited in this modal
+document.getElementById("modalAttendance").addEventListener("input", function() {
+  const newAtt = parseFloat(this.value) || 0;
+  const qStr = document.getElementById("dispQuizPct").value;
+  const aStr = document.getElementById("dispActPct").value;
+  const pStr = document.getElementById("dispProjPct").value;
+  const eStr = document.getElementById("dispExamPct").value;
+
+  const parseOrNull = (str) => str.includes('%') ? parseFloat(str) : null;
+  const qPct = parseOrNull(qStr);
+  const aPct = parseOrNull(aStr);
+  const pPct = parseOrNull(pStr);
+  const ePct = parseOrNull(eStr);
+
+  const wQ = (facultyWeights.quiz ?? 20) / 100;
+  const wA = (facultyWeights.act ?? 20) / 100;
+  const wP = (facultyWeights.proj ?? 20) / 100;
+  const wE = (facultyWeights.exam ?? 30) / 100;
+  const wAtt = (facultyWeights.att ?? 10) / 100;
+
+  let totalWeight = 0, earned = 0;
+  if (qPct !== null && wQ > 0) { earned += qPct * wQ; totalWeight += wQ; }
+  if (aPct !== null && wA > 0) { earned += aPct * wA; totalWeight += wA; }
+  if (pPct !== null && wP > 0) { earned += pPct * wP; totalWeight += wP; }
+  if (ePct !== null && wE > 0) { earned += ePct * wE; totalWeight += wE; }
+  if (newAtt > 0 && wAtt > 0) { earned += newAtt * wAtt; totalWeight += wAtt; }
+
+  const running = totalWeight > 0 ? parseFloat((earned / totalWeight).toFixed(1)) : 0;
+  document.getElementById("displayCalculatedGrade").innerText = `${running}%`;
+  document.getElementById("modalFinalGwa").value = running;
+});
+
+// Save updated official grade
+document.getElementById("btnSaveGrade").onclick = async () => {
+  if (!selectedStudent) return;
+
+  const attendance = parseFloat(document.getElementById("modalAttendance").value);
+  const finalGwa = parseFloat(document.getElementById("modalFinalGwa").value);
+
+  if (isNaN(attendance) || isNaN(finalGwa)) {
+    alert("Please enter valid numeric values for Attendance and Final GWA.");
+    return;
+  }
+
+  try {
+    const res = await fetch('http://localhost:8080/api/faculty/update-grade', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentNo: selectedStudent.studentNo,
+        attendance: attendance,
+        gwa: finalGwa,
+        facultyEmail: currentEmail
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("✅ Official term grade recorded!");
+      gradeModal.style.display = "none";
+      loadDepartmentRoster();
+    } else {
+      alert("Update failed: " + data.message);
+    }
+  } catch (err) {
+    alert("Failed to communicate with server.");
+  }
+};
+
+/* ========================== CSV BATCH SCORE IMPORT CONTROLS ========================== */
+const csvModal = document.getElementById("csvImportModal");
+const csvFileInput = document.getElementById("csvFileInput");
+const csvUploadBox = document.getElementById("csvUploadBox");
+const csvFileNameDisplay = document.getElementById("csvFileNameDisplay");
+
+document.getElementById("btnOpenCsvModal").onclick = () => {
+  csvModal.style.display = "flex";
+  csvFileInput.value = "";
+  csvFileNameDisplay.innerText = "Click to browse or drop your .CSV file here";
+  csvFileNameDisplay.style.color = "#4ad4d9";
+};
+
+document.getElementById("closeCsvModalBtn").onclick = () => csvModal.style.display = "none";
+document.getElementById("cancelCsvBtn").onclick = () => csvModal.style.display = "none";
+
+csvUploadBox.onclick = () => csvFileInput.click();
+
+csvUploadBox.ondragover = (e) => {
+  e.preventDefault();
+  csvUploadBox.style.borderColor = "#36d889";
+  csvUploadBox.style.background = "rgba(54, 216, 137, 0.08)";
+};
+csvUploadBox.ondragleave = () => {
+  csvUploadBox.style.borderColor = "rgba(74, 212, 217, 0.4)";
+  csvUploadBox.style.background = "rgba(0,0,0,0.15)";
+};
+csvUploadBox.ondrop = (e) => {
+  e.preventDefault();
+  csvUploadBox.style.borderColor = "rgba(74, 212, 217, 0.4)";
+  csvUploadBox.style.background = "rgba(0,0,0,0.15)";
+  if (e.dataTransfer.files.length > 0) {
+    csvFileInput.files = e.dataTransfer.files;
+    showSelectedFile(csvFileInput.files[0]);
+  }
+};
+
+csvFileInput.onchange = () => {
+  if (csvFileInput.files.length > 0) {
+    showSelectedFile(csvFileInput.files[0]);
+  }
+};
+
+function showSelectedFile(file) {
+  csvFileNameDisplay.innerText = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  csvFileNameDisplay.style.color = "#36d889";
+}
+
+// Download template for active section
+document.getElementById("btnDownloadTemplate").onclick = () => {
+  if (departmentStudents.length === 0) {
+    alert("No students currently loaded in your section.");
+    return;
+  }
+
+  let csvContent = "\uFEFFstudentNo,attendance,gwa\r\n";
+  departmentStudents.forEach(s => {
+    csvContent += `${s.studentNo || ''},${s.attendance ?? 85},${s.gwa ?? 82.5}\r\n`;
+  });
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `Section_${assignedSection}_Scores_Template.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+// Process & upload CSV
+document.getElementById("btnProcessCsv").onclick = async () => {
+  if (!csvFileInput.files || csvFileInput.files.length === 0) {
+    alert("Please select or drop a CSV file first.");
+    return;
+  }
+
+  const file = csvFileInput.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    let text = e.target.result;
+    
+    // Strip UTF-8 Byte Order Mark (\uFEFF) from Excel
+    if (text.charCodeAt(0) === 0xFEFF) {
+      text = text.slice(1);
+    }
+
+    const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== "");
+    if (lines.length < 2) {
+      alert("CSV file appears to be empty or missing data rows.");
+      return;
+    }
+
+    const delimiter = lines[0].includes(';') ? ';' : ',';
+    const headers = lines[0].split(delimiter).map(h => h.trim().toLowerCase().replace(/["']/g, ''));
+
+    const idIdx = headers.findIndex(h => h === 'studentno' || h === 'student_no' || h === 'id' || h === 'student id');
+    const attIdx = headers.findIndex(h => h === 'attendance' || h === 'att');
+    const gwaIdx = headers.findIndex(h => h === 'gwa' || h === 'grade');
+
+    if (idIdx === -1 || attIdx === -1 || gwaIdx === -1) {
+      alert("Invalid CSV format. Header row must include 'studentNo', 'attendance', and 'gwa'.");
+      return;
+    }
+
+    const records = [];
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(delimiter).map(p => p.trim().replace(/["']/g, ''));
+      if (parts.length >= 3 && parts[idIdx]) {
+        records.push({
+          studentNo: parts[idIdx],
+          attendance: parseFloat(parts[attIdx]),
+          gwa: parseFloat(parts[gwaIdx])
+        });
+      }
+    }
+
+    if (records.length === 0) {
+      alert("No valid data rows found in the CSV.");
+      return;
+    }
+
+    const btn = document.getElementById("btnProcessCsv");
+    btn.innerText = "Uploading...";
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('http://localhost:8080/api/faculty/batch-update-grades', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ records })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert(`✅ ${data.message}`);
+        csvModal.style.display = "none";
+        loadDepartmentRoster();
+      } else {
+        alert("Batch update failed: " + data.message);
+      }
+    } catch (err) {
+      console.error("Batch update error:", err);
+      alert("Server error uploading batch scores.");
+    } finally {
+      btn.innerText = "Upload & Update Roster";
+      btn.disabled = false;
+    }
+  };
+
+  reader.readAsText(file);
+};
+
+/* ========================== NOTIFICATION MODAL CONTROLS ========================== */
+const notifModal = document.getElementById("notifModal");
+const openNotifModal = () => { loadFacultyNotifications(); notifModal.style.display = "flex"; };
+document.getElementById("openNotifModalBtn").onclick = (e) => { e.preventDefault(); openNotifModal(); };
+document.getElementById("openHeaderNotifBtn").onclick = openNotifModal;
+document.getElementById("closeNotifModalBtn").onclick = () => notifModal.style.display = "none";
+
+/* ========================== WEIGHT MODAL CONTROLS ========================== */
+const weightModal = document.getElementById("weightModal");
+const openWeightModal = () => weightModal.style.display = "flex";
+document.getElementById("openWeightModalBtn").onclick = (e) => { e.preventDefault(); openWeightModal(); };
+document.getElementById("btnHeaderWeights").onclick = openWeightModal;
+document.getElementById("closeWeightModalBtn").onclick = () => weightModal.style.display = "none";
+
+document.getElementById("saveWeightsBtn").onclick = () => {
+  const q = parseFloat(document.getElementById("wtQuiz").value) || 0;
+  const a = parseFloat(document.getElementById("wtAct").value) || 0;
+  const p = parseFloat(document.getElementById("wtProj").value) || 0;
+  const e = parseFloat(document.getElementById("wtExam").value) || 0;
+  const att = parseFloat(document.getElementById("wtAtt").value) || 0;
+
+  const sum = q + a + p + e + att;
+  if (sum !== 100) {
+    alert(`Your criteria weights total ${sum}%, not 100%. Total criteria must sum to exactly 100%. Any component can be 0%.`);
+    return;
+  }
+
+  facultyWeights = { quiz: q, act: a, proj: p, exam: e, att: att };
+  localStorage.setItem(`syllabus_weights_${currentEmail}`, JSON.stringify(facultyWeights));
+  localStorage.setItem(`weights_${currentEmail}`, JSON.stringify(facultyWeights));
+  updateScoreLabels();
+  alert("Grading criteria and syllabus weights saved!");
+  weightModal.style.display = "none";
+};
+
+/* ========================== LOGOUT & UTILS ========================== */
+document.getElementById("logoutBtn").onclick = (e) => {
+  e.preventDefault();
+  if (confirm("Logout of Faculty Portal?")) {
+    localStorage.removeItem("akademiko_logged_in");
+    localStorage.removeItem("akademiko_email");
+    window.location.href = "../auth/login.html";
+  }
+};
+
+const today = new Date();
+document.getElementById("updatedDate").innerHTML = "Updated: " + today.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+
+window.onload = () => {
+  loadFacultyWeights();
+  loadDepartmentRoster();
+};
+</script>
+</body>
+</html>

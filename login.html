@@ -9,215 +9,215 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Inter',sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
-        body{
-            background:#0f2234;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            min-height:100vh;
-            color:white;
+        body {
+            background: #0f2234;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            padding: 20px 0;
         }
 
-        .container{
-            width:100%;
-            max-width:550px;
-            padding:20px;
-            text-align:center;
+        .container {
+            width: 100%;
+            max-width: 550px;
+            padding: 20px;
+            text-align: center;
         }
 
         /* Logo */
-
-        .logo{
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            gap:12px;
-            margin-bottom:35px;
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
         }
 
-        .logo-icon{
-            width:58px;
-            height:58px;
-            border-radius:15px;
-            background:linear-gradient(135deg,#4ad4d9,#45d178);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-weight:800;
-            color:#102333;
-            font-size:28px;
+        .logo-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #4ad4d9, #45d178);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            color: #102333;
+            font-size: 28px;
         }
 
-        .logo h2{
-            font-size:30px;
-            font-weight:800;
+        .logo h2 {
+            font-size: 30px;
+            font-weight: 800;
         }
 
-        .logo span{
-            color:#36d889;
+        .logo span {
+            color: #36d889;
         }
 
         /* Heading */
-
-        h1{
-            font-size:60px;
-            line-height:1;
-            font-weight:800;
-            margin-bottom:20px;
+        h1 {
+            font-size: 52px;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 16px;
         }
 
-        .subtitle{
-            color:#a9b4bf;
-            font-size:24px;
-            margin-bottom:45px;
+        .subtitle {
+            color: #a9b4bf;
+            font-size: 20px;
+            margin-bottom: 35px;
+            line-height: 1.5;
         }
 
-        /* Switch */
-
-        .switch{
-            width:340px;
-            margin:0 auto 45px;
-            background:#1b2d40;
-            padding:7px;
-            border-radius:40px;
-            display:flex;
-            border:1px solid rgba(255,255,255,.08);
+        /* 3-Way Role Switcher */
+        .switch {
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto 35px;
+            background: #1b2d40;
+            padding: 6px;
+            border-radius: 40px;
+            display: flex;
+            gap: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .switch button{
-            flex:1;
-            border:none;
-            background:transparent;
-            color:#b6c1cc;
-            padding:14px;
-            border-radius:30px;
-            font-size:20px;
-            cursor:pointer;
-            font-weight:600;
-            transition:.25s ease;
+        .switch button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #b6c1cc;
+            padding: 12px 10px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .25s ease;
         }
 
-        /* Hover state (only applies to the button that ISN'T active) */
-        .switch button:hover:not(.active){
-            background:rgba(54,216,137,.15);
-            color:#36d889;
-            transform:translateY(-1px);
+        .switch button:hover:not(.active) {
+            background: rgba(54, 216, 137, 0.15);
+            color: #36d889;
+            transform: translateY(-1px);
         }
 
-        .switch .active{
-            background:#36d889;
-            color:#102333;
+        .switch .active {
+            background: #36d889;
+            color: #102333 !important;
+            font-weight: 700;
         }
 
-        /* Card */
-
-        .login-card{
-
-            background:#1b2d40;
-            padding:40px;
-            border-radius:22px;
-            border:1px solid rgba(255,255,255,.06);
-
+        /* Login Card */
+        .login-card {
+            background: #1b2d40;
+            padding: 40px;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
         }
 
-        .form-group{
-            text-align:left;
-            margin-bottom:25px;
+        .form-group {
+            text-align: left;
+            margin-bottom: 22px;
         }
 
-        label{
-            display:block;
-            margin-bottom:10px;
-            color:#b8c3cf;
-            font-size:14px;
-            font-weight:600;
-            letter-spacing:1px;
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b8c3cf;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        input{
-            width:100%;
-            height:58px;
-            border-radius:12px;
-            border:1px solid rgba(255,255,255,.08);
-            background:#2a3949;
-            color:white;
-            font-size:17px;
-            padding:0 18px;
-            outline:none;
+        input {
+            width: 100%;
+            height: 56px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #2a3949;
+            color: white;
+            font-size: 16px;
+            padding: 0 18px;
+            outline: none;
+            transition: border-color .2s ease;
         }
 
-        input::placeholder{
-            color:#8e99a4;
+        input::placeholder {
+            color: #8e99a4;
+            font-size: 15px;
         }
 
-        input:focus{
-            border-color:#36d889;
+        input:focus {
+            border-color: #36d889;
+            background: #2f4052;
         }
 
-        .login-btn{
-
-            width:100%;
-            height:60px;
-            border:none;
-            border-radius:14px;
-            background:linear-gradient(90deg,#39d68b,#2cb672);
-            color:#102333;
-            font-size:24px;
-            font-weight:700;
-            cursor:pointer;
-            margin-top:10px;
-            transition:.2s ease;
-
+        .login-btn {
+            width: 100%;
+            height: 58px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(90deg, #39d68b, #2cb672);
+            color: #102333;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: .2s ease;
         }
 
-        .login-btn:hover{
-            opacity:.95;
-            transform:translateY(-1px);
+        .login-btn:hover {
+            opacity: .95;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(54, 216, 137, 0.25);
         }
 
-        .footer{
-            margin-top:28px;
-            color:#8f9aa4;
-            font-size:17px;
+        .footer {
+            margin-top: 24px;
+            color: #8f9aa4;
+            font-size: 14px;
         }
 
-        .footer a{
-            color:#36d889;
-            text-decoration:none;
-            font-weight:600;
+        .footer a {
+            color: #36d889;
+            text-decoration: none;
+            font-weight: 600;
         }
 
-        @media(max-width:768px){
+        .footer a:hover {
+            text-decoration: underline;
+        }
 
-            h1{
-                font-size:42px;
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 38px;
             }
 
-            .subtitle{
-                font-size:18px;
+            .subtitle {
+                font-size: 16px;
             }
 
-            .switch{
-                width:100%;
+            .switch button {
+                font-size: 14px;
+                padding: 10px 6px;
             }
 
-            .login-card{
-                padding:25px;
+            .login-card {
+                padding: 25px 20px;
             }
-
         }
-
     </style>
-
 </head>
 
 <body>
@@ -225,17 +225,12 @@
 <div class="container">
 
     <!-- Logo -->
-
     <div class="logo">
-
         <div class="logo-icon">Ak</div>
-
         <h2>Akademiko<span>AI</span></h2>
-
     </div>
 
     <!-- Heading -->
-
     <h1>
         Academic Risk,<br>
         Detected Early.
@@ -245,40 +240,34 @@
         Deep learning-powered platform for early identification of at-risk CED students.
     </p>
 
-    <!-- User Switch -->
-
+    <!-- 3-Way Role Switcher -->
     <div class="switch">
-
-        <button id="adminToggle" class="active">Faculty</button>
-
-        <button id="studentToggle">Student</button>
-
+        <button type="button" class="role-btn active" data-role="admin">Admin</button>
+        <button type="button" class="role-btn" data-role="faculty">Faculty</button>
+        <button type="button" class="role-btn" data-role="student">Student</button>
     </div>
 
     <!-- Login Card -->
-
     <div class="login-card">
 
         <div class="form-group">
-
             <label>EMAIL ADDRESS</label>
-
             <input
                 type="email"
                 id="emailInput"
-                placeholder="Enter your institutional email">
-
+                placeholder="Enter your institutional email"
+                autocomplete="username"
+                required>
         </div>
 
         <div class="form-group">
-
             <label>PASSWORD</label>
-
             <input
                 type="password"
                 id="passwordInput"
-                placeholder="Enter your password">
-
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required>
         </div>
 
         <button class="login-btn" id="loginBtn">
@@ -286,10 +275,8 @@
         </button>
 
         <div class="footer">
-
             Forgot password?
-            <a href="#">Contact your system adminstrator</a>
-
+            <a href="#">Contact your system administrator</a>
         </div>
 
     </div>
@@ -297,43 +284,38 @@
 </div>
 
 <script>
-
 /* ==========================
-   ROLE TOGGLE (Administrator / Student)
+   ROLE SELECTION HANDLER
 ========================== */
-
-const adminToggle = document.getElementById("adminToggle");
-const studentToggle = document.getElementById("studentToggle");
-const loginBtn = document.getElementById("loginBtn");
-
-// Track which role is currently selected. Defaults to "admin" since
-// the Administrator button starts with the .active class in the markup.
 let selectedRole = "admin";
+const roleButtons = document.querySelectorAll(".role-btn");
 
-adminToggle.addEventListener("click", function(){
-    selectedRole = "admin";
-    adminToggle.classList.add("active");
-    studentToggle.classList.remove("active");
-});
-
-studentToggle.addEventListener("click", function(){
-    selectedRole = "student";
-    studentToggle.classList.add("active");
-    adminToggle.classList.remove("active");
+roleButtons.forEach(btn => {
+    btn.addEventListener("click", function() {
+        roleButtons.forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+        selectedRole = this.getAttribute("data-role");
+    });
 });
 
 /* ==========================
-   LOGIN BUTTON
+   AUTHENTICATION SUBMISSION
 ========================== */
+const loginBtn = document.getElementById("loginBtn");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
 
-loginBtn.addEventListener("click", async function(){
-    const email = document.getElementById("emailInput").value;
-    const password = document.getElementById("passwordInput").value;
+async function executeLogin() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    if(email === "" || password === ""){
-        alert("Please enter your email and password.");
+    if (!email || !password) {
+        alert("Please enter both your email and password.");
         return;
     }
+
+    loginBtn.innerText = "Authenticating...";
+    loginBtn.disabled = true;
 
     try {
         const response = await fetch('http://localhost:8080/api/login', {
@@ -345,27 +327,35 @@ loginBtn.addEventListener("click", async function(){
         const result = await response.json();
 
         if (result.success) {
-            // Clear any old student profile data from previous sessions
-            localStorage.removeItem("akademikoai_student_profile");
-            
             localStorage.setItem("akademiko_logged_in", "true");
+            localStorage.setItem("akademiko_email", result.email);
             localStorage.setItem("akademiko_role", result.role);
-            localStorage.setItem("akademiko_email", email); // Save logged-in email
 
-            if(result.role === "admin"){
-                window.location.href = "../admin/admin-dashboard.html";
-            } else {
-                window.location.href = "../student/student-dashboard.html";
-            }
+            // Redirect automatically using the route provided by backend/server.js
+            window.location.href = result.redirectUrl || "../admin/admin-dashboard.html";
         } else {
-            alert(result.message);
+            alert(result.message || "Invalid credentials.");
+            loginBtn.innerText = "Sign In to Akademiko AI";
+            loginBtn.disabled = false;
         }
     } catch (error) {
         console.error("Login connection error:", error);
-        alert("Could not connect to the server.");
+        alert("Could not connect to the backend server. Make sure 'node backend/server.js' is running on port 8080.");
+        loginBtn.innerText = "Sign In to Akademiko AI";
+        loginBtn.disabled = false;
     }
-});
+}
 
+loginBtn.addEventListener("click", executeLogin);
+
+// Allow pressing "Enter" on email or password field to submit
+[emailInput, passwordInput].forEach(field => {
+    field.addEventListener("keyup", function(e) {
+        if (e.key === "Enter") {
+            executeLogin();
+        }
+    });
+});
 </script>
 
 </body>

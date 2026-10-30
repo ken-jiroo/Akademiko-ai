@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AkademikoAI | Grade Notices & Advising Status</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/student-dashboard.css">
+  
+  <script src="../assets/js/route-guard.js"></script>
+  <script src="../assets/js/theme.js"></script>
+
+  <style>
+    .notif-card {
+      background: var(--bg-input, #1e2c3c);
+      padding: 22px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .notif-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .notif-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary, #ffffff);
+    }
+    .badge-notified {
+      background: rgba(54, 216, 137, 0.15);
+      color: #36d889;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-pending {
+      background: rgba(255, 178, 45, 0.15);
+      color: #ffb22d;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .scores-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 14px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .score-item {
+      text-align: center;
+    }
+    .score-item small {
+      display: block;
+      color: var(--text-muted, #a9b4bf);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .score-item strong {
+      font-size: 16px;
+      color: var(--text-primary, #ffffff);
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-box">Ak</div>
+    <h2>Akademiko<span>AI</span></h2>
+  </div>
+
+  <div class="sidebar-title">Student Portal</div>
+  <ul class="menu">
+    <li><a href="student-dashboard.html"> My Profile & Survey</a></li>
+    <li><a href="student-grades.html"> My Grades & Breakdown</a></li>
+    <li><a href="student-notifications.html" class="active"> Grade Notices & Alerts</a></li>
+  </ul>
+
+  <div class="sidebar-title">Account</div>
+  <ul class="menu">
+    <li><a href="login.html" id="logoutBtn">🚪 Logout</a></li>
+  </ul>
+
+  <div class="profile-mini">
+    <div class="avatar" id="avatarInitials">--</div>
+    <h4 id="miniName">Student</h4>
+    <p id="miniId">--</p>
+  </div>
+</div>
+
+<div class="main">
+  <div class="header">
+    <div>
+      <h1>Academic Grade Notices & Advising Status</h1>
+      <p>Official grades recorded by your faculty adviser, breakdown components, and counseling alerts.</p>
+    </div>
+
+    <div class="live">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+      <div class="live-badge">● Authorized View</div>
+      <div class="updated" id="updatedDate">Loading...</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div id="notifListContainer">
+      <p style="color:var(--text-muted); text-align:center; padding: 30px;">Loading notices...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+if (localStorage.getItem("akademiko_logged_in") !== "true") {
+  window.location.href = "../auth/login.html";
+}
+
+const currentEmail = localStorage.getItem("akademiko_email") || "";
+
+async function loadMiniProfile() {
+  if (!currentEmail) return;
+  try {
+    const res = await fetch(`http://localhost:8080/api/student/${encodeURIComponent(currentEmail)}`);
+    const data = await res.json();
+    if (data.success && data.profile) {
+      const name = data.profile.studentName || "Student";
+      document.getElementById("miniName").innerText = name;
+      document.getElementById("miniId").innerText = data.profile.studentNo || "--";
+      const initials = name.split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+      document.getElementById("avatarInitials").innerText = initials || "--";
+    }
+  } catch (err) {
+    console.warn("Could not load mini profile:", err);
+  }
+}
+
+async function loadStudentNotifs() {
+  if (!currentEmail) return;
+
+  try {
+    const res = await fetch(`http://localhost:8080/api/student/notifications/${encodeURIComponent(currentEmail)}`);
+    const data = await res.json();
+    const container = document.getElementById("notifListContainer");
+
+    if (data.success && data.notifications && data.notifications.length > 0) {
+      container.innerHTML = "";
+      data.notifications.forEach(n => {
+        const badge = n.adviserNotified
+          ? `<span class="badge-notified">✓ Adviser Alerted</span>`
+          : `<span class="badge-pending">Official Record</span>`;
+
+        let breakdownHTML = "";
+        if (n.breakdown && (n.breakdown.quiz || n.breakdown.exam || n.breakdown.act)) {
+          breakdownHTML = `
+            <div class="scores-grid">
+              <div class="score-item"><small>Quizzes</small><strong>${n.breakdown.quiz || 0}</strong></div>
+              <div class="score-item"><small>Recitation</small><strong>${n.breakdown.rec || 0}</strong></div>
+              <div class="score-item"><small>Activities</small><strong>${n.breakdown.act || 0}</strong></div>
+              <div class="score-item"><small>Projects</small><strong>${n.breakdown.proj || 0}</strong></div>
+              <div class="score-item"><small>Major Exam</small><strong>${n.breakdown.exam || 0}</strong></div>
+            </div>
+          `;
+        }
+
+        container.innerHTML += `
+          <div class="notif-card">
+            <div class="notif-header">
+              <span class="notif-title">${n.title}</span>
+              <div>
+                ${badge}
+                <small style="color:var(--text-muted); margin-left:8px;">${new Date(n.timestamp).toLocaleDateString()}</small>
+              </div>
+            </div>
+            <p style="font-size:14px; color:var(--text-muted); margin: 6px 0 12px 0; line-height:1.5;">${n.message}</p>
+            <div style="display:flex; gap:25px; font-size:14px; font-weight:600; padding:10px 0;">
+              <div>Final GWA: <span style="color:#36d889;">${n.finalGwa ?? "--"}%</span></div>
+              <div>Attendance: <span style="color:#4ad4d9;">${n.attendance ?? "--"}%</span></div>
+              <div>Risk Standing: <span style="color:${n.riskLevel === 'High Risk' ? '#ff5c63' : '#36d889'};">${n.riskLevel || 'Low Risk'}</span></div>
+            </div>
+            ${breakdownHTML}
+          </div>
+        `;
+      });
+    } else {
+      container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:40px;">No official grade notices posted yet. Your faculty adviser has not finalized your class record.</p>`;
+    }
+  } catch (err) {
+    console.error("Error loading notices:", err);
+    document.getElementById("notifListContainer").innerHTML = `<p style="color:#ff6666; text-align:center;">Failed to load notices.</p>`;
+  }
+}
+
+document.getElementById("logoutBtn").onclick = (e) => {
+  e.preventDefault();
+  if (confirm("Are you sure you want to logout?")) {
+    localStorage.removeItem("akademiko_logged_in");
+    localStorage.removeItem("akademiko_email");
+    window.location.href = "../auth/login.html";
+  }
+};
+
+const today = new Date();
+document.getElementById("updatedDate").innerHTML = "Updated: " + today.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+
+window.onload = () => {
+  loadMiniProfile();
+  loadStudentNotifs();
+};
+</script>
+</body>
+</html>

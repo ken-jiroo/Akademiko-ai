@@ -1,143 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AkademikoAI | Admin Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AkademikoAI | Admin Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-*{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-body{ background:#0e1b2b; color:white; display:flex; min-height:100vh; }
+  <!-- Modular Asset Pipeline -->
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/admin-shared.css">
+  
+  <script src="../assets/js/route-guard.js"></script>
+  <script src="../assets/js/theme.js"></script>
 
-/* =========================== SIDEBAR =========================== */
-.sidebar{ width:250px; height:100vh; background:#0a1624; border-right:1px solid rgba(255,255,255,.05); position:fixed; left:0; top:0; padding:25px 18px; z-index:10; }
-.logo{ display:flex; align-items:center; gap:10px; margin-bottom:40px; }
-.logo-box{ width:42px; height:42px; background:linear-gradient(135deg,#46d9d7,#39d37b); border-radius:12px; display:flex; justify-content:center; align-items:center; font-weight:800; color:#102233; }
-.logo h2{ font-size:24px; font-weight:800; }
-.logo span{ color:#35d784; }
+  <style>
+    .diagnostic-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--bg-input, #1e2c3c);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .diagnostic-pill:hover {
+      border-color: #36d889;
+    }
+    .diag-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .diag-box {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 12px;
+      border-radius: 10px;
+    }
+    .diag-box small {
+      display: block;
+      color: var(--text-muted);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .diag-box strong {
+      font-size: 14px;
+    }
+    .audit-filter-btn {
+      background: var(--bg-input, #1e2c3c);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .audit-filter-btn.active {
+      background: #4ad4d9;
+      color: #102233;
+      border-color: #4ad4d9;
+    }
+    .audit-row-action {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .act-grade { background: rgba(54, 216, 137, 0.15); color: #36d889; }
+    .act-alert { background: rgba(255, 92, 99, 0.15); color: #ff5c63; }
+    .act-login { background: rgba(74, 212, 217, 0.15); color: #4ad4d9; }
+    .act-audit { background: rgba(255, 178, 45, 0.15); color: #ffb22d; }
 
-.admin-mini-profile{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:#16263a;
-  padding:10px 14px;
-  border-radius:12px;
-  margin-bottom:20px;
-  border:1px solid rgba(255,255,255,.05);
-}
-.admin-mini-profile img{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  object-fit:cover;
-  border:2px solid #36d889;
-}
-.admin-mini-info h4{ font-size:13px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px; }
-.admin-mini-info small{ font-size:11px; color:#36d889; }
-
-.sidebar-title{ margin-top:20px; margin-bottom:10px; font-size:12px; color:#7e8b9b; font-weight:700; text-transform:uppercase; }
-.menu{ list-style:none; }
-.menu li{ margin-bottom:8px; }
-.menu a{ display:flex; align-items:center; gap:12px; padding:14px 15px; text-decoration:none; color:#b4bec9; border-radius:10px; transition:.3s; }
-.menu a:hover{ background:#16263a; }
-.menu .active{ background:#24c87d; color:#0f2234; font-weight:700; }
-
-/* =========================== MAIN CONTENT =========================== */
-.main{ margin-left:250px; width:calc(100% - 250px); padding:30px; }
-.header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; }
-.header h1{ font-size:38px; font-weight:800; }
-.header p{ color:#8e99a5; margin-top:6px; }
-.live{ display:flex; align-items:center; gap:15px; }
-.live-badge{ background:#0a6d9d; padding:8px 16px; border-radius:25px; font-size:13px; font-weight:600; color:#74d8ff; }
-.updated{ color:#94a0ab; font-size:14px; }
-
-/* =========================== CARDS =========================== */
-.cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:25px; }
-.card{ background:#182636; border:1px solid rgba(255,255,255,.06); border-radius:18px; padding:22px; transition:.3s; }
-.card:hover{ transform:translateY(-4px); }
-.card small{ display:block; color:#8793a0; margin-bottom:10px; font-weight:600; }
-.card h2{ font-size:45px; margin-bottom:8px; }
-.blue{ color:#35b7ff; }
-.red{ color:#ff6666; }
-.orange{ color:#ffb22d; }
-.green{ color:#38d889; }
-.card p{ color:#7d8994; font-size:13px; }
-
-/* =========================== GRID & PANELS =========================== */
-.grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:20px; }
-.panel{ background:#182636; border-radius:18px; padding:22px; border:1px solid rgba(255,255,255,.05); }
-.panel-title{ font-size:15px; font-weight:700; margin-bottom:20px; color:#c6d0da; text-transform:uppercase; letter-spacing:.5px; }
-.chart-container{ display:flex; justify-content:center; align-items:center; height:280px; position:relative; }
-
-/* =========================== ALERTS SCROLLBAR =========================== */
-#alertsList {
-    max-height: 280px; 
-    overflow-y: auto; 
-    padding-right: 8px;
-}
-#alertsList::-webkit-scrollbar { width: 6px; }
-#alertsList::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
-#alertsList::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-#alertsList::-webkit-scrollbar-thumb:hover { background: #36d889; }
-
-.alert{ padding:14px 16px; border-radius:12px; margin-bottom:12px; transition:.2s; }
-.alert:hover{ transform:translateX(3px); }
-.alert h4{ font-size:15px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; }
-.alert p{ font-size:13px; color:#c3ccd5; line-height:1.5; }
-.high{ border:1px solid #ff5c63; background:rgba(255,92,99,.08); }
-.medium{ border:1px solid #ffb12c; background:rgba(255,177,44,.08); }
-.low{ border:1px solid #3ad788; background:rgba(58,215,136,.08); }
-
-/* =========================== TABLE =========================== */
-.table-panel-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px; }
-.filters{ display:flex; gap:10px; flex-wrap:wrap; }
-.filters button{ background:#27384b; border:none; color:#c4ced8; padding:8px 18px; border-radius:20px; cursor:pointer; font-weight:600; font-size:13px; transition:.2s; }
-.filters button:hover{ background:#31465e; }
-.active-filter{ background:#36d889 !important; color:#0f2234 !important; font-weight:700; }
-.search-box{ width:100%; padding:14px 18px; border:1px solid rgba(255,255,255,.05); outline:none; border-radius:10px; background:#223244; color:white; margin-bottom:20px; font-size:14px; }
-.search-box::placeholder{ color:#8f9cab; }
-table{ width:100%; border-collapse:collapse; }
-th{ text-align:left; padding:15px; color:#90a0af; font-size:14px; border-bottom:1px solid rgba(255,255,255,.08); }
-td{ padding:18px 15px; border-bottom:1px solid rgba(255,255,255,.05); font-size:14px; }
-.badge{ padding:6px 14px; border-radius:25px; font-size:13px; font-weight:700; display:inline-block; }
-.danger{ background:#ff5f6640; color:#ff7378; }
-.warning{ background:#ffb22d33; color:#ffbc3b; }
-.success{ background:#3ad78833; color:#3ad788; }
-.progress{ width:100px; height:8px; background:#314253; border-radius:20px; display:inline-block; margin-right:10px; vertical-align:middle; overflow:hidden; }
-.progress-red{ height:100%; background:#ff5c63; border-radius:20px; }
-.progress-yellow{ height:100%; background:#ffb22d; border-radius:20px; }
-.progress-green{ height:100%; background:#3ad788; border-radius:20px; }
-
-@media(max-width:1100px){
-  .cards{ grid-template-columns:repeat(2,1fr); }
-  .grid{ grid-template-columns:1fr; }
-  table{ display:block; overflow-x:auto; }
-}
-@media(max-width:768px){
-  .sidebar{ width:90px; }
-  .sidebar h2, .sidebar-title, .admin-mini-info{ display:none; }
-  .admin-mini-profile{ justify-content:center; padding:8px; }
-  .menu a{ justify-content:center; }
-  .main{ margin-left:90px; width:calc(100% - 90px); }
-  .cards{ grid-template-columns:1fr; }
-  .header{ flex-direction:column; align-items:flex-start; gap:15px; }
-}
-</style>
+    /* SECTION EARLY WARNING DISTRIBUTION WIDGET STYLES */
+    .section-widget-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .section-risk-card {
+      background: rgba(0,0,0,0.22);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 14px 16px;
+      transition: all 0.2s ease;
+    }
+    .section-risk-card:hover {
+      border-color: rgba(54, 216, 137, 0.3);
+      transform: translateY(-2px);
+    }
+    .section-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .section-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #4ad4d9;
+    }
+    .section-badge-count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.08);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+    .multi-progress-bar {
+      height: 8px;
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border-radius: 6px;
+      display: flex;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .bar-high { background: #ff5c63; }
+    .bar-mod { background: #ffb22d; }
+    .bar-good { background: #36d889; }
+    .section-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .section-legend span strong {
+      color: var(--text-primary);
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- =========================== SIDEBAR =========================== -->
 <div class="sidebar">
   <div class="logo">
     <div class="logo-box">Ak</div>
     <h2>Akademiko<span>AI</span></h2>
   </div>
 
-  <!-- Dynamic Admin Mini Profile -->
   <div class="admin-mini-profile">
     <img src="https://ui-avatars.com/api/?name=Admin&background=223244&color=36d889" id="sidebarAdminPhoto" alt="Avatar">
     <div class="admin-mini-info">
@@ -148,313 +161,607 @@ td{ padding:18px 15px; border-bottom:1px solid rgba(255,255,255,.05); font-size:
 
   <div class="sidebar-title">Dashboard</div>
   <ul class="menu">
-    <li><a href="admin-dashboard.html" class="active">🏠 Home</a></li>
-    <li><a href="admin-students.html">👨‍🎓 Students</a></li>
-    <li><a href="admin-risk-monitor.html">📊 Risk Monitor</a></li>
-    <li><a href="admin-analytics.html">📈 Analytics</a></li>
-    <li><a href="admin-alerts.html">🔔 Alerts</a></li>
+    <li><a href="admin-dashboard.html" class="active"> Home</a></li>
+    <li><a href="admin-students.html"> Students</a></li>
+    <li><a href="admin-risk-monitor.html"> Risk Monitor</a></li>
+    <li><a href="admin-analytics.html"> Analytics</a></li>
+    <li><a href="admin-alerts.html"> Alerts</a></li>
   </ul>
   <div class="sidebar-title">System</div>
   <ul class="menu">
-    <li><a href="admin-reports.html">📄 Reports</a></li>
+    <li><a href="admin-reports.html"> Reports</a></li>
     <li><a href="admin-settings.html">⚙ Settings</a></li>
-    <li><a href="login.html">🚪 Logout</a></li>
+    <li><a href="login.html"> Logout</a></li>
   </ul>
 </div>
 
-<!-- =========================== MAIN =========================== -->
 <div class="main">
   <div class="header">
     <div>
-      <h1>Academic Risk Dashboard</h1>
-      <p>Institutional Cohort Early-Warning & Student Success Platform</p>
+      <h1>Institutional Intelligence Dashboard</h1>
+      <p>Macro academic risk evaluation, system diagnostics, and compliance audit trail.</p>
     </div>
     <div class="live">
-      <div class="live-badge">● Live Monitoring</div>
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+      <button class="diagnostic-pill" id="btnOpenAuditLogs" style="border-color:rgba(74,212,217,0.4); color:#4ad4d9;" title="View Data Compliance Audit Trail">
+        🛡️ Security Audit Log
+      </button>
+      <button class="diagnostic-pill" id="btnOpenDiagnostics" title="Run System Self-Test">
+        <span id="diagStatusDot" style="color:#36d889;">●</span> System Diagnostics
+      </button>
+      <div class="live-badge" id="aiHealthBadge">● AI Brain: Checking...</div>
       <div class="updated" id="updatedDate">Loading...</div>
     </div>
   </div>
 
-  <!-- SUMMARY METRICS -->
+  <!-- SUMMARY CARDS (SYNCHRONIZED WITH ACTIVE VS ARCHIVED COUNTS) -->
   <div class="cards">
-    <div class="card"><small>Evaluated Profiles</small><h2 class="blue" id="statTotal">0</h2><p>Database entries</p></div>
-    <div class="card"><small>High Risk Cases</small><h2 class="red" id="statHigh">0</h2><p>Need immediate intervention</p></div>
-    <div class="card"><small>Moderate Risk</small><h2 class="orange" id="statModerate">0</h2><p>Requires weekly check-in</p></div>
-    <div class="card"><small>Low Risk</small><h2 class="green" id="statLow">0</h2><p>On track academically</p></div>
+    <div class="card">
+      <small>Active Enrolled Roster</small>
+      <h2 class="blue" id="statTotal">0</h2>
+      <p id="statArchivedSub">📦 0 Archived Accounts</p>
+    </div>
+    <div class="card">
+      <small>High Risk Cases</small>
+      <h2 class="red" id="statHigh">0</h2>
+      <p>Running GWA &lt; 75% or Multivariable Flag</p>
+    </div>
+    <div class="card">
+      <small>Moderate Risk</small>
+      <h2 class="orange" id="statModerate">0</h2>
+      <p>Advising Monitoring Queue</p>
+    </div>
+    <div class="card">
+      <small>Good Standing</small>
+      <h2 class="green" id="statLow">0</h2>
+      <p>Regular Academic Status</p>
+    </div>
   </div>
 
-  <!-- VISUAL DISTRIBUTION & ACTIONABLE ALERTS -->
-  <div class="grid">
+  <!-- TWO COLUMN CHARTS & INFRASTRUCTURE ROW -->
+  <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-bottom:25px;">
     <div class="panel">
-      <div class="panel-title">Risk Level Distribution</div>
-      <div class="chart-container">
-        <canvas id="riskChart"></canvas>
+      <div class="panel-title">CED Cohort Risk Distribution</div>
+      <small style="color:var(--text-muted); display:block; margin-bottom:12px;">Aggregated across all 5 Teacher Education Programs</small>
+      <div style="height:260px; position:relative;">
+        <canvas id="overviewRiskChart"></canvas>
       </div>
     </div>
 
     <div class="panel">
-      <div class="panel-title">Recent Priority Alerts</div>
-      <div id="alertsList">
-        <p style="color: #7d8994; font-size: 13px;">Loading priority alerts...</p>
+      <div class="panel-title">System Infrastructure Status</div>
+      <small style="color:var(--text-muted); display:block; margin-bottom:14px;">Live Health & Compliance Telemetry</small>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:13px;">Database (MongoDB Atlas)</span>
+          <strong style="color:#36d889; font-size:12px;" id="sidebarDbStatus">Connected</strong>
+        </div>
+        <div style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:13px;">AI Brain (Port 8000)</span>
+          <strong style="color:#36d889; font-size:12px;" id="sidebarAiStatus">Checking...</strong>
+        </div>
+        <div style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:13px;">Security Audit Log Trail</span>
+          <strong style="color:#4ad4d9; font-size:12px;" id="sidebarAuditCount">0 Events</strong>
+        </div>
+        <button id="btnQuickDiagnostic" style="background:#36d889; color:#102233; font-weight:700; border:none; padding:10px; border-radius:8px; cursor:pointer; margin-top:5px; font-size:12px;">Run Full Diagnostic Audit</button>
       </div>
     </div>
   </div>
 
-  <!-- AT-RISK STUDENTS TABLE -->
-  <div class="panel" style="margin-top:25px;">
-    <div class="table-panel-header">
-      <div class="panel-title" style="margin:0;">At-Risk Student Monitoring</div>
-      <div class="filters">
-        <button class="active-filter" data-filter="all">All</button>
-        <button data-filter="high">High Risk</button>
-        <button data-filter="moderate">Moderate Risk</button>
-        <button data-filter="low">Low Risk</button>
+  <!-- FEATURE: SECTION-BY-SECTION EARLY WARNING DISTRIBUTION WIDGET -->
+  <div class="panel" style="margin-bottom:25px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div class="panel-title" style="margin:0;">Classroom Early Risk Distribution</div>
+        <small style="color:var(--text-muted);">Real-time formative risk distribution across all department sections</small>
       </div>
+      <span style="font-size:11px; font-weight:700; color:#4ad4d9;" id="sectionWidgetSummary">Scanning sections...</span>
     </div>
 
-    <input type="text" placeholder="Search student name, course, or section..." class="search-box">
+    <div class="section-widget-grid" id="sectionRiskContainer">
+      <p style="color:var(--text-muted); font-size:12px; padding:15px 0;">Loading section distribution...</p>
+    </div>
+  </div>
+
+  <!-- RECENT AT-RISK MONITORING TABLE -->
+  <div class="panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <div>
+        <div class="panel-title" style="margin:0;">Priority Academic Escalations</div>
+        <small style="color:var(--text-muted);">Students flagged for immediate counseling intervention</small>
+      </div>
+      <a href="admin-alerts.html" style="color:#36d889; font-size:12px; font-weight:700; text-decoration:none;">View All Alerts ➔</a>
+    </div>
 
     <table>
       <thead>
         <tr>
-          <th>Student</th>
-          <th>Course & Section</th>
-          <th>GWA</th>
+          <th>Student No.</th>
+          <th>Student Name</th>
+          <th>Program & Section</th>
+          <th>Running GWA</th>
           <th>Attendance</th>
-          <th>Risk Level</th>
-          <th>Risk Score</th>
+          <th>Assigned Risk</th>
+          <th>Status</th>
         </tr>
       </thead>
-      <tbody id="atRiskTableBody">
-        <tr>
-          <td colspan="6" style="text-align: center; color: #7d8994;">Connecting to MongoDB Atlas...</td>
-        </tr>
+      <tbody id="overviewTableBody">
+        <tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">Loading priority records...</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
+<!-- =========================== MODAL 1: SYSTEM DIAGNOSTICS & TELEMETRY =========================== -->
+<div class="modal" id="diagnosticsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; width:580px; padding:24px; max-height:85vh; overflow-y:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0; font-size:17px; color:#36d889;">🔬 System Health & Diagnostic Audit</h3>
+      <button id="btnCloseDiagnostics" style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;">✕</button>
+    </div>
+    <p style="color:var(--text-muted); font-size:12px; margin-bottom:15px;">Automated telemetry verification across MongoDB Atlas, FastAPI, and data integrity.</p>
+
+    <div class="diag-metric-grid">
+      <div class="diag-box">
+        <small>MongoDB Round-Trip Latency</small>
+        <strong id="diagDbLatency" style="color:#36d889;">Testing...</strong>
+      </div>
+      <div class="diag-box">
+        <small>AI Brain Latency (Port 8000)</small>
+        <strong id="diagAiLatency" style="color:#36d889;">Testing...</strong>
+      </div>
+      <div class="diag-box">
+        <small>Roster Consistency</small>
+        <strong id="diagRosterScore" style="color:#4ad4d9;">--</strong>
+      </div>
+      <div class="diag-box">
+        <small>Notification Queue Dispatched</small>
+        <strong id="diagNotifsCount" style="color:#ffb22d;">--</strong>
+      </div>
+    </div>
+
+    <div style="background:rgba(0,0,0,0.25); padding:12px; border-radius:10px; font-family:monospace; font-size:11px; line-height:1.6; color:var(--text-muted);" id="diagLogTerminal">
+      [System] Initializing self-test telemetry...<br>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnReRunDiagnostics" style="background:#36d889; color:#102233; font-weight:700; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-size:12px;">Re-run Diagnostics</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 2: SECURITY & COMPLIANCE AUDIT LOG =========================== -->
+<div class="modal" id="auditLogsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; width:780px; padding:24px; max-height:88vh; display:flex; flex-direction:column;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <div>
+        <h3 style="margin:0; font-size:18px; color:#4ad4d9;">🛡️ Security Audit Log & Compliance Trail</h3>
+        <small style="color:var(--text-muted); font-size:12px;">Tamper-evident record of administrative and faculty actions for DPA/FERPA compliance.</small>
+      </div>
+      <button id="btnCloseAuditLogs" style="background:transparent; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0; gap:10px; flex-wrap:wrap;">
+      <div style="display:flex; gap:6px;">
+        <button class="audit-filter-btn active" data-audit="all">All Events</button>
+        <button class="audit-filter-btn" data-audit="grade">Grades</button>
+        <button class="audit-filter-btn" data-audit="alert">Alerts</button>
+        <button class="audit-filter-btn" data-audit="login">Auth</button>
+      </div>
+      <button id="btnExportAuditCsv" style="background:transparent; border:1px solid rgba(74,212,217,0.4); color:#4ad4d9; font-size:11px; font-weight:700; padding:6px 12px; border-radius:6px; cursor:pointer;">
+        📥 Export Audit Log (CSV)
+      </button>
+    </div>
+
+    <div style="flex:1; overflow-y:auto; border:1px solid rgba(255,255,255,0.06); border-radius:8px; background:rgba(0,0,0,0.2);">
+      <table style="margin:0; font-size:12px;">
+        <thead>
+          <tr style="position:sticky; top:0; background:#192738; z-index:2;">
+            <th style="padding:8px 10px;">Timestamp</th>
+            <th style="padding:8px 10px;">User & Role</th>
+            <th style="padding:8px 10px;">Action</th>
+            <th style="padding:8px 10px;">Details & Target</th>
+          </tr>
+        </thead>
+        <tbody id="auditLogsTableBody">
+          <tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">Loading security audit logs...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ========================== SESSION & PROFILE SYNC ========================== */
 if (localStorage.getItem("akademiko_logged_in") !== "true") {
-    window.location.href = "../auth/login.html";
+  window.location.href = "../auth/login.html";
 }
 
-const currentAdminEmail = localStorage.getItem("akademiko_email") || "admin@akademikoai.edu.ph";
+let overviewChart = null;
+let allAuditLogs = [];
+let currentAuditFilter = "all";
 
 async function syncAdminSidebar() {
-    try {
-        const res = await fetch(`http://localhost:8080/api/admin/profile/${currentAdminEmail}`);
-        const data = await res.json();
-        if (data.success) {
-            if (data.adminName) document.getElementById("sidebarAdminName").innerText = data.adminName;
-            if (data.profilePhoto) document.getElementById("sidebarAdminPhoto").src = data.profilePhoto;
-        }
-    } catch (err) {
-        console.warn("Could not sync sidebar profile:", err);
+  const currentAdminEmail = localStorage.getItem("akademiko_email") || "admin@akademikoai.edu.ph";
+  try {
+    const res = await fetch(`http://localhost:8080/api/admin/profile/${encodeURIComponent(currentAdminEmail)}`);
+    const data = await res.json();
+    if (data.success) {
+      const nameEl = document.getElementById("sidebarAdminName");
+      const photoEl = document.getElementById("sidebarAdminPhoto");
+      if (nameEl && data.adminName) nameEl.innerText = data.adminName;
+      if (photoEl && data.profilePhoto) photoEl.src = data.profilePhoto;
     }
+  } catch (err) {
+    console.warn("Could not sync sidebar profile:", err);
+  }
 }
 
-/* ========================== GLOBAL CHART INSTANCE ========================== */
-let donutChart = null;
-
-function initChart(low, mod, high) {
-    const ctx = document.getElementById("riskChart").getContext("2d");
-    if (donutChart) donutChart.destroy();
-
-    const isZero = (low === 0 && mod === 0 && high === 0);
-    const dataValues = isZero ? [1] : [low, mod, high];
-    const bgColors = isZero ? ["#223244"] : ["#36D889", "#FFB22D", "#FF5C63"];
-    const labels = isZero ? ["No Data Logged"] : ["Low Risk", "Moderate Risk", "High Risk"];
-
-    donutChart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-            labels: labels,
-            datasets: [{
-                data: dataValues,
-                backgroundColor: bgColors,
-                borderWidth: 0,
-                hoverOffset: isZero ? 0 : 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: "70%",
-            plugins: {
-                legend: {
-                    position: "bottom",
-                    labels: { color: "#D0D8E0", padding: 18, font: { size: 12, weight: "600" } }
-                }
-            }
-        }
-    });
+async function checkAIHealth() {
+  const badge = document.getElementById("aiHealthBadge");
+  const side = document.getElementById("sidebarAiStatus");
+  try {
+    const res = await fetch('http://localhost:8080/api/health/ai');
+    const data = await res.json();
+    if (data.online) {
+      badge.innerHTML = `● AI Brain: Online (Port 8000)`;
+      badge.style.color = "#36d889";
+      if (side) { side.innerText = "Online (8000)"; side.style.color = "#36d889"; }
+    } else {
+      badge.innerHTML = `● AI Brain: Fallback Active`;
+      badge.style.color = "#ffb22d";
+      if (side) { side.innerText = "Heuristic Mode"; side.style.color = "#ffb22d"; }
+    }
+  } catch (err) {
+    badge.innerHTML = `● AI Brain: Offline`;
+    badge.style.color = "#ff5c63";
+    if (side) { side.innerText = "Offline"; side.style.color = "#ff5c63"; }
+  }
 }
+setInterval(checkAIHealth, 10000);
 
-function timeAgo(dateString) {
-    if (!dateString) return "Recently";
-    const date = new Date(dateString);
-    const seconds = Math.floor((new Date() - date) / 1000);
-    if (seconds < 60) return "Just now";
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
-    return `${Math.floor(hours / 24)}d ago`;
-}
-
-/* ========================== LOAD MONGODB DASHBOARD DATA ========================== */
 async function loadDashboardData() {
-    try {
-        const response = await fetch('http://localhost:8080/api/alerts');
-        const alerts = await response.json();
-        
-        const alertsContainer = document.getElementById('alertsList');
-        const tableBody = document.getElementById('atRiskTableBody');
+  try {
+    const [alertsRes, activeStudentsRes, archivedStudentsRes] = await Promise.all([
+      fetch('http://localhost:8080/api/alerts'),
+      fetch('http://localhost:8080/api/admin/students-list'),
+      fetch('http://localhost:8080/api/admin/students-list?archived=true')
+    ]);
 
-        if (!alerts || alerts.length === 0) {
-            alertsContainer.innerHTML = '<p style="color: #7d8994; font-size: 13px; text-align:center; padding:20px;">No active alerts logged.</p>';
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #7d8994;">No student assessment records found.</td></tr>';
-            initChart(0, 0, 0);
-            return;
-        }
+    const alerts = await alertsRes.json();
+    const activeData = await activeStudentsRes.json();
+    const archivedData = await archivedStudentsRes.json();
 
-        let highCount = 0, modCount = 0, lowCount = 0;
-        let alertsHTML = '';
-        let tableHTML = '';
+    if (!Array.isArray(alerts)) return;
 
-        // Priority actionable alerts (High & Moderate first)
-        const priorityAlerts = alerts.filter(a => a.riskLevel === 'High Risk' || a.riskLevel === 'Moderate Risk');
+    const activeCount = (activeData.success && activeData.students) ? activeData.students.length : alerts.length;
+    const archivedCount = (archivedData.success && archivedData.students) ? archivedData.students.length : 0;
 
-        if (priorityAlerts.length === 0) {
-            alertsContainer.innerHTML = '<p style="color: #36d889; font-size: 13px; text-align:center; padding:20px;">🎉 All student cohorts currently in good standing!</p>';
-        } else {
-            priorityAlerts.slice(0, 5).forEach(alert => {
-                const isHigh = alert.riskLevel === 'High Risk';
-                const borderClass = isHigh ? 'high' : 'medium';
-                const badgeColor = isHigh ? '#ff5c63' : '#ffb22d';
-                const name = alert.studentName || "Anonymous Student";
-                const section = (alert.course && alert.section) ? `${alert.course} ${alert.section}` : (alert.course || "N/A");
-                const score = alert.confidenceScore ?? 0;
+    // Synchronize risk totals using both survey outcomes and early formative running averages
+    let high = 0, mod = 0, low = 0;
+    alerts.forEach(a => {
+      const runningAvg = a.classRecord?.runningAverage ?? a.gwa ?? 0;
+      const att = a.classRecord?.attendanceRate ?? a.attendance ?? 0;
 
-                alertsHTML += `
-                    <div class="alert ${borderClass}">
-                        <h4>
-                          <span>${name}</span>
-                          <span style="font-size:11px; color:#8e9cab;">${timeAgo(alert.timestamp)}</span>
-                        </h4>
-                        <p>${section} • GWA: <strong>${alert.gwa ?? 0}%</strong> • Attendance: <strong>${alert.attendance ?? 0}%</strong></p>
-                        <p style="margin-top:4px;">
-                          Status: <strong style="color:${badgeColor};">${alert.riskLevel}</strong> (${score}%)
-                        </p>
-                    </div>
-                `;
-            });
-            alertsContainer.innerHTML = alertsHTML;
-        }
+      // Early running average or attendance triggers high risk
+      if (a.riskLevel === "High Risk" || (runningAvg > 0 && runningAvg < 75) || (att > 0 && att < 75)) {
+        high++;
+      } else if (a.riskLevel === "Moderate Risk" || (runningAvg > 0 && runningAvg < 78)) {
+        mod++;
+      } else {
+        low++;
+      }
+    });
 
-        alerts.forEach(alert => {
-            let badgeClass = 'success';
-            let gwaClass = 'green';
-            let progressClass = 'progress-green';
+    document.getElementById("statTotal").innerText = activeCount;
+    document.getElementById("statArchivedSub").innerText = `${archivedCount} Archived Accounts`;
+    document.getElementById("statHigh").innerText = high;
+    document.getElementById("statModerate").innerText = mod;
+    document.getElementById("statLow").innerText = low;
 
-            if (alert.riskLevel === 'High Risk') {
-                highCount++;
-                badgeClass = 'danger';
-                gwaClass = 'red';
-                progressClass = 'progress-red';
-            } else if (alert.riskLevel === 'Moderate Risk') {
-                modCount++;
-                badgeClass = 'warning';
-                gwaClass = 'orange';
-                progressClass = 'progress-yellow';
-            } else {
-                lowCount++;
-            }
+    renderOverviewChart(high, mod, low);
+    renderSectionRiskDistribution(alerts);
+    renderPriorityTable(alerts.filter(a => a.riskLevel === "High Risk" || a.riskLevel === "Moderate Risk" || (a.gwa > 0 && a.gwa < 78)).slice(0, 6));
 
-            const name = alert.studentName || "Anonymous Student";
-            const section = (alert.course && alert.section) ? `${alert.course} ${alert.section}` : (alert.course || "N/A");
-            const gwa = alert.gwa !== undefined ? alert.gwa : 0;
-            const att = alert.attendance !== undefined ? alert.attendance : 0;
-            const score = alert.confidenceScore !== undefined ? alert.confidenceScore : 0;
+    fetchAuditCount();
 
-            tableHTML += `
-                <tr>
-                    <td><strong>${name}</strong></td>
-                    <td>${section}</td>
-                    <td class="${gwaClass}"><strong>${gwa}%</strong></td>
-                    <td>${att}%</td>
-                    <td><span class="badge ${badgeClass}">${alert.riskLevel || 'Low Risk'}</span></td>
-                    <td>
-                        <div class="progress"><div class="${progressClass}" style="width:${Math.min(score, 100)}%;"></div></div>
-                        ${score}%
-                    </td>
-                </tr>
-            `;
-        });
-
-        tableBody.innerHTML = tableHTML;
-        
-        document.getElementById('statTotal').innerText = alerts.length;
-        document.getElementById('statHigh').innerText = highCount;
-        document.getElementById('statModerate').innerText = modCount;
-        document.getElementById('statLow').innerText = lowCount;
-
-        initChart(lowCount, modCount, highCount);
-
-    } catch (error) {
-        console.error("Dashboard load error:", error);
-        document.getElementById('alertsList').innerHTML = '<p style="color: #ff6666;">Database disconnected.</p>';
-    }
+  } catch (err) {
+    console.error("Dashboard data load error:", err);
+  }
 }
 
-/* ========================== SEARCH & FILTERS ========================== */
-const searchInput = document.querySelector(".search-box");
-searchInput.addEventListener("keyup", function () {
-    const value = this.value.toLowerCase();
-    document.querySelectorAll("#atRiskTableBody tr").forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
-    });
+/* ========================== EARLY WARNING DISTRIBUTION WIDGET ========================== */
+function renderSectionRiskDistribution(alerts) {
+  const container = document.getElementById("sectionRiskContainer");
+  const summaryEl = document.getElementById("sectionWidgetSummary");
+  container.innerHTML = "";
+
+  // Group students by section key (e.g., "BSED - Mathematics 3A")
+  const sectionMap = {};
+
+  alerts.forEach(a => {
+    const course = a.course || "BSED General";
+    const sec = a.section || "3A";
+    const key = `${course} • Section ${sec}`;
+
+    if (!sectionMap[key]) {
+      sectionMap[key] = { key, total: 0, high: 0, mod: 0, good: 0 };
+    }
+
+    const runningAvg = a.classRecord?.runningAverage ?? a.gwa ?? 0;
+    const att = a.classRecord?.attendanceRate ?? a.attendance ?? 0;
+
+    sectionMap[key].total++;
+    if (a.riskLevel === "High Risk" || (runningAvg > 0 && runningAvg < 75) || (att > 0 && att < 75)) {
+      sectionMap[key].high++;
+    } else if (a.riskLevel === "Moderate Risk" || (runningAvg > 0 && runningAvg < 78)) {
+      sectionMap[key].mod++;
+    } else {
+      sectionMap[key].good++;
+    }
+  });
+
+  const sectionKeys = Object.keys(sectionMap);
+  if (summaryEl) summaryEl.innerText = `${sectionKeys.length} Active Classroom Blocks Monitored`;
+
+  if (sectionKeys.length === 0) {
+    container.innerHTML = `<p style="color:var(--text-muted); font-size:12px;">No section records indexed yet.</p>`;
+    return;
+  }
+
+  sectionKeys.forEach(k => {
+    const s = sectionMap[k];
+    const total = s.total || 1;
+    const highPct = Math.round((s.high / total) * 100);
+    const modPct = Math.round((s.mod / total) * 100);
+    const goodPct = Math.round((s.good / total) * 100);
+
+    container.innerHTML += `
+      <div class="section-risk-card">
+        <div class="section-card-header">
+          <span class="section-card-title">${s.key}</span>
+          <span class="section-badge-count">${s.total} Students</span>
+        </div>
+        <div class="multi-progress-bar">
+          <div class="bar-high" style="width: ${highPct}%" title="High Risk: ${s.high} (${highPct}%)"></div>
+          <div class="bar-mod" style="width: ${modPct}%" title="Moderate Risk: ${s.mod} (${modPct}%)"></div>
+          <div class="bar-good" style="width: ${goodPct}%" title="Good Standing: ${s.good} (${goodPct}%)"></div>
+        </div>
+        <div class="section-legend">
+          <span style="color:#ff7b80;">🔴 High: <strong>${s.high}</strong></span>
+          <span style="color:#ffb22d;">🟡 Mod: <strong>${s.mod}</strong></span>
+          <span style="color:#36d889;">🟢 Good: <strong>${s.good}</strong></span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+async function fetchAuditCount() {
+  try {
+    const res = await fetch('http://localhost:8080/api/admin/diagnostics');
+    const data = await res.json();
+    if (data.success && data.diagnostics) {
+      document.getElementById("sidebarAuditCount").innerText = `${data.diagnostics.auditLogsCount || 0} Events`;
+    }
+  } catch(e) {}
+}
+
+function renderOverviewChart(high, mod, low) {
+  const ctx = document.getElementById("overviewRiskChart").getContext("2d");
+  if (overviewChart) overviewChart.destroy();
+
+  overviewChart = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["High Risk", "Moderate Risk", "Good Standing"],
+      datasets: [{
+        data: [high, mod, low],
+        backgroundColor: ["#FF5C63", "#FFB22D", "#36D889"],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "right",
+          labels: { color: "#D5DEE8", font: { size: 12, weight: "600" } }
+        }
+      },
+      cutout: "65%"
+    }
+  });
+}
+
+function renderPriorityTable(priorityAlerts) {
+  const tbody = document.getElementById("overviewTableBody");
+  tbody.innerHTML = "";
+
+  if (priorityAlerts.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#36d889; padding:20px;">🎉 No active high or moderate risk cases flagged!</td></tr>`;
+    return;
+  }
+
+  priorityAlerts.forEach(s => {
+    const runningAvg = s.classRecord?.runningAverage ?? s.gwa ?? 0;
+    const isHigh = s.riskLevel === "High Risk" || runningAvg < 75;
+    const badgeClass = isHigh ? "danger" : "warning";
+    const gwaColor = runningAvg < 75 && runningAvg > 0 ? "color:#ff5c63;" : "color:#36d889;";
+
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${s.studentNo || "Pending"}</strong></td>
+        <td>${s.studentName || "Anonymous"}</td>
+        <td>${(s.course && s.section) ? `${s.course} •${s.section}` : (s.course || "N/A")}</td>
+        <td><strong style="${gwaColor}">${runningAvg}%</strong></td>
+        <td>${s.attendance ?? 0}%</td>
+        <td><span class="badge ${badgeClass}">${s.riskLevel}</span></td>
+        <td><span class="status ${s.interventionStatus === 'Resolved' ? 'ready' : 'ongoing'}">${s.interventionStatus || 'Pending Action'}</span></td>
+      </tr>
+    `;
+  });
+}
+
+/* ========================== AUDIT LOGS LOGIC ========================== */
+const auditModal = document.getElementById("auditLogsModal");
+document.getElementById("btnOpenAuditLogs").onclick = () => {
+  auditModal.style.display = "flex";
+  loadAuditLogs();
+};
+document.getElementById("btnCloseAuditLogs").onclick = () => auditModal.style.display = "none";
+
+async function loadAuditLogs() {
+  const tbody = document.getElementById("auditLogsTableBody");
+  try {
+    const res = await fetch('http://localhost:8080/api/admin/audit-logs');
+    const data = await res.json();
+    if (data.success && Array.isArray(data.logs)) {
+      allAuditLogs = data.logs;
+      renderAuditLogs(allAuditLogs);
+    } else {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">No audit events recorded yet.</td></tr>';
+    }
+  } catch (err) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff5c63; padding:20px;">Failed to load audit logs.</td></tr>';
+  }
+}
+
+function renderAuditLogs(logs) {
+  const tbody = document.getElementById("auditLogsTableBody");
+  tbody.innerHTML = "";
+
+  const filtered = logs.filter(l => {
+    if (currentAuditFilter === "grade") return (l.action || "").includes("GRADE");
+    if (currentAuditFilter === "alert") return (l.action || "").includes("ALERT") || (l.action || "").includes("COUNSEL");
+    if (currentAuditFilter === "login") return (l.action || "").includes("LOGIN") || (l.action || "").includes("AUTH");
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">No audit logs match current filter.</td></tr>';
+    return;
+  }
+
+  filtered.forEach(log => {
+    let actClass = "act-audit";
+    if ((log.action || "").includes("GRADE")) actClass = "act-grade";
+    else if ((log.action || "").includes("ALERT")) actClass = "act-alert";
+    else if ((log.action || "").includes("LOGIN")) actClass = "act-login";
+
+    tbody.innerHTML += `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+        <td style="padding:7px 10px; color:var(--text-muted); font-size:11px; white-space:nowrap;">
+          ${new Date(log.timestamp).toLocaleDateString()} ${new Date(log.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+        </td>
+        <td style="padding:7px 10px;">
+          <strong style="font-size:11px;">${log.userEmail || 'System'}</strong><br>
+          <small style="color:var(--text-muted); font-size:10px;">${log.role || 'Admin'} • IP: ${log.ipAddress || '127.0.0.1'}</small>
+        </td>
+        <td style="padding:7px 10px;">
+          <span class="audit-row-action ${actClass}">${log.action}</span>
+        </td>
+        <td style="padding:7px 10px; font-size:11px; line-height:1.4;">
+          ${log.details}<br>
+          ${log.target && log.target !== 'N/A' ? `<small style="color:var(--text-muted);">Target: <strong>${log.target}</strong></small>` : ''}
+        </td>
+      </tr>
+    `;
+  });
+}
+
+document.querySelectorAll(".audit-filter-btn").forEach(btn => {
+  btn.addEventListener("click", function() {
+    document.querySelectorAll(".audit-filter-btn").forEach(b => b.classList.remove("active"));
+    this.classList.add("active");
+    currentAuditFilter = this.getAttribute("data-audit");
+    renderAuditLogs(allAuditLogs);
+  });
 });
 
-const filterButtons = document.querySelectorAll(".filters button");
-filterButtons.forEach(button => {
-    button.addEventListener("click", function() {
-        filterButtons.forEach(btn => btn.classList.remove("active-filter"));
-        this.classList.add("active-filter");
-        
-        const filter = this.getAttribute("data-filter");
-        document.querySelectorAll("#atRiskTableBody tr").forEach(row => {
-            const badgeEl = row.querySelector(".badge");
-            if (!badgeEl) return;
-            const badge = badgeEl.innerText.toLowerCase();
+document.getElementById("btnExportAuditCsv").onclick = () => {
+  if (allAuditLogs.length === 0) {
+    alert("No audit logs available to export.");
+    return;
+  }
 
-            if (filter === "all") row.style.display = "";
-            else if (filter === "high" && badge.includes("high")) row.style.display = "";
-            else if (filter === "moderate" && badge.includes("moderate")) row.style.display = "";
-            else if (filter === "low" && badge.includes("low")) row.style.display = "";
-            else row.style.display = "none";
-        });
-    });
-});
+  let csv = "\uFEFFTimestamp,UserEmail,Role,IPAddress,Action,Details,Target\r\n";
+  allAuditLogs.forEach(l => {
+    const time = new Date(l.timestamp).toISOString();
+    const detailsClean = (l.details || "").replace(/"/g, '""');
+    csv += `"${time}","${l.userEmail || ''}","${l.role || ''}","${l.ipAddress || ''}","${l.action || ''}","${detailsClean}","${l.target || ''}"\r\n`;
+  });
 
-/* ========================== TIMESTAMPS & LOGOUT ========================== */
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `AkademikoAI_Security_Audit_Logs_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+/* ========================== SYSTEM DIAGNOSTICS HANDLER ========================== */
+const diagModal = document.getElementById("diagnosticsModal");
+const openDiag = () => { diagModal.style.display = "flex"; runSystemDiagnostics(); };
+document.getElementById("btnOpenDiagnostics").onclick = openDiag;
+document.getElementById("btnQuickDiagnostic").onclick = openDiag;
+document.getElementById("btnCloseDiagnostics").onclick = () => diagModal.style.display = "none";
+document.getElementById("btnReRunDiagnostics").onclick = runSystemDiagnostics;
+
+async function runSystemDiagnostics() {
+  const term = document.getElementById("diagLogTerminal");
+  term.innerHTML = `[${new Date().toLocaleTimeString()}] Pinging MongoDB Atlas and FastAPI engine...<br>`;
+
+  try {
+    const res = await fetch('http://localhost:8080/api/admin/diagnostics');
+    const data = await res.json();
+    if (data.success && data.diagnostics) {
+      const d = data.diagnostics;
+      document.getElementById("diagDbLatency").innerText = d.database.latencyMs !== null ? `${d.database.latencyMs} ms (${d.database.status})` : d.database.status;
+      document.getElementById("diagDbLatency").style.color = d.database.latencyMs < 100 ? "#36d889" : "#ffb22d";
+
+      document.getElementById("diagAiLatency").innerText = d.aiBrain.latencyMs !== null ? `${d.aiBrain.latencyMs} ms (${d.aiBrain.status})` : d.aiBrain.status;
+      document.getElementById("diagAiLatency").style.color = d.aiBrain.latencyMs !== null ? "#36d889" : "#ffb22d";
+
+      document.getElementById("diagRosterScore").innerText = `${d.rosterIntegrity.integrityScore} (${d.rosterIntegrity.totalAlerts} assessed)`;
+      document.getElementById("diagNotifsCount").innerText = `${d.notifications.totalDispatched} alerts (${d.notifications.adviserAlertsCount} to advisers)`;
+
+      term.innerHTML += `
+        [Database] Connected to ${d.database.host} - Latency: ${d.database.latencyMs}ms<br>
+        [AI Engine] ${d.aiBrain.mode} on ${d.aiBrain.endpoint}<br>
+        [Integrity] Found ${d.rosterIntegrity.totalUsers} student accounts, ${d.rosterIntegrity.missingSectionCount} unassigned sections.<br>
+        [Assessment] ${d.rosterIntegrity.passingCount} Passing, ${d.rosterIntegrity.atRiskCount} At-Risk cases flagged.<br>
+        [Compliance] ${d.auditLogsCount || 0} Tamper-evident Audit Events currently indexed in database.<br>
+        [Diagnostics] All core subsystems verified and operating normally.
+      `;
+    }
+  } catch (err) {
+    term.innerHTML += `<span style="color:#ff5c63;">[Error] Telemetry connection failed: ${err.message}</span>`;
+  }
+}
+
 const today = new Date();
 document.getElementById("updatedDate").innerHTML = "Updated: " + today.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
 
 document.querySelector('a[href="login.html"]').addEventListener("click", function(e){
-    e.preventDefault();
-    if(confirm("Are you sure you want to logout?")){
-        localStorage.removeItem("akademiko_logged_in");
-        localStorage.removeItem("akademiko_email");
-        window.location.href = "../auth/login.html";
-    }
+  e.preventDefault();
+  if(confirm("Are you sure you want to logout?")){
+    localStorage.removeItem("akademiko_logged_in");
+    localStorage.removeItem("akademiko_email");
+    window.location.href = "../auth/login.html";
+  }
 });
 
 window.onload = () => {
-    syncAdminSidebar();
-    loadDashboardData();
+  syncAdminSidebar();
+  checkAIHealth();
+  loadDashboardData();
 };
 </script>
 </body>

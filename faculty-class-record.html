@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AkademikoAI | Detailed Formative Class Record</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Modular Asset Pipeline -->
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/admin-shared.css">
+
+  <script src="../assets/js/route-guard.js"></script>
+  <script src="../assets/js/theme.js"></script>
+
+  <style>
+    .faculty-badge {
+      background: rgba(54, 216, 137, 0.15);
+      color: #36d889;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .weight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .weight-box {
+      background: var(--bg-input, #1e2c3c);
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+    }
+    .weight-box label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted, #a9b4bf);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .weight-box input {
+      width: 100%;
+      height: 38px;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 700;
+      border-radius: 8px;
+    }
+    .section-select-pill {
+      background: var(--bg-input, #1e2c3c);
+      color: #36d889;
+      border: 1px solid rgba(54, 216, 137, 0.4);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+    .assessment-cluster {
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .cluster-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #4ad4d9;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .score-row-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+    }
+    .score-entry-cell {
+      background: var(--bg-input, #1e2c3c);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    
+    /* =================== FEATURE 2: LOW-SCORE VISUAL WARNING =================== */
+    .score-entry-cell.low-score-warning {
+      background: rgba(255, 92, 99, 0.12) !important;
+      border: 1px solid rgba(255, 92, 99, 0.45) !important;
+    }
+    .score-entry-cell.low-score-warning small {
+      color: #ff7b80 !important;
+      font-weight: 700;
+    }
+    .score-entry-cell.low-score-warning input {
+      color: #ff5c63 !important;
+      border-color: #ff5c63 !important;
+    }
+
+    .score-entry-cell small {
+      display: block;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .score-inputs-pair {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .score-inputs-pair input {
+      width: 42px;
+      height: 28px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 0;
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      background: var(--bg-input, #1e2c3c);
+      color: var(--text-primary);
+    }
+    .calc-banner {
+      background: rgba(54, 216, 137, 0.1);
+      border: 1px solid rgba(54, 216, 137, 0.25);
+      padding: 14px 18px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .calc-banner h4 {
+      margin: 0;
+      color: #36d889;
+      font-size: 14px;
+    }
+    .calc-banner span {
+      font-size: 22px;
+      font-weight: 800;
+      color: #36d889;
+    }
+    .running-avg-badge {
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .score-pill-tag {
+      font-size: 10px;
+      font-family: monospace;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+    }
+    .score-pill-tag.warning {
+      background: rgba(255, 92, 99, 0.15);
+      color: #ff5c63;
+      border: 1px solid rgba(255, 92, 99, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-box">Ak</div>
+    <h2>Akademiko<span>AI</span></h2>
+  </div>
+
+  <div class="admin-mini-profile">
+    <img src="https://ui-avatars.com/api/?name=Faculty&background=223244&color=36d889" id="facultyPhoto" alt="Avatar">
+    <div class="admin-mini-info">
+      <h4 id="facultyName">Faculty Instructor</h4>
+      <span class="faculty-badge" id="facultyDept">Department</span>
+    </div>
+  </div>
+
+  <div class="sidebar-title">Faculty Portal</div>
+  <ul class="menu">
+    <li><a href="faculty-dashboard.html"> Class Roster & GWA</a></li>
+    <li><a href="faculty-class-record.html" class="active"> Granular Class Record</a></li>
+    <li><a href="#" id="openWeightModalBtn"> Grading Criteria</a></li>
+    <li><a href="faculty-dashboard.html"> Advisory Alerts</a></li>
+    <li><a href="login.html" id="logoutBtn"> Logout</a></li>
+  </ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="header">
+    <div>
+      <h1>Formative Class Record & Early Predictor</h1>
+      <p>Granular tracking for Quizzes, Activities, Projects, Exams, and progressive running risk evaluation.</p>
+    </div>
+    <div class="live" style="flex-wrap: wrap; gap: 8px;">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+
+      <select class="section-select-pill" id="sectionSelector" title="Assigned Section">
+        <option value="3A">Section 3A</option>
+        <option value="3B">Section 3B</option>
+      </select>
+
+      <!-- FEATURE 3: ONE-CLICK CSV EXPORT BUTTON -->
+      <button class="add-btn" id="btnExportCsv" style="background:#36d889; color:#102233; font-weight:700; border:none;">
+        📤 Export Gradebook (CSV)
+      </button>
+
+      <button class="add-btn" id="btnOpenGranularCsv" style="background:#4ad4d9; color:#102233; font-weight:700; border:none;">
+        📥 Import Formative CSV
+      </button>
+      
+      <button class="add-btn" id="btnHeaderWeights" style="background:var(--bg-input); color:var(--text-primary); border:1px solid var(--border-color);">
+        ⚙️ Edit Syllabus Weights
+      </button>
+      
+      <div class="updated" id="updatedDate">Loading...</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="cards">
+    <div class="card"><small>Section Enrolled</small><h2 class="blue" id="statTotal">0</h2><p id="sectionSubLabel">Section Roster</p></div>
+    <div class="card"><small>Early High Risk</small><h2 class="red" id="statHigh">0</h2><p>Running Average &lt; 75%</p></div>
+    <div class="card"><small>Early Moderate Risk</small><h2 class="orange" id="statModerate">0</h2><p>Running Average 75–78%</p></div>
+    <div class="card"><small>Good Standing</small><h2 class="green" id="statLow">0</h2><p>Running Average &gt; 78%</p></div>
+  </div>
+
+  <!-- GRANULAR ROSTER TABLE -->
+  <div class="panel">
+    <div class="table-header" style="flex-wrap:wrap; gap:12px;">
+      <h2>Formative Student Gradebook</h2>
+      <div class="controls" style="display:flex; gap:10px; align-items:center;">
+        <input type="text" class="search-box" id="granularSearch" placeholder="Search student name or ID..." style="width:230px;">
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Student No.</th>
+          <th>Student Name</th>
+          <th>Quizzes Record</th>
+          <th>Activities Record</th>
+          <th>Attendance</th>
+          <th>Early Running Average</th>
+          <th>Predicted Standing</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="granularTableBody">
+        <tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:25px;">Loading formative records...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- =========================== MODAL 1: GRANULAR SCORE EDITOR =========================== -->
+<div class="modal" id="scoreEditorModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="width: 720px; max-height: 90vh; overflow-y:auto; background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; padding:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div>
+        <h3 style="margin:0; font-size:18px; color:#4ad4d9;">Formative Assessment Scoring Sheet</h3>
+        <small style="color:var(--text-muted); font-size:12px;" id="modalStudentHeader">Student: --</small>
+      </div>
+      <button id="closeScoreModalBtn" style="background:transparent; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
+    </div>
+
+    <!-- Attendance Input -->
+    <div style="background:rgba(0,0,0,0.2); padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.06);">
+      <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Recorded Attendance Rate (%) <span id="lblAttWeight" style="color:#36d889;">(Weight: 10%)</span></label>
+      <input type="number" id="inpAttendance" min="0" max="100" placeholder="0" style="width:120px; height:34px; padding:0 8px; font-weight:700; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-primary);">
+    </div>
+
+    <!-- Cluster: Quizzes (1-4) -->
+    <div class="assessment-cluster">
+      <div class="cluster-title">
+        <span>📝 Quizzes (Items 1 to 4) <span id="lblQuizWeight" style="color:#36d889; font-size:11px;">(Weight: 20%)</span></span>
+        <small style="font-weight:400; color:var(--text-muted);">Leave empty if not administered yet</small>
+      </div>
+      <div class="score-row-grid">
+        <div class="score-entry-cell" id="cell_q1">
+          <small>Quiz 1</small>
+          <div class="score-inputs-pair"><input type="number" id="q1_s" placeholder="-"> / <input type="number" id="q1_t" value="20"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_q2">
+          <small>Quiz 2</small>
+          <div class="score-inputs-pair"><input type="number" id="q2_s" placeholder="-"> / <input type="number" id="q2_t" value="20"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_q3">
+          <small>Quiz 3</small>
+          <div class="score-inputs-pair"><input type="number" id="q3_s" placeholder="-"> / <input type="number" id="q3_t" value="25"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_q4">
+          <small>Quiz 4</small>
+          <div class="score-inputs-pair"><input type="number" id="q4_s" placeholder="-"> / <input type="number" id="q4_t" value="30"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cluster: Activities (1-4) -->
+    <div class="assessment-cluster">
+      <div class="cluster-title">
+        <span>🎯 Practical Activities / Labs (Items 1 to 4) <span id="lblActWeight" style="color:#36d889; font-size:11px;">(Weight: 20%)</span></span>
+        <small style="font-weight:400; color:var(--text-muted);">Optional if 0% weight</small>
+      </div>
+      <div class="score-row-grid">
+        <div class="score-entry-cell" id="cell_act1">
+          <small>Activity 1</small>
+          <div class="score-inputs-pair"><input type="number" id="act1_s" placeholder="-"> / <input type="number" id="act1_t" value="50"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_act2">
+          <small>Activity 2</small>
+          <div class="score-inputs-pair"><input type="number" id="act2_s" placeholder="-"> / <input type="number" id="act2_t" value="50"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_act3">
+          <small>Activity 3</small>
+          <div class="score-inputs-pair"><input type="number" id="act3_s" placeholder="-"> / <input type="number" id="act3_t" value="50"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_act4">
+          <small>Activity 4</small>
+          <div class="score-inputs-pair"><input type="number" id="act4_s" placeholder="-"> / <input type="number" id="act4_t" value="50"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cluster: Projects & Term Exams -->
+    <div class="assessment-cluster">
+      <div class="cluster-title">
+        <span>🔬 Capstone / Projects & Term Exams</span>
+        <small style="font-weight:400; color:var(--text-muted);">Progressive inputs</small>
+      </div>
+      <div class="score-row-grid">
+        <div class="score-entry-cell" id="cell_proj1">
+          <small>Project 1</small>
+          <div class="score-inputs-pair"><input type="number" id="proj1_s" placeholder="-"> / <input type="number" id="proj1_t" value="100"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_proj2">
+          <small>Project 2</small>
+          <div class="score-inputs-pair"><input type="number" id="proj2_s" placeholder="-"> / <input type="number" id="proj2_t" value="100"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_mid">
+          <small>Midterm Exam</small>
+          <div class="score-inputs-pair"><input type="number" id="exam_mid_s" placeholder="-"> / <input type="number" id="exam_mid_t" value="100"></div>
+        </div>
+        <div class="score-entry-cell" id="cell_fin">
+          <small>Final Exam</small>
+          <div class="score-inputs-pair"><input type="number" id="exam_fin_s" placeholder="-"> / <input type="number" id="exam_fin_t" value="100"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Running Calculation Banner -->
+    <div class="calc-banner">
+      <div>
+        <h4>Early Progressive Running Average</h4>
+        <small style="color:var(--text-muted); font-size:11px;">Calculated solely using the items administered so far</small>
+      </div>
+      <span id="displayRunningAverage">0.0%</span>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button type="button" class="cancel-btn" id="cancelScoreModalBtn">Cancel</button>
+      <button type="button" class="submit-btn" id="btnSaveGranularScores" style="background:#36d889; color:#102233; font-weight:700; border:none; padding:10px 18px; border-radius:8px; cursor:pointer;">
+        💾 Save Scores & Re-evaluate Risk
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 2: SYLLABUS WEIGHTS (0% ALLOWED & ATTENDANCE INCLUDED) =========================== -->
+<div class="modal" id="weightModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="width: 520px; background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; padding:24px;">
+    <h3 style="margin:0 0 4px 0; color:#36d889;">Custom Syllabus Grade Weights</h3>
+    <p style="color:var(--text-muted); font-size:12px; margin-bottom:14px;">
+      Set your criteria distribution. Any item can be set to <strong>0%</strong> (e.g. no projects). The total must equal 100%.
+    </p>
+
+    <div class="weight-grid">
+      <div class="weight-box">
+        <label>Quizzes (%)</label>
+        <input type="number" id="wtQuiz" min="0" max="100" value="20">
+      </div>
+      <div class="weight-box">
+        <label>Activities (%)</label>
+        <input type="number" id="wtAct" min="0" max="100" value="20">
+      </div>
+      <div class="weight-box">
+        <label>Projects (%)</label>
+        <input type="number" id="wtProj" min="0" max="100" value="20">
+      </div>
+      <div class="weight-box">
+        <label>Major Exams (%)</label>
+        <input type="number" id="wtExam" min="0" max="100" value="30">
+      </div>
+      <div class="weight-box">
+        <label>Attendance (%)</label>
+        <input type="number" id="wtAtt" min="0" max="100" value="10">
+      </div>
+    </div>
+
+    <p style="font-size:12px; font-weight:700; color:#4ad4d9;" id="weightSumNotice">Total: 100%</p>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button class="cancel-btn" id="closeWeightModalBtn">Cancel</button>
+      <button class="submit-btn" id="saveWeightsBtn" style="background:#36d889; color:#102233; font-weight:700; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">Save Syllabus Weights</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 3: GRANULAR CSV BATCH IMPORT =========================== -->
+<div class="modal" id="granularCsvModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="width: 560px; background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; padding:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0; color:#4ad4d9; font-size:17px;">📥 Granular Formative CSV Batch Import</h3>
+      <button id="closeGranularCsvBtn" style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;">✕</button>
+    </div>
+    <p style="color:var(--text-muted); font-size:12px; margin-bottom:14px;">
+      Import itemized quiz and activity scores. You are <strong>not required</strong> to provide all items—empty columns are safely skipped.
+    </p>
+
+    <div style="background:rgba(0,0,0,0.25); padding:10px; border-radius:8px; margin-bottom:14px; font-size:11px; color:#36d889; font-family:monospace;">
+      Header: studentNo, attendance, quiz1, quiz2, act1, act2, midterm
+    </div>
+
+    <input type="file" id="granularCsvFileInput" accept=".csv" style="display:none;">
+    <div id="granularUploadDropzone" style="border:2px dashed rgba(74,212,217,0.4); border-radius:10px; padding:20px; text-align:center; cursor:pointer; background:rgba(0,0,0,0.15);">
+      <div style="font-size:24px; margin-bottom:4px;">📄</div>
+      <strong id="granularFileName" style="color:#4ad4d9; font-size:12px; display:block;">Click or drop your Formative Scores CSV here</strong>
+      <small style="color:var(--text-muted); font-size:11px;">Standard CSV exported from MS Excel</small>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+      <button type="button" id="btnDownloadGranularTemplate" style="background:transparent; border:none; color:#4ad4d9; font-size:12px; cursor:pointer; font-weight:700;">📄 Download Flexible Template</button>
+      <div style="display:flex; gap:10px;">
+        <button class="cancel-btn" id="cancelGranularCsvBtn">Cancel</button>
+        <button class="submit-btn" id="btnProcessGranularCsv" style="background:#4ad4d9; color:#102233; font-weight:700; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">Process Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+if (localStorage.getItem("akademiko_logged_in") !== "true") {
+  window.location.href = "../auth/login.html";
+}
+
+const currentEmail = localStorage.getItem("akademiko_email") || "";
+let allLoadedStudents = [];
+let sectionStudents = [];
+let facultyDepartment = "";
+let assignedSection = "3A";
+let selectedStudent = null;
+
+let syllabusWeights = {
+  quiz: 20,
+  act: 20,
+  proj: 20,
+  exam: 30,
+  att: 10
+};
+
+function loadSyllabusWeights() {
+  const saved = localStorage.getItem(`syllabus_weights_${currentEmail}`);
+  if (saved) {
+    try { syllabusWeights = JSON.parse(saved); } catch(e) {}
+  }
+  document.getElementById("wtQuiz").value = syllabusWeights.quiz;
+  document.getElementById("wtAct").value = syllabusWeights.act;
+  document.getElementById("wtProj").value = syllabusWeights.proj;
+  document.getElementById("wtExam").value = syllabusWeights.exam;
+  document.getElementById("wtAtt").value = syllabusWeights.att;
+
+  document.getElementById("lblQuizWeight").innerText = `(Weight: ${syllabusWeights.quiz}%)`;
+  document.getElementById("lblActWeight").innerText = `(Weight: ${syllabusWeights.act}%)`;
+  document.getElementById("lblAttWeight").innerText = `(Weight: ${syllabusWeights.att}%)`;
+}
+
+function extractCoreSection(sec) {
+  if (!sec) return "";
+  const match = String(sec).toUpperCase().match(/([0-9]+[A-Z]?|[A-Z][0-9]*)/);
+  return match ? match[0] : String(sec).trim().toUpperCase();
+}
+
+async function loadFacultyHeader() {
+  try {
+    const res = await fetch(`http://localhost:8080/api/faculty/profile/${encodeURIComponent(currentEmail)}`);
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById("facultyName").innerText = data.facultyName || "Faculty Instructor";
+      facultyDepartment = (data.department || "").trim();
+      assignedSection = (data.assignedSection || "3A").trim();
+
+      const selector = document.getElementById("sectionSelector");
+      if (selector) selector.value = extractCoreSection(assignedSection);
+
+      document.getElementById("facultyDept").innerText = `${facultyDepartment} • Section ${assignedSection}`;
+      document.getElementById("sectionSubLabel").innerText = `Enrolled in Section ${assignedSection}`;
+
+      if (data.profilePhoto) document.getElementById("facultyPhoto").src = data.profilePhoto;
+    }
+  } catch(e) {}
+}
+
+async function loadGranularRoster() {
+  try {
+    await loadFacultyHeader();
+    const res = await fetch('http://localhost:8080/api/alerts');
+    allLoadedStudents = await res.json();
+
+    if (!Array.isArray(allLoadedStudents)) return;
+
+    // Dynamically discover all existing sections (3A, 3B, 3C, etc.)
+    const availableSections = [...new Set(allLoadedStudents
+      .filter(s => !facultyDepartment || (s.course || "").toLowerCase() === facultyDepartment.toLowerCase())
+      .map(s => extractCoreSection(s.section))
+      .filter(Boolean)
+    )].sort();
+
+    const selector = document.getElementById("sectionSelector");
+    if (selector && availableSections.length > 0) {
+      selector.innerHTML = "";
+      availableSections.forEach(sec => {
+        const opt = document.createElement("option");
+        opt.value = sec;
+        opt.innerText = `Section ${sec}`;
+        if (sec === extractCoreSection(assignedSection)) opt.selected = true;
+        selector.appendChild(opt);
+      });
+    }
+
+    filterSectionStudents();
+  } catch(e) {
+    document.getElementById("granularTableBody").innerHTML = '<tr><td colspan="8" style="color:#ff6666; text-align:center; padding:20px;">Failed to connect to database.</td></tr>';
+  }
+}
+
+function filterSectionStudents() {
+  const targetCore = extractCoreSection(assignedSection);
+
+  sectionStudents = allLoadedStudents.filter(s => {
+    const courseMatches = !facultyDepartment || (s.course || "").toLowerCase() === facultyDepartment.toLowerCase();
+    const secCore = extractCoreSection(s.section);
+    return courseMatches && (secCore === targetCore || !targetCore);
+  });
+
+  updateSummaryCards(sectionStudents);
+  renderGranularTable(sectionStudents);
+}
+
+document.getElementById("sectionSelector").addEventListener("change", function() {
+  assignedSection = this.value;
+  document.getElementById("facultyDept").innerText = `${facultyDepartment} • Section ${assignedSection}`;
+  document.getElementById("sectionSubLabel").innerText = `Enrolled in Section ${assignedSection}`;
+  filterSectionStudents();
+});
+
+function updateSummaryCards(students) {
+  let high = 0, mod = 0, low = 0;
+  students.forEach(s => {
+    const avg = s.classRecord?.runningAverage ?? s.gwa ?? 0;
+    if (avg > 0 && avg < 75) high++;
+    else if (avg > 0 && avg < 78) mod++;
+    else low++;
+  });
+
+  document.getElementById("statTotal").innerText = students.length;
+  document.getElementById("statHigh").innerText = high;
+  document.getElementById("statModerate").innerText = mod;
+  document.getElementById("statLow").innerText = low;
+}
+
+function renderGranularTable(students) {
+  const tbody = document.getElementById("granularTableBody");
+  tbody.innerHTML = "";
+
+  if (!students || students.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:25px;">No students enrolled in ${facultyDepartment} Section ${assignedSection}.</td></tr>`;
+    return;
+  }
+
+  students.forEach(s => {
+    const rec = s.classRecord || {};
+    const runningAvg = rec.runningAverage ?? s.gwa ?? 0;
+    
+    // Quizzes display summary with Feature 2 low-score detection
+    const qCount = rec.quizzes ? rec.quizzes.filter(q => q.score !== null && q.score !== undefined).length : 0;
+    const hasLowQuiz = rec.quizzes && rec.quizzes.some(q => q.score !== null && q.total > 0 && (q.score / q.total) < 0.5);
+    let qDisplay = `<span style="color:var(--text-muted); font-size:11px;">None</span>`;
+    if (qCount > 0) {
+      qDisplay = hasLowQuiz 
+        ? `<span class="score-pill-tag warning">⚠️ ${qCount} Graded (&lt;50%)</span>`
+        : `<span class="score-pill-tag">${qCount} Graded</span>`;
+    }
+
+    // Activities display summary
+    const aCount = rec.activities ? rec.activities.filter(a => a.score !== null && a.score !== undefined).length : 0;
+    const aDisplay = aCount > 0 ? `<span class="score-pill-tag">${aCount} Graded</span>` : `<span style="color:var(--text-muted); font-size:11px;">None</span>`;
+
+    // Standing tag
+    let riskClass = "success";
+    let riskLabel = "Good Standing";
+    if (runningAvg > 0 && runningAvg < 75) {
+      riskClass = "danger";
+      riskLabel = "High Risk";
+    } else if (runningAvg > 0 && runningAvg < 78) {
+      riskClass = "warning";
+      riskLabel = "Moderate Risk";
+    }
+
+    const avgColor = (runningAvg < 75 && runningAvg > 0) ? "color:#ff5c63;" : "color:#36d889;";
+
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${s.studentNo || "Pending"}</strong></td>
+        <td>${s.studentName || "Anonymous Student"}</td>
+        <td>${qDisplay}</td>
+        <td>${aDisplay}</td>
+        <td>${s.attendance ?? 0}%</td>
+        <td><strong style="${avgColor} font-size:13px;">${runningAvg}%</strong></td>
+        <td><span class="badge ${riskClass}">${riskLabel}</span></td>
+        <td>
+          <button class="action edit" onclick="openScoreEditor('${s.studentNo}')">📝 Enter Scores</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+/* ========================== PROGRESSIVE RUNNING AVERAGE CALCULATION ========================== */
+function computeRunningAverage(rec) {
+  let totalWeightUsed = 0;
+  let earnedWeight = 0;
+
+  // Quizzes
+  if (rec.quizzes && rec.quizzes.length > 0 && syllabusWeights.quiz > 0) {
+    let earned = 0, total = 0;
+    rec.quizzes.forEach(q => {
+      if (q.score !== null && q.score !== undefined && !isNaN(q.score) && q.total > 0) {
+        earned += q.score;
+        total += q.total;
+      }
+    });
+    if (total > 0) {
+      const pct = (earned / total) * 100;
+      earnedWeight += (pct * (syllabusWeights.quiz / 100));
+      totalWeightUsed += (syllabusWeights.quiz / 100);
+    }
+  }
+
+  // Activities
+  if (rec.activities && rec.activities.length > 0 && syllabusWeights.act > 0) {
+    let earned = 0, total = 0;
+    rec.activities.forEach(a => {
+      if (a.score !== null && a.score !== undefined && !isNaN(a.score) && a.total > 0) {
+        earned += a.score;
+        total += a.total;
+      }
+    });
+    if (total > 0) {
+      const pct = (earned / total) * 100;
+      earnedWeight += (pct * (syllabusWeights.act / 100));
+      totalWeightUsed += (syllabusWeights.act / 100);
+    }
+  }
+
+  // Projects
+  if (rec.projects && rec.projects.length > 0 && syllabusWeights.proj > 0) {
+    let earned = 0, total = 0;
+    rec.projects.forEach(p => {
+      if (p.score !== null && p.score !== undefined && !isNaN(p.score) && p.total > 0) {
+        earned += p.score;
+        total += p.total;
+      }
+    });
+    if (total > 0) {
+      const pct = (earned / total) * 100;
+      earnedWeight += (pct * (syllabusWeights.proj / 100));
+      totalWeightUsed += (syllabusWeights.proj / 100);
+    }
+  }
+
+  // Exams
+  if (rec.exams && rec.exams.length > 0 && syllabusWeights.exam > 0) {
+    let earned = 0, total = 0;
+    rec.exams.forEach(e => {
+      if (e.score !== null && e.score !== undefined && !isNaN(e.score) && e.total > 0) {
+        earned += e.score;
+        total += e.total;
+      }
+    });
+    if (total > 0) {
+      const pct = (earned / total) * 100;
+      earnedWeight += (pct * (syllabusWeights.exam / 100));
+      totalWeightUsed += (syllabusWeights.exam / 100);
+    }
+  }
+
+  // Attendance
+  if (rec.attendanceRate !== undefined && !isNaN(rec.attendanceRate) && syllabusWeights.att > 0) {
+    earnedWeight += (rec.attendanceRate * (syllabusWeights.att / 100));
+    totalWeightUsed += (syllabusWeights.att / 100);
+  }
+
+  if (totalWeightUsed === 0) return 0.0;
+  return parseFloat(((earnedWeight / totalWeightUsed)).toFixed(1));
+}
+
+/* ========================== SCORE EDITOR MODAL & FEATURE 2 WARNINGS ========================== */
+const scoreModal = document.getElementById("scoreEditorModal");
+
+// Feature 2: Visual Highlighting helper function
+function checkAndHighlightCell(cellId, scoreId, totalId) {
+  const cell = document.getElementById(cellId);
+  const sVal = document.getElementById(scoreId).value;
+  const tVal = document.getElementById(totalId).value;
+
+  if (sVal !== "" && tVal !== "" && !isNaN(sVal) && !isNaN(tVal)) {
+    const s = parseFloat(sVal);
+    const t = parseFloat(tVal);
+    if (t > 0 && (s / t) < 0.5) {
+      cell.classList.add("low-score-warning");
+      return;
+    }
+  }
+  cell.classList.remove("low-score-warning");
+}
+
+function updateAllScoreHighlights() {
+  checkAndHighlightCell("cell_q1", "q1_s", "q1_t");
+  checkAndHighlightCell("cell_q2", "q2_s", "q2_t");
+  checkAndHighlightCell("cell_q3", "q3_s", "q3_t");
+  checkAndHighlightCell("cell_q4", "q4_s", "q4_t");
+
+  checkAndHighlightCell("cell_act1", "act1_s", "act1_t");
+  checkAndHighlightCell("cell_act2", "act2_s", "act2_t");
+  checkAndHighlightCell("cell_act3", "act3_s", "act3_t");
+  checkAndHighlightCell("cell_act4", "act4_s", "act4_t");
+
+  checkAndHighlightCell("cell_proj1", "proj1_s", "proj1_t");
+  checkAndHighlightCell("cell_proj2", "proj2_s", "proj2_t");
+  checkAndHighlightCell("cell_mid", "exam_mid_s", "exam_mid_t");
+  checkAndHighlightCell("cell_fin", "exam_fin_s", "exam_fin_t");
+}
+
+function openScoreEditor(studentNo) {
+  selectedStudent = sectionStudents.find(s => s.studentNo === studentNo);
+  if (!selectedStudent) return;
+
+  document.getElementById("modalStudentHeader").innerText = `Student: ${selectedStudent.studentName} (${selectedStudent.studentNo})`;
+  document.getElementById("inpAttendance").value = selectedStudent.attendance ?? 0;
+
+  const rec = selectedStudent.classRecord || {};
+
+  const setPair = (sId, tId, item) => {
+    document.getElementById(sId).value = (item && item.score !== null && item.score !== undefined) ? item.score : "";
+    document.getElementById(tId).value = (item && item.total) ? item.total : document.getElementById(tId).value;
+  };
+
+  setPair("q1_s", "q1_t", rec.quizzes?.[0]);
+  setPair("q2_s", "q2_t", rec.quizzes?.[1]);
+  setPair("q3_s", "q3_t", rec.quizzes?.[2]);
+  setPair("q4_s", "q4_t", rec.quizzes?.[3]);
+
+  setPair("act1_s", "act1_t", rec.activities?.[0]);
+  setPair("act2_s", "act2_t", rec.activities?.[1]);
+  setPair("act3_s", "act3_t", rec.activities?.[2]);
+  setPair("act4_s", "act4_t", rec.activities?.[3]);
+
+  setPair("proj1_s", "proj1_t", rec.projects?.[0]);
+  setPair("proj2_s", "proj2_t", rec.projects?.[1]);
+
+  setPair("exam_mid_s", "exam_mid_t", rec.exams?.[0]);
+  setPair("exam_fin_s", "exam_fin_t", rec.exams?.[1]);
+
+  updateAllScoreHighlights();
+  updateLiveRunningDisplay();
+  scoreModal.style.display = "flex";
+}
+
+function getActiveRecordFromInputs() {
+  const getVal = id => {
+    const v = document.getElementById(id).value;
+    return v !== "" ? parseFloat(v) : null;
+  };
+
+  const quizzes = [
+    { score: getVal("q1_s"), total: getVal("q1_t") || 20, title: "Quiz 1" },
+    { score: getVal("q2_s"), total: getVal("q2_t") || 20, title: "Quiz 2" },
+    { score: getVal("q3_s"), total: getVal("q3_t") || 25, title: "Quiz 3" },
+    { score: getVal("q4_s"), total: getVal("q4_t") || 30, title: "Quiz 4" }
+  ].filter(i => i.score !== null);
+
+  const activities = [
+    { score: getVal("act1_s"), total: getVal("act1_t") || 50, title: "Activity 1" },
+    { score: getVal("act2_s"), total: getVal("act2_t") || 50, title: "Activity 2" },
+    { score: getVal("act3_s"), total: getVal("act3_t") || 50, title: "Activity 3" },
+    { score: getVal("act4_s"), total: getVal("act4_t") || 50, title: "Activity 4" }
+  ].filter(i => i.score !== null);
+
+  const projects = [
+    { score: getVal("proj1_s"), total: getVal("proj1_t") || 100, title: "Project 1" },
+    { score: getVal("proj2_s"), total: getVal("proj2_t") || 100, title: "Project 2" }
+  ].filter(i => i.score !== null);
+
+  const exams = [
+    { score: getVal("exam_mid_s"), total: getVal("exam_mid_t") || 100, term: "Midterm Exam" },
+    { score: getVal("exam_fin_s"), total: getVal("exam_fin_t") || 100, term: "Final Exam" }
+  ].filter(i => i.score !== null);
+
+  const attendanceRate = getVal("inpAttendance") ?? 0;
+
+  return { quizzes, activities, projects, exams, attendanceRate };
+}
+
+function updateLiveRunningDisplay() {
+  updateAllScoreHighlights();
+  const rec = getActiveRecordFromInputs();
+  const running = computeRunningAverage(rec);
+  document.getElementById("displayRunningAverage").innerText = `${running}%`;
+}
+
+document.querySelectorAll("#scoreEditorModal input").forEach(input => {
+  input.addEventListener("input", updateLiveRunningDisplay);
+});
+
+document.getElementById("closeScoreModalBtn").onclick = () => scoreModal.style.display = "none";
+document.getElementById("cancelScoreModalBtn").onclick = () => scoreModal.style.display = "none";
+
+// Save granular record to backend & update risk prediction live
+document.getElementById("btnSaveGranularScores").onclick = async () => {
+  if (!selectedStudent) return;
+
+  const rec = getActiveRecordFromInputs();
+  const btn = document.getElementById("btnSaveGranularScores");
+  btn.innerText = "Evaluating & Saving...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('http://localhost:8080/api/faculty/save-class-record', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentNo: selectedStudent.studentNo,
+        classRecord: rec,
+        syllabusWeights: syllabusWeights,
+        facultyEmail: currentEmail
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert(`✅ ${data.message}`);
+      scoreModal.style.display = "none";
+      loadGranularRoster();
+    } else {
+      alert("⚠️ " + data.message);
+    }
+  } catch(e) {
+    alert("Server communication error.");
+  } finally {
+    btn.innerText = "💾 Save Scores & Re-evaluate Risk";
+    btn.disabled = false;
+  }
+};
+
+/* ========================== FEATURE 3: ONE-CLICK CLASS RECORD CSV EXPORT ========================== */
+document.getElementById("btnExportCsv").addEventListener("click", () => {
+  if (!sectionStudents || sectionStudents.length === 0) {
+    alert("No student records available to export for Section " + assignedSection);
+    return;
+  }
+
+  // Header row
+  let csvContent = "\uFEFFStudent No,Student Name,Program,Section,Attendance (%),Running GWA (%),Predicted Standing,Quiz 1,Quiz 2,Quiz 3,Quiz 4,Activity 1,Activity 2,Activity 3,Activity 4,Project 1,Project 2,Midterm Exam,Final Exam\r\n";
+
+  sectionStudents.forEach(s => {
+    const rec = s.classRecord || {};
+    const q1 = rec.quizzes?.[0]?.score ?? "";
+    const q2 = rec.quizzes?.[1]?.score ?? "";
+    const q3 = rec.quizzes?.[2]?.score ?? "";
+    const q4 = rec.quizzes?.[3]?.score ?? "";
+
+    const a1 = rec.activities?.[0]?.score ?? "";
+    const a2 = rec.activities?.[1]?.score ?? "";
+    const a3 = rec.activities?.[2]?.score ?? "";
+    const a4 = rec.activities?.[3]?.score ?? "";
+
+    const p1 = rec.projects?.[0]?.score ?? "";
+    const p2 = rec.projects?.[1]?.score ?? "";
+
+    const mid = rec.exams?.[0]?.score ?? "";
+    const fin = rec.exams?.[1]?.score ?? "";
+
+    const cleanName = `"${(s.studentName || '').replace(/"/g, '""')}"`;
+    const cleanCourse = `"${(s.course || '').replace(/"/g, '""')}"`;
+    const runningAvg = rec.runningAverage ?? s.gwa ?? 0;
+    const att = rec.attendanceRate ?? s.attendance ?? 0;
+    const standing = s.riskLevel || (runningAvg < 75 ? "High Risk" : (runningAvg < 78 ? "Moderate Risk" : "Low Risk"));
+
+    const row = [
+      s.studentNo || "",
+      cleanName,
+      cleanCourse,
+      s.section || assignedSection,
+      att,
+      runningAvg,
+      standing,
+      q1, q2, q3, q4,
+      a1, a2, a3, a4,
+      p1, p2,
+      mid, fin
+    ].join(",");
+
+    csvContent += row + "\r\n";
+  });
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Class_Record_${facultyDepartment || 'BSED'}_Section_${assignedSection}_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+});
+
+/* ========================== SYLLABUS WEIGHTS MODAL (0% ALLOWED) ========================== */
+const weightModal = document.getElementById("weightModal");
+document.getElementById("btnHeaderWeights").onclick = () => weightModal.style.display = "flex";
+document.getElementById("openWeightModalBtn").onclick = (e) => { e.preventDefault(); weightModal.style.display = "flex"; };
+document.getElementById("closeWeightModalBtn").onclick = () => weightModal.style.display = "none";
+
+document.getElementById("saveWeightsBtn").onclick = () => {
+  const q = parseFloat(document.getElementById("wtQuiz").value) || 0;
+  const a = parseFloat(document.getElementById("wtAct").value) || 0;
+  const p = parseFloat(document.getElementById("wtProj").value) || 0;
+  const e = parseFloat(document.getElementById("wtExam").value) || 0;
+  const att = parseFloat(document.getElementById("wtAtt").value) || 0;
+
+  const sum = q + a + p + e + att;
+  if (sum !== 100) {
+    alert(`Weights currently total ${sum}%. The total criteria must sum to exactly 100%. Any individual item can be 0%.`);
+    return;
+  }
+
+  syllabusWeights = { quiz: q, act: a, proj: p, exam: e, att: att };
+  localStorage.setItem(`syllabus_weights_${currentEmail}`, JSON.stringify(syllabusWeights));
+  loadSyllabusWeights();
+  alert("✅ Syllabus weights updated!");
+  weightModal.style.display = "none";
+  filterSectionStudents();
+};
+
+/* ========================== GRANULAR CSV BATCH IMPORT ========================== */
+const csvModal = document.getElementById("granularCsvModal");
+const csvDropzone = document.getElementById("granularUploadDropzone");
+const csvInput = document.getElementById("granularCsvFileInput");
+const csvName = document.getElementById("granularFileName");
+
+document.getElementById("btnOpenGranularCsv").onclick = () => {
+  csvModal.style.display = "flex";
+  csvInput.value = "";
+  csvName.innerText = "Click or drop your Formative Scores CSV here";
+};
+
+document.getElementById("closeGranularCsvBtn").onclick = () => csvModal.style.display = "none";
+document.getElementById("cancelGranularCsvBtn").onclick = () => csvModal.style.display = "none";
+csvDropzone.onclick = () => csvInput.click();
+
+csvInput.onchange = () => {
+  if (csvInput.files.length > 0) {
+    csvName.innerText = `Selected: ${csvInput.files[0].name}`;
+  }
+};
+
+document.getElementById("btnDownloadGranularTemplate").onclick = () => {
+  let csv = "\uFEFFstudentNo,attendance,quiz1,quiz2,quiz3,act1,act2,midterm\r\n";
+  sectionStudents.forEach(s => {
+    csv += `${s.studentNo || ''},90,18,17,,45,,\r\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Section_${assignedSection}_Formative_Template.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+document.getElementById("btnProcessGranularCsv").onclick = async () => {
+  if (!csvInput.files || csvInput.files.length === 0) {
+    alert("Please select a CSV file first.");
+    return;
+  }
+
+  const file = csvInput.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    let text = e.target.result;
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+    const lines = text.split(/\r\n|\n/).filter(l => l.trim() !== "");
+    if (lines.length < 2) {
+      alert("CSV file has no data rows.");
+      return;
+    }
+
+    const delim = lines[0].includes(';') ? ';' : ',';
+    const headers = lines[0].split(delim).map(h => h.trim().toLowerCase().replace(/["']/g, ''));
+    const idIdx = headers.findIndex(h => h === 'studentno' || h === 'student_no' || h === 'id');
+
+    if (idIdx === -1) {
+      alert("CSV must contain a 'studentNo' column.");
+      return;
+    }
+
+    const records = [];
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(delim).map(p => p.trim().replace(/["']/g, ''));
+      const studentNo = parts[idIdx];
+      if (!studentNo) continue;
+
+      const quizzes = [];
+      const activities = [];
+      let attendanceRate = undefined;
+
+      headers.forEach((h, colIdx) => {
+        const val = parts[colIdx];
+        if (val === "" || val === undefined || isNaN(val)) return;
+        const num = parseFloat(val);
+
+        if (h === 'attendance' || h === 'att') attendanceRate = num;
+        else if (h.includes('quiz') || h.startsWith('q')) quizzes.push({ score: num, total: 20, title: h.toUpperCase() });
+        else if (h.includes('act') || h.startsWith('a')) activities.push({ score: num, total: 50, title: h.toUpperCase() });
+      });
+
+      records.push({ studentNo, attendanceRate, quizzes, activities });
+    }
+
+    try {
+      const res = await fetch('http://localhost:8080/api/faculty/batch-granular-import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          records,
+          syllabusWeights,
+          facultyEmail: currentEmail
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`✅ ${data.message}`);
+        csvModal.style.display = "none";
+        loadGranularRoster();
+      } else {
+        alert("⚠️ " + data.message);
+      }
+    } catch(err) {
+      alert("Error uploading CSV.");
+    }
+  };
+
+  reader.readAsText(file);
+};
+
+/* ========================== SEARCH FILTER ========================== */
+document.getElementById("granularSearch").addEventListener("keyup", function() {
+  const val = this.value.toLowerCase();
+  document.querySelectorAll("#granularTableBody tr").forEach(row => {
+    row.style.display = row.innerText.toLowerCase().includes(val) ? "" : "none";
+  });
+});
+
+document.getElementById("logoutBtn").onclick = (e) => {
+  e.preventDefault();
+  if (confirm("Logout of Faculty Portal?")) {
+    localStorage.removeItem("akademiko_logged_in");
+    localStorage.removeItem("akademiko_email");
+    window.location.href = "../auth/login.html";
+  }
+};
+
+const today = new Date();
+document.getElementById("updatedDate").innerHTML = "Updated: " + today.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+
+window.onload = () => {
+  loadSyllabusWeights();
+  loadGranularRoster();
+};
+</script>
+</body>
+</html>

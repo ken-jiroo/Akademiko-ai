@@ -1,0 +1,32 @@
+[
+  {
+    "Model Architecture": "Baseline (Ridge / Logistic)",
+    "Train RMSE": 2.158,
+    "Val RMSE": 2.183,
+    "Test RMSE": 2.183,
+    "Val Acc (%)": 88.89,
+    "Test Acc (%)": 90.0,
+    "Test F1-Score": 0.886,
+    "Panel Status": "Baseline Reference"
+  },
+  {
+    "Model Architecture": "Random Forest (Ensemble)",
+    "Train RMSE": 1.515,
+    "Val RMSE": 3.762,
+    "Test RMSE": 3.661,
+    "Val Acc (%)": 85.56,
+    "Test Acc (%)": 86.11,
+    "Test F1-Score": 0.819,
+    "Panel Status": "Non-Linear Baseline"
+  },
+  {
+    "Model Architecture": "Artificial Neural Network (ANN)",
+    "Train RMSE": 2.056,
+    "Val RMSE": 2.059,
+    "Test RMSE": 2.077,
+    "Val Acc (%)": 90.56,
+    "Test Acc (%)": 88.89,
+    "Test F1-Score": 0.876,
+    "Panel Status": "SELECTED DEEP LEARNING MODEL"
+  }
+]

@@ -1,0 +1,107 @@
+/* ======================== THEME DEFINITIONS ======================== */
+:root {
+  --bg-body: #0e1b2b;
+  --bg-sidebar: #0a1624;
+  --bg-panel: #182636;
+  --bg-card: #182636;
+  --bg-input: #223244;
+  --bg-subtle: #16263a;
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --text-primary: #ffffff;
+  --text-secondary: #c6d0da;
+  --text-muted: #8e99a5;
+  --accent-green: #36d889;
+  --accent-blue: #35b7ff;
+  --scrollbar-track: rgba(255, 255, 255, 0.02);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] {
+  --bg-body: #f1f5f9;
+  --bg-sidebar: #ffffff;
+  --bg-panel: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #e2e8f0;
+  --bg-subtle: #f8fafc;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --accent-green: #16a34a;
+  --accent-blue: #0284c7;
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+}
+
+/* ======================== GLOBAL OVERRIDES ======================== */
+body {
+  background: var(--bg-body) !important;
+  color: var(--text-primary) !important;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.sidebar {
+  background: var(--bg-sidebar) !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+.panel, .card, .table-card, .preview-card {
+  background: var(--bg-panel) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.panel-title {
+  color: var(--text-secondary) !important;
+}
+
+.search-box, .search, select, input[type="text"], input[type="email"], input[type="password"] {
+  background: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.search-box::placeholder, .search::placeholder {
+  color: var(--text-muted) !important;
+}
+
+table th {
+  color: var(--text-muted) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+table td {
+  border-bottom-color: var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-mini-profile {
+  background: var(--bg-subtle) !important;
+  border-color: var(--border-color) !important;
+}
+
+.admin-mini-info h4 {
+  color: var(--text-primary) !important;
+}
+
+/* Toggle Switch Button Styling */
+.theme-switch-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.theme-switch-btn:hover {
+  transform: scale(1.05);
+}

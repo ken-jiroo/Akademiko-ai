@@ -1,138 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AkademikoAI | Students</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
-body{ background:#0e1b2b; color:white; display:flex; min-height:100vh; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AkademikoAI | Students</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Modular Asset Pipeline -->
+  <link rel="stylesheet" href="../assets/css/theme.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/admin-shared.css">
+  
+  <script src="../assets/js/route-guard.js"></script>
+  <script src="../assets/js/theme.js"></script>
 
-/* SIDEBAR */
-.sidebar{ width:250px; height:100vh; background:#0a1624; position:fixed; left:0; top:0; padding:25px 18px; border-right:1px solid rgba(255,255,255,.05); z-index:10; }
-.logo{ display:flex; align-items:center; gap:12px; margin-bottom:40px; }
-.logo-box{ width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,#45d9d8,#36d889); display:flex; justify-content:center; align-items:center; font-weight:800; color:#102233; }
-.logo h2{ font-size:24px; font-weight:800; }
-.logo span{ color:#36d889; }
-
-/* DYNAMIC ADMIN MINI PROFILE */
-.admin-mini-profile{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:#16263a;
-  padding:10px 14px;
-  border-radius:12px;
-  margin-bottom:20px;
-  border:1px solid rgba(255,255,255,.05);
-}
-.admin-mini-profile img{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  object-fit:cover;
-  border:2px solid #36d889;
-}
-.admin-mini-info h4{
-  font-size:13px;
-  font-weight:700;
-  color:#fff;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:130px;
-}
-.admin-mini-info small{
-  font-size:11px;
-  color:#36d889;
-}
-
-.sidebar-title{ margin-top:20px; margin-bottom:12px; font-size:12px; text-transform:uppercase; color:#7f8d9d; font-weight:700; }
-.menu{ list-style:none; }
-.menu li{ margin-bottom:8px; }
-.menu a{ display:flex; align-items:center; gap:12px; padding:14px 15px; text-decoration:none; color:#b4c0ca; border-radius:10px; transition:.3s; }
-.menu a:hover{ background:#1a293c; }
-.active{ background:#36d889; color:#102233 !important; font-weight:700; }
-
-/* MAIN */
-.main{ margin-left:250px; width:calc(100% - 250px); padding:30px; }
-.header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
-.header h1{ font-size:36px; font-weight:800; }
-.header p{ margin-top:8px; color:#8b97a3; }
-
-/* SUMMARY CARDS */
-.cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:30px; }
-.card{ background:#182636; border-radius:18px; padding:22px; border:1px solid rgba(255,255,255,.05); }
-.card small{ display:block; margin-bottom:12px; color:#95a1ac; }
-.card h2{ font-size:42px; margin-bottom:10px; }
-.blue{ color:#49b9ff; }
-.green{ color:#36d889; }
-.orange{ color:#ffb22d; }
-.red{ color:#ff6969; }
-
-/* TABLE CARD */
-.table-card{ background:#182636; padding:25px; border-radius:18px; border:1px solid rgba(255,255,255,.05); }
-.table-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; }
-.table-header h2{ font-size:24px; }
-.controls{ display:flex; gap:12px; }
-.search{ width:280px; padding:13px 18px; background:#223244; border:none; border-radius:10px; outline:none; color:white; }
-.search::placeholder{ color:#90a0ae; }
-.add-btn{ background:#36d889; color:#102233; border:none; padding:13px 22px; border-radius:10px; cursor:pointer; font-weight:700; font-size:15px; }
-.add-btn:hover{ opacity:.9; }
-
-/* TABLE */
-table{ width:100%; border-collapse:collapse; }
-th{ text-align:left; padding:18px; color:#8f9dac; font-size:14px; border-bottom:1px solid rgba(255,255,255,.08); }
-td{ padding:18px; border-bottom:1px solid rgba(255,255,255,.05); }
-.status{ padding:7px 15px; border-radius:20px; font-size:13px; font-weight:700; }
-.active-status{ background:rgba(54,216,137,.15); color:#36d889; }
-.pending-status{ background:rgba(255,178,45,.15); color:#ffb22d; }
-.inactive-status{ background:rgba(255,91,91,.15); color:#ff6666; }
-.action{ padding:8px 14px; border:none; border-radius:8px; cursor:pointer; font-size:13px; margin-right:6px; font-weight:600; }
-.view{ background:#3ba7ff; color:white; }
-.edit{ background:#ffb22d; color:#102233; }
-.delete{ background:#ff5f63; color:white; }
-.action:hover{ opacity:.9; }
-
-/* BASE MODAL */
-.modal{ display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:100; }
-.modal-content{ background:#182636; padding:30px; border-radius:18px; width:420px; border:1px solid rgba(255,255,255,0.1); max-height:90vh; overflow-y:auto; }
-.modal-content h3{ margin-bottom:20px; font-size:22px; }
-.form-group{ margin-bottom:15px; text-align:left; }
-.form-group label{ display:block; font-size:13px; color:#95a1ac; margin-bottom:6px; font-weight:600; }
-.form-group input{ width:100%; padding:12px 15px; border-radius:10px; border:1px solid rgba(255,255,255,.08); background:#0e1b2b; color:white; outline:none; }
-.modal-actions{ display:flex; gap:10px; margin-top:20px; }
-.modal-actions button{ flex:1; padding:12px; border-radius:10px; border:none; font-weight:700; cursor:pointer; }
-.cancel-btn{ background:#223244; color:white; }
-.submit-btn{ background:#36d889; color:#102233; }
-
-/* PROFILE VIEW MODAL STYLING */
-.profile-modal{ width:600px; }
-.view-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
-.metric-box{ background:#0e1b2b; border:1px solid rgba(255,255,255,.06); padding:12px 15px; border-radius:12px; }
-.metric-box small{ color:#8b97a3; font-size:11px; text-transform:uppercase; font-weight:700; display:block; margin-bottom:4px; }
-.metric-box span{ font-size:16px; font-weight:700; }
-
-.factors-section{ margin-top:15px; border-top:1px solid rgba(255,255,255,.06); padding-top:15px; }
-.factor-bar-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:13px; }
-.factor-label{ display:flex; align-items:center; gap:8px; color:#cdd6e0; width:170px; }
-.factor-meter{ flex:1; height:7px; background:#0e1b2b; border-radius:10px; overflow:hidden; margin:0 12px; }
-.factor-fill{ height:100%; border-radius:10px; }
-.factor-value-text{ width:80px; text-align:right; font-size:12px; font-weight:600; color:#8e99a5; }
-
-.notes-box{ background:#0e1b2b; border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:12px; font-size:13px; color:#d2dae2; min-height:50px; line-height:1.5; }
-
-@media (max-width: 768px) {
-  .sidebar{ width:90px; }
-  .sidebar h2, .sidebar-title, .admin-mini-info{ display:none; }
-  .admin-mini-profile{ justify-content:center; padding:8px; }
-  .menu a{ justify-content:center; }
-  .main{ margin-left:90px; width:calc(100% - 90px); }
-  .cards{ grid-template-columns:1fr; }
-  .header{ flex-direction:column; align-items:flex-start; gap:15px; }
-}
-</style>
+  <style>
+    .archive-toggle-btn {
+      background: var(--bg-input, #1e2c3c);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      color: var(--text-primary, #ffffff);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .archive-toggle-btn:hover {
+      border-color: #ffb22d;
+      color: #ffb22d;
+    }
+    .archive-toggle-btn.active {
+      background: rgba(255, 178, 45, 0.15);
+      border-color: #ffb22d;
+      color: #ffb22d;
+    }
+    .badge-archived {
+      background: rgba(255, 178, 45, 0.15);
+      color: #ffb22d;
+      border: 1px solid rgba(255, 178, 45, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .action.restore {
+      background: rgba(54, 216, 137, 0.15);
+      color: #36d889;
+      border: 1px solid rgba(54, 216, 137, 0.3);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .action.restore:hover {
+      background: #36d889;
+      color: #102233;
+    }
+    .input-error-msg {
+      color: #ff5c63;
+      font-size: 11px;
+      margin-top: 4px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
@@ -142,7 +78,6 @@ td{ padding:18px; border-bottom:1px solid rgba(255,255,255,.05); }
     <h2>Akademiko<span>AI</span></h2>
   </div>
 
-  <!-- Dynamic Admin Mini Profile -->
   <div class="admin-mini-profile">
     <img src="https://ui-avatars.com/api/?name=Admin&background=223244&color=36d889" id="sidebarAdminPhoto" alt="Avatar">
     <div class="admin-mini-info">
@@ -153,94 +88,180 @@ td{ padding:18px; border-bottom:1px solid rgba(255,255,255,.05); }
 
   <div class="sidebar-title">Dashboard</div>
   <ul class="menu">
-    <li><a href="admin-dashboard.html">🏠 Home</a></li>
-    <li><a href="admin-students.html" class="active">👨‍🎓 Students</a></li>
-    <li><a href="admin-risk-monitor.html">📊 Risk Monitor</a></li>
-    <li><a href="admin-analytics.html">📈 Analytics</a></li>
-    <li><a href="admin-alerts.html">🔔 Alerts</a></li>
+    <li><a href="admin-dashboard.html"> Home</a></li>
+    <li><a href="admin-students.html" class="active"> Students</a></li>
+    <li><a href="admin-risk-monitor.html"> Risk Monitor</a></li>
+    <li><a href="admin-analytics.html"> Analytics</a></li>
+    <li><a href="admin-alerts.html"> Alerts</a></li>
   </ul>
   <div class="sidebar-title">System</div>
   <ul class="menu">
-    <li><a href="admin-reports.html">📄 Reports</a></li>
+    <li><a href="admin-reports.html"> Reports</a></li>
     <li><a href="admin-settings.html">⚙ Settings</a></li>
-    <li><a href="login.html">🚪 Logout</a></li>
+    <li><a href="login.html"> Logout</a></li>
   </ul>
 </div>
 
 <div class="main">
   <div class="header">
     <div>
-      <h1>Student Management</h1>
-      <p>Manage all registered students in the AkademikoAI system.</p>
+      <h1 id="pageTitleHeading">Student Management</h1>
+      <p id="pageSubHeading">Manage all registered students in the AkademikoAI system.</p>
     </div>
-    <button class="add-btn" id="openModalBtn">+ Add Student</button>
+    <div class="live" style="flex-wrap: wrap; gap: 8px;">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+
+      <!-- CSV BATCH ENROLLMENT BUTTON -->
+      <button class="add-btn" id="btnOpenCsvBatchModal" style="background:#4ad4d9; color:#102233; font-weight:700; border:none;">
+        📥 Import Students (CSV)
+      </button>
+
+      <button class="add-btn" id="openModalBtn">+ Add Student</button>
+    </div>
   </div>
 
   <!-- SUMMARY CARDS -->
   <div class="cards">
-    <div class="card"><small>Total Students</small><h2 class="blue" id="statTotal">0</h2></div>
-    <div class="card"><small>Active Students</small><h2 class="green" id="statActive">0</h2></div>
-    <div class="card"><small>Pending Profiles</small><h2 class="orange" id="statInactive">0</h2></div>
-    <div class="card"><small>High Risk Students</small><h2 class="red" id="statHigh">0</h2></div>
+    <div class="card"><small id="lblTotalCard">Enrolled Cohort</small><h2 class="blue" id="statTotal">0</h2></div>
+    <div class="card"><small>Active</small><h2 class="green" id="statActive">0</h2></div>
+    <div class="card"><small>Pending</small><h2 class="orange" id="statInactive">0</h2></div>
+    <div class="card"><small id="lblFourthCard">High Risk</small><h2 class="red" id="statHigh">0</h2></div>
   </div>
 
   <!-- TABLE CARD -->
   <div class="table-card">
-    <div class="table-header">
-      <h2>Student Records</h2>
-      <div class="controls">
-        <input type="text" class="search" placeholder="Search student...">
+    <div class="table-header" style="flex-wrap: wrap; gap: 12px;">
+      <h2 id="tableHeaderTitle">Active Student Records</h2>
+      <div class="controls" style="display:flex; gap:10px; align-items:center;">
+        <button type="button" class="archive-toggle-btn" id="btnToggleArchiveView">
+          <span id="archiveToggleIcon">📦</span> <span id="archiveToggleText">View Archived Students</span>
+        </button>
+        <input type="text" class="search" placeholder="Search student name or ID..." style="width:230px;">
       </div>
     </div>
 
     <table>
       <thead>
-        <tr>
+        <tr id="tableHeaderRow">
           <th>Student No.</th>
           <th>Student Name</th>
-          <th>Course / Section</th>
-          <th>Email Address</th>
+          <th>Course & Section</th>
+          <th>Institutional Email</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody id="studentTableBody">
-        <tr><td colspan="6" style="text-align: center; color: #7d8994;">Loading records...</td></tr>
+        <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading records...</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- ADD STUDENT MODAL -->
+<!-- =========================== MODAL 1: ADD SINGLE STUDENT =========================== -->
 <div class="modal" id="addStudentModal">
-  <div class="modal-content">
+  <div class="modal-content" style="width: 480px;">
     <h3>Add New Student</h3>
-    <div class="form-group">
+    
+    <div class="form-group" style="margin-bottom:12px;">
       <label>Student No.</label>
-      <input type="text" id="newStudentNo" placeholder="e.g. 23-22-128">
+      <input type="text" id="newStudentNo" placeholder="e.g. 23-20-301" required>
     </div>
-    <div class="form-group">
+
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Full Name <span style="font-size:11px; color:var(--text-muted);">(Letters, spaces, and dots only)</span></label>
+      <input type="text" id="newStudentName" placeholder="e.g. JUAN D. DELA CRUZ" required>
+      <div class="input-error-msg" id="nameErrorMsg">⚠️ Numbers and symbols (@, #, 1-9, etc.) are strictly prohibited.</div>
+    </div>
+
+    <div class="form-group" style="margin-bottom:12px;">
       <label>Institutional Email</label>
-      <input type="email" id="newEmail" placeholder="student@udm.edu.ph">
+      <input type="email" id="newStudentEmail" placeholder="e.g. juan.delacruz_301@udm.edu.ph" required>
     </div>
-    <div class="form-group">
-      <label>Default Password</label>
-      <input type="text" id="newPassword" value="UDM2026!">
+
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>BSED Program / Major</label>
+      <select id="newStudentCourse" class="search-box" style="width:100%; height:44px; border-radius:10px; background:var(--bg-input); color:var(--text-primary); border:1px solid var(--border-color); padding: 0 12px; outline:none;">
+        <option value="BSED - English">BSED - English</option>
+        <option value="BSED - Mathematics">BSED - Mathematics</option>
+        <option value="BSED - Physical Education">BSED - Physical Education</option>
+        <option value="BSED - General Science">BSED - General Science</option>
+        <option value="BSED - Social Studies">BSED - Social Studies</option>
+      </select>
     </div>
-    <div class="modal-actions">
-      <button class="cancel-btn" id="closeModalBtn">Cancel</button>
-      <button class="submit-btn" id="saveStudentBtn">Create Account</button>
+
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Assigned Section</label>
+      <select id="newStudentSection" class="search-box" style="width:100%; height:44px; border-radius:10px; background:var(--bg-input); color:var(--text-primary); border:1px solid var(--border-color); padding: 0 12px; outline:none;">
+        <option value="3A">Section 3A</option>
+        <option value="3B">Section 3B</option>
+        <option value="3C">Section 3C</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Default Password <span style="font-size:11px; color:var(--text-muted);">(Will be securely hashed via Bcrypt)</span></label>
+      <input type="text" id="newStudentPassword" value="UDM2026!" placeholder="UDM2026!" readonly style="color:var(--text-muted); background:rgba(0,0,0,0.2);">
+    </div>
+
+    <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+      <button type="button" class="cancel-btn" id="cancelAddStudentBtn">Cancel</button>
+      <button type="button" class="submit-btn" id="confirmAddStudentBtn">Create Account</button>
     </div>
   </div>
 </div>
 
-<!-- VIEW STUDENT PROFILE MODAL -->
+<!-- =========================== MODAL 2: BATCH CSV ENROLLMENT =========================== -->
+<div class="modal" id="csvBatchModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999; justify-content:center; align-items:center;">
+  <div class="modal-content" style="width: 560px; background:var(--bg-panel, #162232); border:1px solid var(--border-color, rgba(255,255,255,0.1)); border-radius:14px; padding:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0; color:#4ad4d9; font-size:18px;">📥 Batch Enroll Students via CSV</h3>
+      <button id="closeCsvBatchBtn" style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;">✕</button>
+    </div>
+    <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
+      Upload a class roster to automatically create student accounts, default credentials, and baseline academic records in bulk.
+    </p>
+
+    <div style="background:rgba(0,0,0,0.25); padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.06);">
+      <small style="color:var(--text-muted); display:block; margin-bottom:4px;">Expected Header Format:</small>
+      <code style="font-size:11px; color:#36d889;">studentNo, studentName, email, course, section</code>
+      <small style="color:var(--text-muted); display:block; margin-top:6px;">
+        Example: <span style="color:#ffffff;">23-20-401, MARIA L. SANTOS, maria.santos@udm.edu.ph, BSED - English, 3A</span>
+      </small>
+    </div>
+
+    <div class="form-group" style="margin-bottom:18px;">
+      <input type="file" id="batchCsvFileInput" accept=".csv" style="display:none;">
+      <div id="batchCsvUploadBox" style="border: 2px dashed rgba(74, 212, 217, 0.4); border-radius: 10px; padding: 22px; text-align: center; cursor: pointer; background: rgba(0,0,0,0.15); transition: all 0.2s ease;">
+        <div style="font-size:26px; margin-bottom:6px;">📄</div>
+        <strong id="batchCsvFileNameDisplay" style="color:#4ad4d9; font-size:13px; display:block;">Click or drop your Enrollment .CSV file here</strong>
+        <small style="color:var(--text-muted); font-size:11px;">Standard CSV exported from MS Excel / Google Sheets</small>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+      <button type="button" id="btnDownloadEnrollTemplate" style="background:transparent; border:none; color:#4ad4d9; font-size:12px; cursor:pointer; font-weight:700;">
+        📄 Download Enrollment Template
+      </button>
+      <div style="display:flex; gap:10px;">
+        <button class="cancel-btn" id="cancelCsvBatchBtn" style="padding:8px 14px; border-radius:8px; cursor:pointer;">Cancel</button>
+        <button class="submit-btn" id="btnProcessBatchCsv" style="background:#4ad4d9; color:#102233; font-weight:700; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">
+          Upload & Enroll Cohort
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================== MODAL 3: VIEW STUDENT PROFILE =========================== -->
 <div class="modal" id="viewProfileModal">
   <div class="modal-content profile-modal">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
       <div>
         <h3 id="viewStudentName" style="margin-bottom:4px;">Student Name</h3>
-        <p id="viewStudentSub" style="color:#8b97a3; font-size:13px;">No. 2026-0000 • BEED 3A</p>
+        <p id="viewStudentSub" style="color:var(--text-muted); font-size:13px;">No. 2026-0000 • BEED 3A</p>
       </div>
       <span class="status" id="viewRiskBadge" style="font-size:12px;">--</span>
     </div>
@@ -248,12 +269,12 @@ td{ padding:18px; border-bottom:1px solid rgba(255,255,255,.05); }
     <div class="view-grid">
       <div class="metric-box"><small>Email Address</small><span id="viewEmail" style="font-size:13px;">--</span></div>
       <div class="metric-box"><small>Location</small><span id="viewLocation" style="font-size:13px;">--</span></div>
-      <div class="metric-box"><small>General Weighted Average</small><span id="viewGwa">--</span></div>
-      <div class="metric-box"><small>Attendance Rate</small><span id="viewAttendance">--</span></div>
+      <div class="metric-box"><small>General Weighted Average</small><span id="viewGwa">0%</span></div>
+      <div class="metric-box"><small>Attendance Rate</small><span id="viewAttendance">0%</span></div>
     </div>
 
     <div class="factors-section">
-      <h4 style="font-size:14px; margin-bottom:12px; color:#c6d0da;">External Impact Factors</h4>
+      <h4 style="font-size:14px; margin-bottom:12px; color:var(--text-secondary);">External Impact Factors</h4>
       
       <div class="factor-bar-row">
         <div class="factor-label">🧠 Mental Health</div>
@@ -287,7 +308,7 @@ td{ padding:18px; border-bottom:1px solid rgba(255,255,255,.05); }
     </div>
 
     <div style="margin-top:15px;">
-      <h4 style="font-size:14px; margin-bottom:8px; color:#c6d0da;">Student Notes & Context</h4>
+      <h4 style="font-size:14px; margin-bottom:8px; color:var(--text-secondary);">Student Notes & Context</h4>
       <div class="notes-box" id="viewNotes">None provided.</div>
     </div>
 
@@ -297,51 +318,119 @@ td{ padding:18px; border-bottom:1px solid rgba(255,255,255,.05); }
   </div>
 </div>
 
-<!-- DELETE / RESET MODAL -->
+<!-- =========================== MODAL 4: ARCHIVE / DELETE OPTIONS =========================== -->
 <div class="modal" id="deleteModal">
-  <div class="modal-content" style="width: 440px;">
-    <h3 style="color:#ff6969; margin-bottom: 10px;">Delete / Reset Options</h3>
-    <p style="color:#95a1ac; font-size:14px; margin-bottom: 20px;">
-      Target: <span id="targetStudentEmail" style="color:white; font-weight:600;"></span>
+  <div class="modal-content" style="width: 480px;">
+    <h3 style="color:#ffb22d; margin-bottom: 8px;">Student Record Management</h3>
+    <p style="color:var(--text-muted); font-size:13px; margin-bottom: 16px;">
+      Target: <span id="targetStudentEmail" style="color:var(--text-primary); font-weight:700;"></span>
     </p>
 
-    <div style="display:flex; flex-direction:column; gap:12px;">
-      <button id="btnResetOnly" style="background:#ffb22d; color:#102233; padding:12px; border:none; border-radius:10px; font-weight:700; cursor:pointer; text-align:left;">
-        🔄 Reset Assessment Profile Only
-        <small style="display:block; font-size:11px; font-weight:400; margin-top:2px;">Clears risk data and returns status to "Pending". Keeps login.</small>
+    <div style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.06); padding:12px; border-radius:10px; margin-bottom:14px;">
+      <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">Select Archive Reason:</label>
+      <select id="archiveReasonSelect" style="width:100%; height:38px; border-radius:8px; background:var(--bg-input); color:var(--text-primary); border:1px solid var(--border-color); padding:0 10px; font-size:12px; outline:none;">
+        <option value="Graduated">🎓 Graduated (Program Completed)</option>
+        <option value="Dropped Out">⚠️ Dropped Out (Discontinued Enrollment)</option>
+        <option value="Transferred Out">🏫 Transferred to Another University</option>
+        <option value="On Leave / Inactive">⏸️ Official Leave of Absence</option>
+      </select>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button id="btnArchiveStudent" style="background:#ffb22d; color:#102233; padding:12px; border:none; border-radius:10px; font-weight:700; cursor:pointer; text-align:left;">
+        📦 Archive Student Record
+        <small style="display:block; font-size:11px; font-weight:400; margin-top:2px;">Safely removes from active class records while preserving all grades, counseling notes, and historical data.</small>
       </button>
 
-      <button id="btnDeleteFull" style="background:#ff5f63; color:white; padding:12px; border:none; border-radius:10px; font-weight:700; cursor:pointer; text-align:left;">
-        ❌ Delete Entire Account & Records
-        <small style="display:block; font-size:11px; font-weight:400; margin-top:2px;">Completely removes student credentials and all submitted data.</small>
+      <button id="btnResetOnly" style="background:var(--bg-input); color:var(--text-primary); border:1px solid var(--border-color); padding:10px; border-radius:10px; font-weight:700; cursor:pointer; text-align:left;">
+        🔄 Reset Survey & Risk Baseline Only
+        <small style="display:block; font-size:11px; font-weight:400; margin-top:2px; color:var(--text-muted);">Clears survey answers and resets account to 'Pending'.</small>
       </button>
 
-      <button id="btnCancelDelete" class="cancel-btn" style="padding:10px; margin-top:5px;">Cancel</button>
+      <button id="btnDeleteFull" style="background:transparent; color:#ff5c63; border:1px solid rgba(255,92,99,0.3); padding:10px; border-radius:10px; font-weight:700; cursor:pointer; text-align:left;">
+        ❌ Permanently Delete
+        <small style="display:block; font-size:11px; font-weight:400; margin-top:2px; color:var(--text-muted);">Irreversibly wipes account and credentials from MongoDB Atlas.</small>
+      </button>
+
+      <button id="btnCancelDelete" class="cancel-btn" style="padding:10px; margin-top:4px;">Cancel</button>
     </div>
   </div>
 </div>
 
 <script>
 if (localStorage.getItem("akademiko_logged_in") !== "true") {
-    window.location.href = "../auth/login.html";
+  window.location.href = "../auth/login.html";
 }
+
+let isArchivedMode = false;
+let currentLoadedStudents = [];
+let selectedStudentEmail = null;
 
 /* ========================== SYNC ADMIN SIDEBAR PROFILE ========================== */
 async function syncAdminSidebar() {
-    const currentAdminEmail = localStorage.getItem("akademiko_email") || "admin@akademikoai.edu.ph";
-    try {
-        const res = await fetch(`http://localhost:8080/api/admin/profile/${currentAdminEmail}`);
-        const data = await res.json();
-        if (data.success) {
-            const nameEl = document.getElementById("sidebarAdminName");
-            const photoEl = document.getElementById("sidebarAdminPhoto");
-            if (nameEl && data.adminName) nameEl.innerText = data.adminName;
-            if (photoEl && data.profilePhoto) photoEl.src = data.profilePhoto;
-        }
-    } catch (err) {
-        console.warn("Could not sync sidebar profile:", err);
+  const currentAdminEmail = localStorage.getItem("akademiko_email") || "admin@akademikoai.edu.ph";
+  try {
+    const res = await fetch(`http://localhost:8080/api/admin/profile/${encodeURIComponent(currentAdminEmail)}`);
+    const data = await res.json();
+    if (data.success) {
+      const nameEl = document.getElementById("sidebarAdminName");
+      const photoEl = document.getElementById("sidebarAdminPhoto");
+      if (nameEl && data.adminName) nameEl.innerText = data.adminName;
+      if (photoEl && data.profilePhoto) photoEl.src = data.profilePhoto;
     }
+  } catch (err) {
+    console.warn("Could not sync sidebar profile:", err);
+  }
 }
+
+/* ========================== STRICT FULL NAME VALIDATION ========================== */
+const nameInput = document.getElementById("newStudentName");
+const nameError = document.getElementById("nameErrorMsg");
+
+nameInput.addEventListener("input", function() {
+  const regex = /^[a-zA-ZÀ-ÿ\s.\-ñÑ]*$/;
+  if (!regex.test(this.value)) {
+    nameError.style.display = "block";
+    this.style.borderColor = "#ff5c63";
+  } else {
+    nameError.style.display = "none";
+    this.style.borderColor = "var(--border-color)";
+  }
+});
+
+/* ========================== ARCHIVE TOGGLE HANDLER ========================== */
+const toggleBtn = document.getElementById("btnToggleArchiveView");
+toggleBtn.addEventListener("click", () => {
+  isArchivedMode = !isArchivedMode;
+  
+  const icon = document.getElementById("archiveToggleIcon");
+  const text = document.getElementById("archiveToggleText");
+  const heading = document.getElementById("tableHeaderTitle");
+  const openModal = document.getElementById("openModalBtn");
+  const openCsvBtn = document.getElementById("btnOpenCsvBatchModal");
+
+  if (isArchivedMode) {
+    toggleBtn.classList.add("active");
+    icon.innerText = "👨‍🎓";
+    text.innerText = "View Active Students";
+    heading.innerText = "📦 Archived Student Archive";
+    openModal.style.display = "none";
+    if (openCsvBtn) openCsvBtn.style.display = "none";
+    document.getElementById("pageTitleHeading").innerText = "Archived Student Records";
+    document.getElementById("pageSubHeading").innerText = "Historical records of graduated, dropped, or transferred students.";
+  } else {
+    toggleBtn.classList.remove("active");
+    icon.innerText = "📦";
+    text.innerText = "View Archived Students";
+    heading.innerText = "Active Student Records";
+    openModal.style.display = "inline-block";
+    if (openCsvBtn) openCsvBtn.style.display = "inline-block";
+    document.getElementById("pageTitleHeading").innerText = "Student Management";
+    document.getElementById("pageSubHeading").innerText = "Manage all registered students in the AkademikoAI system.";
+  }
+
+  loadStudentsList();
+});
 
 /* ========================== MODAL CONTROLS ========================== */
 const addModal = document.getElementById("addStudentModal");
@@ -349,262 +438,491 @@ const viewModal = document.getElementById("viewProfileModal");
 const deleteModal = document.getElementById("deleteModal");
 
 document.getElementById("openModalBtn").addEventListener("click", () => addModal.style.display = "flex");
-document.getElementById("closeModalBtn").addEventListener("click", () => addModal.style.display = "none");
+document.getElementById("cancelAddStudentBtn").addEventListener("click", () => addModal.style.display = "none");
 document.getElementById("closeViewModalBtn").addEventListener("click", () => viewModal.style.display = "none");
 
-/* ========================== CREATE STUDENT ========================== */
-document.getElementById("saveStudentBtn").addEventListener("click", async () => {
-    const studentNo = document.getElementById("newStudentNo").value.trim();
-    const email = document.getElementById("newEmail").value.trim();
-    const password = document.getElementById("newPassword").value.trim();
+// Single Student Enrollment
+document.getElementById("confirmAddStudentBtn").addEventListener("click", async () => {
+  const studentNo = document.getElementById("newStudentNo").value.trim();
+  const studentName = document.getElementById("newStudentName").value.trim();
+  const email = document.getElementById("newStudentEmail").value.trim();
+  const course = document.getElementById("newStudentCourse").value;
+  const section = document.getElementById("newStudentSection").value;
+  const adminEmail = localStorage.getItem("akademiko_email") || "Admin";
 
-    if(!studentNo || !email || !password) {
-        alert("Please fill in all fields.");
-        return;
-    }
+  const validNameRegex = /^[a-zA-ZÀ-ÿ\s.\-ñÑ]+$/;
+  if (!validNameRegex.test(studentName)) {
+    alert("⚠️ Invalid Student Name. Only alphabetic letters, spaces, and periods (.) are permitted. Numbers and special characters are rejected.");
+    return;
+  }
 
-    try {
-        const response = await fetch('http://localhost:8080/api/admin/add-student', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentNo, email, password })
-        });
-        const result = await response.json();
-        if(result.success) {
-            alert("Student credential created successfully!");
-            addModal.style.display = "none";
-            loadStudentsList();
-        } else {
-            alert(result.message);
-        }
-    } catch(err) {
-        console.error("Error:", err);
-        alert("Failed to connect to server.");
+  if (!studentNo || !studentName || !email) {
+    alert("Please fill in Student No., Full Name, and Email.");
+    return;
+  }
+
+  try {
+    const res = await fetch('http://localhost:8080/api/admin/add-student', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentNo,
+        studentName,
+        email,
+        course,
+        section,
+        adminEmail
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("✅ Student account created with status 'Pending', 0% initial attendance, and encrypted password!");
+      addModal.style.display = "none";
+      document.getElementById("newStudentNo").value = "";
+      document.getElementById("newStudentName").value = "";
+      document.getElementById("newStudentEmail").value = "";
+      loadStudentsList();
+    } else {
+      alert("⚠️ " + data.message);
     }
+  } catch (err) {
+    alert("Failed to communicate with server.");
+  }
 });
 
-/* ========================== FETCH DATABASE RECORDS ========================== */
-async function loadStudentsList() {
-    try {
-        const response = await fetch('http://localhost:8080/api/admin/students-list');
-        const result = await response.json();
-        
-        if (!result.success) return;
+/* ========================== BATCH CSV ENROLLMENT CONTROLS ========================== */
+const csvBatchModal = document.getElementById("csvBatchModal");
+const batchCsvFileInput = document.getElementById("batchCsvFileInput");
+const batchCsvUploadBox = document.getElementById("batchCsvUploadBox");
+const batchCsvFileNameDisplay = document.getElementById("batchCsvFileNameDisplay");
 
-        const students = result.students;
-        const tableBody = document.getElementById('studentTableBody');
-        tableBody.innerHTML = ''; 
+document.getElementById("btnOpenCsvBatchModal").onclick = () => {
+  csvBatchModal.style.display = "flex";
+  batchCsvFileInput.value = "";
+  batchCsvFileNameDisplay.innerText = "Click or drop your Enrollment .CSV file here";
+};
 
-        if (students.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No registered students found.</td></tr>';
-            document.getElementById('statTotal').innerText = 0;
-            document.getElementById('statActive').innerText = 0;
-            document.getElementById('statInactive').innerText = 0;
-            document.getElementById('statHigh').innerText = 0;
-            return;
-        }
+document.getElementById("closeCsvBatchBtn").onclick = () => csvBatchModal.style.display = "none";
+document.getElementById("cancelCsvBatchBtn").onclick = () => csvBatchModal.style.display = "none";
 
-        let totalCount = students.length;
-        let activeCount = 0;
-        let pendingCount = 0;
-        let highRiskCount = 0;
+batchCsvUploadBox.onclick = () => batchCsvFileInput.click();
 
-        students.forEach(student => {
-            if (student.status === "Active") activeCount++;
-            if (student.status === "Pending") pendingCount++;
-            if (student.riskLevel === "High Risk") highRiskCount++;
+batchCsvUploadBox.ondragover = (e) => {
+  e.preventDefault();
+  batchCsvUploadBox.style.borderColor = "#36d889";
+  batchCsvUploadBox.style.background = "rgba(54, 216, 137, 0.08)";
+};
+batchCsvUploadBox.ondragleave = () => {
+  batchCsvUploadBox.style.borderColor = "rgba(74, 212, 217, 0.4)";
+  batchCsvUploadBox.style.background = "rgba(0,0,0,0.15)";
+};
+batchCsvUploadBox.ondrop = (e) => {
+  e.preventDefault();
+  batchCsvUploadBox.style.borderColor = "rgba(74, 212, 217, 0.4)";
+  batchCsvUploadBox.style.background = "rgba(0,0,0,0.15)";
+  if (e.dataTransfer.files.length > 0) {
+    batchCsvFileInput.files = e.dataTransfer.files;
+    batchCsvFileNameDisplay.innerText = `Selected: ${batchCsvFileInput.files[0].name}`;
+  }
+};
 
-            let statusClass = "active-status";
-            if (student.status === "Pending") statusClass = "pending-status";
-            if (student.status === "Inactive") statusClass = "inactive-status";
+batchCsvFileInput.onchange = () => {
+  if (batchCsvFileInput.files.length > 0) {
+    batchCsvFileNameDisplay.innerText = `Selected: ${batchCsvFileInput.files[0].name}`;
+  }
+};
 
-            const rowHTML = `
-                <tr>
-                    <td>${student.studentNo}</td>
-                    <td>${student.studentName}</td>
-                    <td>${student.courseSection}</td>
-                    <td>${student.email}</td>
-                    <td><span class="status ${statusClass}">${student.status}</span></td>
-                    <td>
-                        <button class="action view" data-email="${student.email}" data-status="${student.status}">View</button>
-                        <button class="action delete" data-email="${student.email}">Delete</button>
-                    </td>
-                </tr>
-            `;
-            tableBody.innerHTML += rowHTML;
-        });
+// Download standard template
+document.getElementById("btnDownloadEnrollTemplate").onclick = () => {
+  const csvContent = "\uFEFFstudentNo,studentName,email,course,section\r\n" +
+    "23-20-501,MARIA L. SANTOS,maria.santos@udm.edu.ph,BSED - English,3A\r\n" +
+    "23-20-502,JOSHUA P. REYES,joshua.reyes@udm.edu.ph,BSED - Mathematics,3B\r\n" +
+    "23-20-503,ERIKA T. FLORES,erika.flores@udm.edu.ph,BSED - General Science,3C\r\n";
 
-        document.getElementById('statTotal').innerText = totalCount;
-        document.getElementById('statActive').innerText = activeCount;
-        document.getElementById('statInactive').innerText = pendingCount;
-        document.getElementById('statHigh').innerText = highRiskCount;
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `AkademikoAI_Student_Enrollment_Template.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
 
-        attachButtonListeners();
+// Process & upload batch CSV
+document.getElementById("btnProcessBatchCsv").onclick = async () => {
+  if (!batchCsvFileInput.files || batchCsvFileInput.files.length === 0) {
+    alert("Please select or drop an enrollment CSV file first.");
+    return;
+  }
 
-    } catch (error) {
-        console.error("Error loading students:", error);
-        document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="6" style="color: #ff6666; text-align: center;">Failed to load database.</td></tr>';
+  const file = batchCsvFileInput.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    let text = e.target.result;
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+    const lines = text.split(/\r\n|\n/).filter(l => l.trim() !== "");
+    if (lines.length < 2) {
+      alert("CSV file has no data rows.");
+      return;
     }
-}
 
-/* ========================== DYNAMIC BUTTON LISTENERS ========================== */
-let selectedStudentEmail = null;
+    const delim = lines[0].includes(';') ? ';' : ',';
+    const headers = lines[0].split(delim).map(h => h.trim().toLowerCase().replace(/["']/g, ''));
+
+    const idIdx = headers.findIndex(h => h === 'studentno' || h === 'student_no' || h === 'id');
+    const nameIdx = headers.findIndex(h => h === 'studentname' || h === 'name' || h === 'fullname');
+    const emailIdx = headers.findIndex(h => h === 'email' || h === 'institutional email');
+    const courseIdx = headers.findIndex(h => h === 'course' || h === 'program' || h === 'department');
+    const secIdx = headers.findIndex(h => h === 'section' || h === 'sec' || h === 'block');
+
+    if (idIdx === -1 || nameIdx === -1 || emailIdx === -1) {
+      alert("Invalid CSV format. Header row must include at least: 'studentNo', 'studentName', and 'email'.");
+      return;
+    }
+
+    const students = [];
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(delim).map(p => p.trim().replace(/["']/g, ''));
+      if (parts.length >= 3 && parts[idIdx]) {
+        students.push({
+          studentNo: parts[idIdx],
+          studentName: parts[nameIdx],
+          email: parts[emailIdx],
+          course: courseIdx !== -1 && parts[courseIdx] ? parts[courseIdx] : "BSED - Mathematics",
+          section: secIdx !== -1 && parts[secIdx] ? parts[secIdx] : "3A"
+        });
+      }
+    }
+
+    if (students.length === 0) {
+      alert("No valid student records found in file.");
+      return;
+    }
+
+    const btn = document.getElementById("btnProcessBatchCsv");
+    btn.innerText = "Enrolling Cohort...";
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('http://localhost:8080/api/admin/batch-add-students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          students,
+          adminEmail: localStorage.getItem("akademiko_email") || "Admin"
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        let msg = `✅ ${data.message}`;
+        if (data.skipped && data.skipped.length > 0) {
+          msg += `\n⚠️ Note: ${data.skipped.length} records were skipped due to duplicates or validation rules.`;
+        }
+        alert(msg);
+        csvBatchModal.style.display = "none";
+        loadStudentsList();
+      } else {
+        alert("⚠️ Batch enrollment failed: " + data.message);
+      }
+    } catch(err) {
+      alert("Server error uploading batch students.");
+    } finally {
+      btn.innerText = "Upload & Enroll Cohort";
+      btn.disabled = false;
+    }
+  };
+
+  reader.readAsText(file);
+};
+
+/* ========================== FETCH RECORDS (ACTIVE VS ARCHIVED) ========================== */
+async function loadStudentsList() {
+  try {
+    const url = isArchivedMode 
+      ? 'http://localhost:8080/api/admin/students-list?archived=true'
+      : 'http://localhost:8080/api/admin/students-list';
+
+    const response = await fetch(url);
+    const result = await response.json();
+    
+    if (!result.success) return;
+
+    currentLoadedStudents = result.students;
+    const tableBody = document.getElementById('studentTableBody');
+    tableBody.innerHTML = ''; 
+
+    if (currentLoadedStudents.length === 0) {
+      const msg = isArchivedMode ? "No archived student records found." : "No registered active students found.";
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding:25px;">${msg}</td></tr>`;
+      return;
+    }
+
+    let activeCount = 0;
+    let pendingCount = 0;
+    let highRiskCount = 0;
+
+    currentLoadedStudents.forEach(student => {
+      if (student.status === "Active") activeCount++;
+      if (student.status === "Pending") pendingCount++;
+      if (student.riskLevel === "High Risk") highRiskCount++;
+
+      let statusBadge = `<span class="status pending-status">Pending</span>`;
+      if (student.status === "Active") {
+        statusBadge = `<span class="status active-status">Active</span>`;
+      }
+      if (student.isArchived) {
+        statusBadge = `<span class="badge-archived">Archived: ${student.archiveReason || 'Inactive'}</span>`;
+      }
+
+      let actionsHtml = `
+        <button class="action view" data-email="${student.email}" data-status="${student.status}">View Profile</button>
+        <button class="action delete" data-email="${student.email}">Options</button>
+      `;
+
+      if (isArchivedMode) {
+        actionsHtml = `
+          <button class="action view" data-email="${student.email}" data-status="${student.status}">View History</button>
+          <button class="action restore" data-email="${student.email}">🔄 Restore</button>
+        `;
+      }
+
+      const rowHTML = `
+        <tr>
+          <td><strong>${student.studentNo}</strong></td>
+          <td>${student.studentName}</td>
+          <td>${student.courseSection}</td>
+          <td>${student.email}</td>
+          <td>${statusBadge}</td>
+          <td>${actionsHtml}</td>
+        </tr>
+      `;
+      tableBody.innerHTML += rowHTML;
+    });
+
+    if (!isArchivedMode) {
+      document.getElementById('statTotal').innerText = currentLoadedStudents.length;
+      document.getElementById('statActive').innerText = activeCount;
+      document.getElementById('statInactive').innerText = pendingCount;
+      document.getElementById('statHigh').innerText = highRiskCount;
+    }
+
+    attachButtonListeners();
+
+  } catch (error) {
+    document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="6" style="color: #ff6666; text-align: center; padding:20px;">Failed to connect to database.</td></tr>';
+  }
+}
 
 function attachButtonListeners() {
-    document.querySelectorAll(".view").forEach(button => {
-        button.addEventListener("click", async function() {
-            const email = this.getAttribute("data-email");
-            const status = this.getAttribute("data-status");
+  document.querySelectorAll(".view").forEach(button => {
+    button.addEventListener("click", async function() {
+      const email = this.getAttribute("data-email");
+      const status = this.getAttribute("data-status");
 
-            if (status === "Pending") {
-                alert("This student has not submitted their profile yet.");
-                return;
-            }
+      try {
+        const res = await fetch(`http://localhost:8080/api/student/${encodeURIComponent(email)}`);
+        const data = await res.json();
 
-            try {
-                const res = await fetch(`http://localhost:8080/api/student/${email}`);
-                const data = await res.json();
-
-                if (data.success && data.profile) {
-                    populateViewModal(data.profile);
-                    viewModal.style.display = "flex";
-                } else {
-                    alert("Could not load student profile.");
-                }
-            } catch (err) {
-                console.error("View profile error:", err);
-                alert("Failed to communicate with server.");
-            }
-        });
+        if (data.success && data.profile) {
+          populateViewModal(data.profile, status === "Pending");
+          viewModal.style.display = "flex";
+        } else {
+          alert("Could not load student profile.");
+        }
+      } catch (err) {
+        alert("Failed to communicate with server.");
+      }
     });
+  });
 
-    document.querySelectorAll(".delete").forEach(button => {
-        button.addEventListener("click", function() {
-            selectedStudentEmail = this.getAttribute("data-email");
-            document.getElementById("targetStudentEmail").innerText = selectedStudentEmail;
-            deleteModal.style.display = "flex";
-        });
+  document.querySelectorAll(".delete").forEach(button => {
+    button.addEventListener("click", function() {
+      selectedStudentEmail = this.getAttribute("data-email");
+      document.getElementById("targetStudentEmail").innerText = selectedStudentEmail;
+      deleteModal.style.display = "flex";
     });
+  });
+
+  document.querySelectorAll(".restore").forEach(button => {
+    button.addEventListener("click", async function() {
+      const email = this.getAttribute("data-email");
+      if (!confirm(`Restore ${email} back to the active section roster?`)) return;
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/admin/unarchive-student/${encodeURIComponent(email)}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminEmail: localStorage.getItem("akademiko_email") || "Admin" })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("✅ Student restored to active roster!");
+          loadStudentsList();
+        }
+      } catch(e) {
+        alert("Restore failed.");
+      }
+    });
+  });
 }
 
-function updateFactorMeter(fillId, valId, score, maxScore, labels) {
-    const fillEl = document.getElementById(fillId);
-    const valEl = document.getElementById(valId);
-    const ratio = Math.min(Math.max((score || 0) / maxScore, 0), 1);
-    const percentage = ratio * 100;
+function updateFactorMeter(fillId, valId, score, maxScore, labels, isPending) {
+  const fillEl = document.getElementById(fillId);
+  const valEl = document.getElementById(valId);
 
-    fillEl.style.width = `${percentage}%`;
-    valEl.innerText = labels[score] || "Level " + score;
+  if (isPending || score === null || score === undefined) {
+    fillEl.style.width = `0%`;
+    valEl.innerText = "Awaiting Survey Evaluation";
+    valEl.style.color = "var(--text-muted)";
+    return;
+  }
 
-    if (ratio >= 0.75) {
-        fillEl.style.background = "#ff5c63";
-        valEl.style.color = "#ff7378";
-    } else if (ratio >= 0.4) {
-        fillEl.style.background = "#ffb22d";
-        valEl.style.color = "#ffbc3b";
-    } else {
-        fillEl.style.background = "#38d889";
-        valEl.style.color = "#38d889";
-    }
+  const ratio = Math.min(Math.max(score / maxScore, 0), 1);
+  const percentage = ratio * 100;
+
+  fillEl.style.width = `${percentage}%`;
+  valEl.innerText = labels[score] || "Level " + score;
+
+  if (ratio >= 0.75) {
+    fillEl.style.background = "#ff5c63";
+    valEl.style.color = "#ff7378";
+  } else if (ratio >= 0.4) {
+    fillEl.style.background = "#ffb22d";
+    valEl.style.color = "#ffbc3b";
+  } else {
+    fillEl.style.background = "#38d889";
+    valEl.style.color = "#38d889";
+  }
 }
 
-function populateViewModal(p) {
-    document.getElementById("viewStudentName").innerText = p.studentName || "Anonymous Student";
-    document.getElementById("viewStudentSub").innerText = `${p.studentNo || "Pending ID"} • ${(p.course && p.section) ? `${p.course} ${p.section}` : "N/A"}`;
-    document.getElementById("viewEmail").innerText = p.email || "--";
-    document.getElementById("viewLocation").innerText = (p.city && p.province) ? `${p.city}, ${p.province}` : (p.city || p.province || "Not set");
-    
-    const gwa = p.gwa !== undefined ? p.gwa : "--";
-    const att = p.attendance !== undefined ? p.attendance + "%" : "--";
-    const gwaEl = document.getElementById("viewGwa");
-    gwaEl.innerText = gwa !== "--" ? gwa + "%" : gwa;
-    gwaEl.style.color = (Number(gwa) < 75) ? "#ff6666" : "#36d889";
-    document.getElementById("viewAttendance").innerText = att;
+function populateViewModal(p, isPending) {
+  document.getElementById("viewStudentName").innerText = p.studentName || "Anonymous Student";
+  document.getElementById("viewStudentSub").innerText = `${p.studentNo || "Pending ID"} • ${(p.course && p.section) ? `${p.course} • ${p.section}` : "N/A"}`;
+  document.getElementById("viewEmail").innerText = p.email || "--";
+  document.getElementById("viewLocation").innerText = (p.city && p.province) ? `${p.city}, ${p.province}` : (p.city || p.province || "Not set");
+  
+  const gwa = isPending ? "0%" : ((p.gwa !== undefined && p.gwa !== null) ? p.gwa + "%" : "0%");
+  const att = isPending ? "0%" : ((p.attendance !== undefined && p.attendance !== null) ? p.attendance + "%" : "0%");
+  
+  const gwaEl = document.getElementById("viewGwa");
+  gwaEl.innerText = gwa;
+  gwaEl.style.color = (parseFloat(gwa) < 75 && !isPending) ? "#ff6666" : (isPending ? "var(--text-muted)" : "#36d889");
+  document.getElementById("viewAttendance").innerText = att;
 
-    const badge = document.getElementById("viewRiskBadge");
+  const badge = document.getElementById("viewRiskBadge");
+  if (isPending) {
+    badge.innerText = "Pending";
+    badge.className = "status pending-status";
+  } else {
     const risk = p.riskLevel || "Low Risk";
     badge.innerText = `${risk} (${p.confidenceScore || 0}%)`;
-    if (risk === "High Risk") {
-        badge.className = "status inactive-status";
-    } else if (risk === "Moderate Risk") {
-        badge.className = "status pending-status";
-    } else {
-        badge.className = "status active-status";
-    }
+    if (risk === "High Risk") badge.className = "status inactive-status";
+    else if (risk === "Moderate Risk") badge.className = "status pending-status";
+    else badge.className = "status active-status";
+  }
 
-    updateFactorMeter("fillMental", "valMental", p.mentalHealth || 0, 3, ["Not affected", "Mild", "Moderate", "Severe"]);
-    updateFactorMeter("fillFinancial", "valFinancial", p.financial || 0, 3, ["None", "Occasional", "Frequent", "Severe"]);
-    updateFactorMeter("fillFamily", "valFamily", p.familyProblems || 0, 3, ["None", "Occasional", "Frequent", "Severe"]);
-    updateFactorMeter("fillWork", "valWork", p.workingStatus || 0, 2, ["Not Employed", "Part Time", "Full Time"]);
-    updateFactorMeter("fillCommute", "valCommute", p.commute || 0, 3, ["<30 mins", "30m–1hr", "1–2 hrs", ">2 hrs"]);
+  updateFactorMeter("fillMental", "valMental", p.Mental_Health_Score ?? p.mentalHealth, 3, ["Not affected", "Mild", "Moderate", "Severe"], isPending);
+  updateFactorMeter("fillFinancial", "valFinancial", p.Financial_Instability ?? p.financial, 3, ["None", "Occasional", "Frequent", "Severe"], isPending);
+  updateFactorMeter("fillFamily", "valFamily", p.Family_Problems ?? p.familyProblems, 3, ["None", "Occasional", "Frequent", "Severe"], isPending);
+  updateFactorMeter("fillWork", "valWork", p.Working_Status ?? p.workingStatus, 2, ["Not Employed", "Part Time", "Full Time"], isPending);
+  updateFactorMeter("fillCommute", "valCommute", p.Commute_Level ?? p.commute, 3, ["<30 mins", "30m–1hr", "1–2 hrs", ">2 hrs"], isPending);
 
-    document.getElementById("viewNotes").innerText = p.notes && p.notes.trim() ? p.notes : "No additional notes provided by student.";
+  document.getElementById("viewNotes").innerText = p.notes && p.notes.trim() ? p.notes : "No additional notes provided by student.";
 }
 
 document.getElementById("btnCancelDelete").addEventListener("click", () => {
-    deleteModal.style.display = "none";
-    selectedStudentEmail = null;
+  deleteModal.style.display = "none";
+  selectedStudentEmail = null;
 });
 
+// Archive Student
+document.getElementById("btnArchiveStudent").addEventListener("click", async () => {
+  if (!selectedStudentEmail) return;
+  const reason = document.getElementById("archiveReasonSelect").value;
+  const adminEmail = localStorage.getItem("akademiko_email") || "Admin";
+
+  try {
+    const res = await fetch(`http://localhost:8080/api/admin/archive-student/${encodeURIComponent(selectedStudentEmail)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason, adminEmail })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`✅ ${data.message}`);
+      deleteModal.style.display = "none";
+      loadStudentsList();
+    } else {
+      alert("⚠️ " + data.message);
+    }
+  } catch(e) {
+    alert("Server error during archive.");
+  }
+});
+
+// Reset Evaluation Profile Only
 document.getElementById("btnResetOnly").addEventListener("click", async () => {
-    if (!selectedStudentEmail) return;
-    try {
-        const res = await fetch(`http://localhost:8080/api/admin/reset-profile/${selectedStudentEmail}`, { method: 'DELETE' });
-        const data = await res.json();
-        if (data.success) {
-            alert(data.message);
-            deleteModal.style.display = "none";
-            loadStudentsList();
-        } else {
-            alert(data.message);
-        }
-    } catch (err) {
-        console.error("Reset error:", err);
-        alert("Failed to communicate with server.");
+  if (!selectedStudentEmail) return;
+  try {
+    const res = await fetch(`http://localhost:8080/api/admin/reset-profile/${encodeURIComponent(selectedStudentEmail)}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) {
+      alert("✅ Profile reset to pending.");
+      deleteModal.style.display = "none";
+      loadStudentsList();
+    } else {
+      alert(data.message);
     }
+  } catch (err) {
+    alert("Failed to communicate with server.");
+  }
 });
 
+// Permanent Delete
 document.getElementById("btnDeleteFull").addEventListener("click", async () => {
-    if (!selectedStudentEmail) return;
-    if (!confirm(`Are you sure you want to completely erase ${selectedStudentEmail}? This cannot be undone.`)) return;
+  if (!selectedStudentEmail) return;
+  if (!confirm(`Are you sure you want to completely erase ${selectedStudentEmail}? This cannot be undone.`)) return;
 
-    try {
-        const res = await fetch(`http://localhost:8080/api/admin/delete-student/${selectedStudentEmail}`, { method: 'DELETE' });
-        const data = await res.json();
-        if (data.success) {
-            alert(data.message);
-            deleteModal.style.display = "none";
-            loadStudentsList();
-        } else {
-            alert(data.message);
-        }
-    } catch (err) {
-        console.error("Deletion error:", err);
-        alert("Failed to communicate with server.");
+  try {
+    const res = await fetch(`http://localhost:8080/api/admin/delete-student/${encodeURIComponent(selectedStudentEmail)}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) {
+      alert("✅ " + data.message);
+      deleteModal.style.display = "none";
+      loadStudentsList();
+    } else {
+      alert(data.message);
     }
+  } catch (err) {
+    alert("Failed to communicate with server.");
+  }
 });
 
 const search = document.querySelector(".search");
 search.addEventListener("keyup", function(){
-    let value = this.value.toLowerCase();
-    let rows = document.querySelectorAll("tbody tr");
-    rows.forEach(function(row){
-        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
-    });
+  let value = this.value.toLowerCase();
+  let rows = document.querySelectorAll("#studentTableBody tr");
+  rows.forEach(function(row){
+    row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+  });
 });
 
 document.querySelector('a[href="login.html"]').addEventListener("click", function(e){
-    e.preventDefault();
-    if(confirm("Are you sure you want to logout?")){
-        localStorage.removeItem("akademiko_logged_in");
-        localStorage.removeItem("akademiko_email");
-        window.location.href = "../auth/login.html";
-    }
+  e.preventDefault();
+  if(confirm("Are you sure you want to logout?")){
+    localStorage.removeItem("akademiko_logged_in");
+    localStorage.removeItem("akademiko_email");
+    window.location.href = "../auth/login.html";
+  }
 });
 
 window.onload = () => {
-    syncAdminSidebar();
-    loadStudentsList();
+  syncAdminSidebar();
+  loadStudentsList();
 };
 </script>
 </body>
